@@ -1,5 +1,6 @@
 const next = require('next')
 
+const log = require('../lib/log')
 const app = require('./app')
 
 const port = process.env.PORT || 3000
@@ -19,6 +20,6 @@ nextApp.prepare()
         throw error
       }
 
-      console.log(`> Ready on http://localhost:${port}`)
+      log.info(`> Ready on http://localhost:${port}`)
     })
   })
