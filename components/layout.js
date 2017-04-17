@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 
-export default ({ children, title = 'This is the default title' }) => (
+export default ({ children, title = 'CMS' }) => (
   <div>
     <Head>
       <title>{ title }</title>
