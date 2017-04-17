@@ -2,8 +2,6 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
   webpack: function (config, { dev }) {
-    console.log('##### WTF', dev, config)
-
     config.plugins.push(
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
