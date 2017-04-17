@@ -4,15 +4,6 @@ import Layout from '../components/layout'
 
 export default () => (
   <Layout>
-    Hello world
-    <p>scoped!</p>
-    <style jsx>{`
-      p {
-        color: blue;
-      }
-      div {
-        background: #99CCFF;
-      }
-    `}</style>
+    <p>Hello world</p>
   </Layout>
 )
