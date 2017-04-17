@@ -3,9 +3,6 @@ import NProgress from 'nprogress'
 import React from 'react'
 import Router from 'next/router'
 
-import Header from './header'
-import Footer from './footer'
-
 import log from '../lib/log'
 
 Router.onRouteChangeStart = (url, ...args) => {
@@ -35,10 +32,6 @@ export default ({ children, title = 'CMS' }) => (
       <link rel='stylesheet' type='text/css' href='/static/nprogress.css' />
     </Head>
 
-    <Header />
-
     { children }
-
-    <Footer />
   </div>
 )
