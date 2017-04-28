@@ -1,0 +1,24 @@
+FROM node:latest
+
+# Install packages
+RUN apt-get update -y && apt-get upgrade -y
+
+# Install yarn
+RUN npm install --global yarn
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+
+# Install app dependencies
+COPY ./app/package.json /usr/src/app/
+COPY ./app/yarn.lock /usr/src/app/
+WORKDIR /usr/src/app
+RUN yarn install
+
+# Bundle app source
+COPY ./app /usr/src/app
+RUN npm run build
+
+# Set version and start
+EXPOSE 8089
+CMD ["npm", "start"]
