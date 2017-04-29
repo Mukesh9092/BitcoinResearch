@@ -1,14 +1,8 @@
 app:
   cached: true
   build:
-    dockerfile: Dockerfile-app
+    context: app
+    dockerfile: Dockerfile
     image: eu.gcr.io/test-next.js/app
   ports:
     - "3000:3000"
-  volumes:
-    - ./app:/service
-
-  # links:
-  #   - backend
-  # environment:
-  #   - BACKEND_URL=http://backend:8089

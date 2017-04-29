@@ -3,10 +3,11 @@ const next = require('next')
 const log = require('../lib/log')
 const app = require('./app')
 
-const port = process.env.PORT || 3000
-const dev = process.env.NODE_ENV !== 'production'
+const port = process.env.PORT
 
-const nextApp = next({ dev })
+const nextApp = next({
+  dev: process.env.NODE_ENV !== 'production',
+})
 const handleRequest = nextApp.getRequestHandler()
 
 nextApp.prepare()
@@ -20,6 +21,6 @@ nextApp.prepare()
         throw error
       }
 
-      log.info(`> Ready on http://localhost:${port}`)
+      log.info(`> Ready on http://0.0.0.0:${port}`)
     })
   })

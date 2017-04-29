@@ -8,13 +8,13 @@ RUN apt-get upgrade -y
 RUN mkdir -p /service
 
 # Install app dependencies
-COPY ./app/package.json /service/
-COPY ./app/yarn.lock /service/
+COPY package.json /service
+COPY yarn.lock /service
 WORKDIR /service
 RUN yarn install
 
 # Bundle app source
-COPY ./app /service/
+COPY . /service
 RUN npm run build
 
 # Set version and start
