@@ -5,10 +5,9 @@ services:
     container_name: app
     build: ./app
     command: "npm run dev"
-    expose:
-      - 3000
+    ports:
+      - 3000:3000
     volumes:
       - ./app:/service
-      - /node_modules
     environment:
       - PORT=3000
