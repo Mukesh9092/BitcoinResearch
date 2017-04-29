@@ -1,0 +1,4 @@
+# Hacky thing to speed up builds.
+*/node_modules
+*/*/node_modules
+.*

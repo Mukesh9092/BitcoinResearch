@@ -1,10 +1,13 @@
 app:
+  cached: true
   build:
     dockerfile: Dockerfile-app
     image: eu.gcr.io/test-next.js/app
-  cached: true
   ports:
     - "3000:3000"
+  volumes:
+    - ./app:/service
+
   # links:
   #   - backend
   # environment:
