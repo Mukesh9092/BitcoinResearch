@@ -7,16 +7,11 @@ RUN apt-get upgrade -y
 # Create app directory
 RUN mkdir -p /service
 
-# Install app dependencies
-COPY package.json /service
-COPY yarn.lock /service
-WORKDIR /service
-RUN yarn install
-
-# Bundle app source
+# Copy all files into container.
 COPY . /service
-RUN npm run build
 
 # Set version and start
 EXPOSE 3000
+
+WORKDIR /service
 CMD npm start

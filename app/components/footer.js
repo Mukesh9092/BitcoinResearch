@@ -1,8 +1,9 @@
-import React from 'react'
-import Link from 'next/link'
+import React from "react";
+
+import Link from "next/link";
 
 export default () => (
   <footer>
     I`m here to stay
   </footer>
-)
+);

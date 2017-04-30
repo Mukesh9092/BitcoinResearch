@@ -1,21 +1,19 @@
-import React from 'react'
+import React from "react";
 
-import Footer from '../components/footer'
-import Header from '../components/header'
-import Layout from '../components/layout'
-import log from '../lib/log'
+import Footer from "../components/footer";
+import Header from "../components/header";
+import Layout from "../components/layout";
+import log from "../lib/log";
+import withData from "../lib/withData";
 
-export default class extends React.Component {
+@withData
+export default class IndexPage extends React.Component {
   render() {
-    log.debug('pages/index#render')
+    log.debug("pages/index#render");
 
-    const {
-      url: {
-        pathname,
-      },
-    } = this.props
+    const { url: { pathname } } = this.props;
 
-    log.debug('pages/index#render pathname', pathname)
+    log.debug("pages/index#render pathname", pathname);
 
     return (
       <Layout>
@@ -23,6 +21,6 @@ export default class extends React.Component {
         ASDASDSADAS123123123
         <Footer />
       </Layout>
-    )
+    );
   }
 }

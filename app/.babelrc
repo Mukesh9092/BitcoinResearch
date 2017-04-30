@@ -5,8 +5,9 @@
     "stage-0"
   ],
   "plugins": [
-    "transform-object-rest-spread",
     "transform-class-properties",
-    "transform-runtime",
+    "transform-decorators-legacy",
+    "transform-object-rest-spread",
+    "transform-runtime"
   ]
 }

@@ -1,15 +1,16 @@
-import React from 'react'
-import Link from 'next/link'
+import React from "react";
+
+import Link from "next/link";
 
 export default ({ pathname }) => (
   <header>
     <nav>
-      <Link href='/'>
+      <Link href="/">
         <a>Home</a>
       </Link>
-      <Link href='/useragent'>
+      <Link href="/useragent">
         <a>UserAgent</a>
       </Link>
     </nav>
   </header>
-)
+);
