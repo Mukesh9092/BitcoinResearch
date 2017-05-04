@@ -14,4 +14,5 @@ COPY . /service
 EXPOSE 3000
 
 WORKDIR /service
-CMD npm start
+RUN yarn run build
+CMD yarn run start

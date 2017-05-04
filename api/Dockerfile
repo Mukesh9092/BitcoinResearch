@@ -14,4 +14,4 @@ COPY . /service
 EXPOSE 3001
 
 WORKDIR /service
-CMD npm start
+CMD yarn run start

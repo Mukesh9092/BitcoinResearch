@@ -7,9 +7,9 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "clean": "rm -rf build/*",
-    "build": "babel src --out-dir build --copy-files",
-    "start": "yarn run clean; yarn run build; node build/server/server.js",
+    "gulp": "gulp",
+    "start": "gulp production",
+    "dev": "gulp develop",
     "prettier": "find . -name '*.js' | grep -v node_modules | grep -v .next | xargs prettier --write",
     "posttest": "npm run lint && nsp check",
     "precommit": "lint-staged"

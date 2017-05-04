@@ -29,6 +29,7 @@ services:
       - API_PATH=api
       - NODE_ENV=develop
       - PORT=3000
+    command: "yarn run dev"
 
   api:
     depends_on:
@@ -49,3 +50,4 @@ services:
       - DB_USER=test_nextjs_user
       - DB_PASS=test_nextjs_password
       - DB_NAME=test_nextjs_develop
+    command: "yarn run dev"
