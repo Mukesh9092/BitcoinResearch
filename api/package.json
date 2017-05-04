@@ -1,11 +1,69 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "main": "server/server.js",
+  "engines": {
+    "node": ">=4"
   },
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "lint": "eslint .",
+    "clean": "rm -rf build/*",
+    "build": "babel src --out-dir build --copy-files",
+    "start": "yarn run clean; yarn run build; node build/server/server.js",
+    "prettier": "find . -name '*.js' | grep -v node_modules | grep -v .next | xargs prettier --write",
+    "posttest": "npm run lint && nsp check",
+    "precommit": "lint-staged"
+  },
+  "dependencies": {
+    "async": "^2.4.0",
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chokidar": "^1.6.1",
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0",
+    "graphql": "^0.9.6",
+    "graphql-tools": "^0.11.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-develop-server": "^0.5.2",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-micromatch": "^1.0.5",
+    "gulp-mocha": "^4.3.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-util": "^3.0.8",
+    "knex": "^0.13.0",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-compress": "^2.0.0",
+    "koa-convert": "^1.2.0",
+    "koa-errorhandler": "^0.1.1",
+    "koa-generic-session": "^1.11.5",
+    "koa-graphql": "^0.7.0",
+    "koa-helmet": "^3.1.0",
+    "koa-logger": "^2.0.1",
+    "koa-passport": "^3.0.0",
+    "koa-ping": "^0.1.1",
+    "koa-response-time": "^2.0.0",
+    "koa-router": "^7.1.1",
+    "lodash": "^4.17.4",
+    "loglevel": "^1.4.1",
+    "objection": "^0.7.12",
+    "passport-local": "^1.0.0",
+    "pg": "^6.1.5",
+    "rimraf": "^2.6.1",
+    "run-sequence": "^1.2.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "api"
 }

@@ -1,13 +1,51 @@
 version: '3'
 
 services:
+  db:
+    restart: always
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_USER=test_nextjs_user"
+      - "POSTGRES_PASSWORD=test_nextjs_password"
+      - "POSTGRES_DB=test_nextjs_develop"
+#    volumes:
+#      - /var/lib/postgresql:/var/lib/postgresql
+
   app:
-    container_name: app
+    depends_on:
+      - db
+    links:
+      - db
     build: ./app
-    command: "npm run dev"
     ports:
       - 3000:3000
     volumes:
       - ./app:/service
     environment:
+      - API_HOST=api
+      - API_PORT=3001
+      - API_PATH=api
+      - NODE_ENV=develop
       - PORT=3000
+
+  api:
+    depends_on:
+      - db
+    links:
+      - db
+    build: ./api
+    ports:
+      - 3001:3001
+    volumes:
+      - ./api:/service
+    environment:
+      - NODE_ENV=develop
+      - HOST=0.0.0.0
+      - PORT=3001
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=test_nextjs_user
+      - DB_PASS=test_nextjs_password
+      - DB_NAME=test_nextjs_develop
