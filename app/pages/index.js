@@ -1,26 +1,41 @@
-import React from "react";
+import React from 'react'
 
-import Footer from "../components/footer";
-import Header from "../components/header";
-import Layout from "../components/layout";
-import log from "../lib/log";
-import withData from "../lib/withData";
+import Link from 'next/link'
+import { Row, Col, Jumbotron, Button } from 'reactstrap'
+
+import Layout from '../components/layout'
+import log from '../lib/log'
+import withData from '../lib/withData'
 
 @withData
 export default class IndexPage extends React.Component {
   render() {
-    log.debug("pages/index#render");
+    log.debug('pages/index#render')
 
-    const { url: { pathname } } = this.props;
+    const { url: { pathname } } = this.props
 
-    log.debug("pages/index#render pathname", pathname);
+    log.debug('pages/index#render pathname', pathname)
 
     return (
       <Layout>
-        <Header pathname={pathname} />
-        ASDASDSADAS123123123
-        <Footer />
+        <Row>
+          <Col>
+            <Jumbotron>
+              <h1 className="display-3">Welcome</h1>
+              <p className="lead">
+                LALALALALALALALALALALALALALALALALALALALAA
+
+                This should be a dashboard in the future.
+              </p>
+              <hr className="my-2" />
+              <p>For now, there's just the forms.</p>
+              <p className="lead">
+                <Button color="primary" href="/">To the Forms!</Button>
+              </p>
+            </Jumbotron>
+          </Col>
+        </Row>
       </Layout>
-    );
+    )
   }
 }

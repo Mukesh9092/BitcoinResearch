@@ -53,28 +53,18 @@ export default class User extends Model {
   }
 
   static getUsers() {
-    return User
-      .query()
+    return User.query()
   }
 
   static getUserById(id) {
-    return User
-      .query()
-      .where({ id })
-      .then(x => x[0])
+    return User.query().where({ id }).then(x => x[0])
   }
 
   static getUserByEmail(email) {
-    return User
-      .query()
-      .where({ email })
-      .then(x => x[0])
+    return User.query().where({ email }).then(x => x[0])
   }
 
   static getUserByUsername(username) {
-    return User
-      .query()
-      .where({ username })
-      .then(x => x[0])
+    return User.query().where({ username }).then(x => x[0])
   }
 }

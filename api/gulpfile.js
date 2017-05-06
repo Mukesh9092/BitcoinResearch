@@ -9,42 +9,12 @@ require('./gulp/tasks/copy')
 require('./gulp/tasks/mocha')
 require('./gulp/tasks/server')
 
-gulp.task('compile', cb => seq(
-  [
-    'babel:compile',
-    'copy:compile',
-  ],
+gulp.task('compile', cb => seq(['babel:compile', 'copy:compile'], cb))
 
-  cb,
-))
+gulp.task('watch', cb => seq(['babel:watch', 'copy:watch', 'mocha:watch'], cb))
 
-gulp.task('watch', cb => seq(
-  [
-    'babel:watch',
-    'copy:watch',
-    'mocha:watch',
-  ],
+gulp.task('develop', cb =>
+  seq('clean', 'compile', 'mocha:istanbul', ['watch', 'server:run'], cb),
+)
 
-  cb,
-))
-
-gulp.task('develop', cb => seq(
-  'clean',
-  'compile',
-  'mocha:istanbul',
-
-  [
-    'watch',
-    'server:run',
-  ],
-
-  cb,
-))
-
-gulp.task('production', cb => seq(
-  'clean',
-  'compile',
-  'server:run',
-
-  cb,
-))
+gulp.task('production', cb => seq('clean', 'compile', 'server:run', cb))

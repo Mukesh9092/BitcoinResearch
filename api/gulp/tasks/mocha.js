@@ -16,7 +16,8 @@ gulp.task('mocha:istanbul', (cb) => {
   const testSourcePath = 'build/**/*.js'
 
   const prepareSource = (cb) => {
-    gulp.src(sourcePath)
+    gulp
+      .src(sourcePath)
       .pipe(gulpMicromatch(sourceFilter))
       .pipe(gulpIstanbul())
       .pipe(gulpIstanbul.hookRequire())
@@ -25,15 +26,20 @@ gulp.task('mocha:istanbul', (cb) => {
   }
 
   const runTests = (cb) => {
-    gulp.src(testSourcePath)
+    gulp
+      .src(testSourcePath)
       .pipe(gulpMicromatch(testSourceFilter))
       .pipe(gulpPlumber())
-      .pipe(gulpMocha({
-        reporter,
-      }))
-      .pipe(gulpIstanbul.writeReports({
-        dir: coverageDirectoryPath,
-      }))
+      .pipe(
+        gulpMocha({
+          reporter,
+        }),
+      )
+      .pipe(
+        gulpIstanbul.writeReports({
+          dir: coverageDirectoryPath,
+        }),
+      )
       .on('end', cb)
   }
 
@@ -58,12 +64,15 @@ gulp.task('mocha:watch', (cb) => {
   })
 
   watcher.on('change', () => {
-    gulp.src(testSourcePath)
+    gulp
+      .src(testSourcePath)
       .pipe(gulpMicromatch(testSourceFilter))
       .pipe(gulpPlumber())
-      .pipe(gulpMocha({
-        reporter,
-      }))
+      .pipe(
+        gulpMocha({
+          reporter,
+        }),
+      )
   })
 
   cb()

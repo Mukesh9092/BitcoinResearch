@@ -11,7 +11,8 @@ gulp.task('babel:compile', (cb) => {
   const sourcePath = 'src/**/*.js'
   const targetDirectoryPath = 'build'
 
-  return gulp.src(sourcePath)
+  return gulp
+    .src(sourcePath)
     .pipe(gulpBabel())
     .on('error', (error) => {
       // Explicitly only print the error, continue with all files.
@@ -32,9 +33,12 @@ gulp.task('babel:watch', (cb) => {
   })
 
   watcher.on('change', (sourceFilePath) => {
-    const targetFilePath = dirname(sourceFilePath.replace(sourceDirectoryPath, targetDirectoryPath))
+    const targetFilePath = dirname(
+      sourceFilePath.replace(sourceDirectoryPath, targetDirectoryPath),
+    )
 
-    gulp.src(sourceFilePath)
+    gulp
+      .src(sourceFilePath)
       .pipe(gulpBabel())
       .on('error', (error) => {
         handleError('babel:compile', error)

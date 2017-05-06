@@ -19,13 +19,25 @@ exports.up = (knex) => {
       table.text('body')
       table.timestamp('created').notNullable().defaultTo(knex.raw('now()'))
       table.timestamp('updated').notNullable().defaultTo(knex.raw('now()'))
-      table.integer('userId').unsigned().references('users.id').onDelete('CASCADE')
+      table
+        .integer('userId')
+        .unsigned()
+        .references('users.id')
+        .onDelete('CASCADE')
     }),
 
     knex.schema.createTable('articles_tags', (table) => {
       table.increments('id')
-      table.integer('articleId').unsigned().references('articles.id').onDelete('CASCADE')
-      table.integer('tagId').unsigned().references('tags.id').onDelete('CASCADE')
+      table
+        .integer('articleId')
+        .unsigned()
+        .references('articles.id')
+        .onDelete('CASCADE')
+      table
+        .integer('tagId')
+        .unsigned()
+        .references('tags.id')
+        .onDelete('CASCADE')
     }),
 
     knex.schema.createTable('comments', (table) => {
@@ -33,14 +45,20 @@ exports.up = (knex) => {
       table.text('body')
       table.timestamp('created').notNullable().defaultTo(knex.raw('now()'))
       table.timestamp('updated').notNullable().defaultTo(knex.raw('now()'))
-      table.integer('userId').unsigned().references('users.id').onDelete('CASCADE')
-      table.integer('articleId').unsigned().references('articles.id').onDelete('CASCADE')
+      table
+        .integer('userId')
+        .unsigned()
+        .references('users.id')
+        .onDelete('CASCADE')
+      table
+        .integer('articleId')
+        .unsigned()
+        .references('articles.id')
+        .onDelete('CASCADE')
     }),
   ])
 }
 
 exports.down = (knex) => {
-  return Promise.all([
-    knex.schema.dropTable('users'),
-  ])
+  return Promise.all([knex.schema.dropTable('users')])
 }

@@ -11,8 +11,7 @@ class FileLogger extends Transform {
   }
 
   _transform(object, encoding, cb) {
-    const fileName = object.history[0]
-      .replace(object.base, '')
+    const fileName = object.history[0].replace(object.base, '')
 
     gulpUtil.log(this.taskName, fileName)
 

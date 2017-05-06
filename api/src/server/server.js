@@ -1,5 +1,6 @@
 import path from 'path'
 import zlib from 'zlib'
+import util from 'util'
 
 import Koa from 'koa'
 import { makeExecutableSchema } from 'graphql-tools'
@@ -10,21 +11,17 @@ import koaErrorHandler from 'koa-errorhandler'
 import koaGraphql from 'koa-graphql'
 import koaHelmet from 'koa-helmet'
 import koaLogger from 'koa-logger'
-import koaPassport from 'koa-passport'
 import koaPing from 'koa-ping'
 import koaResponseTime from 'koa-response-time'
 import koaRouter from 'koa-router'
 import koaSession from 'koa-generic-session'
 import log from 'loglevel'
-// import koaStatic from 'koa-static'
 
 // Import this first.
 import getDatabase from './database'
 
 import graphqlResolvers from './graphql/resolvers'
 import graphqlSchema from './graphql/schema'
-
-import './authentication'
 
 const { NODE_ENV } = process.env
 
@@ -47,32 +44,34 @@ app.use = x => oldUse.call(app, koaConvert(x))
 
 const db = getDatabase()
 
-router
-  .all('/graphql', koaConvert(koaGraphql({
-    schema: makeExecutableSchema({
-      typeDefs: graphqlSchema,
-      resolvers: graphqlResolvers,
+router.all(
+  '/graphql',
+  koaConvert(
+    koaGraphql({
+      schema: makeExecutableSchema({
+        typeDefs: graphqlSchema,
+        resolvers: graphqlResolvers,
+      }),
+      graphiql: true,
     }),
-    graphiql: true,
-  })))
+  ),
+)
 
 app
   .use(koaLogger())
   .use(koaErrorHandler())
   .use(koaHelmet())
   .use(koaResponseTime())
-  .use(koaCompress({
-    filter: contentType => /text/i.test(contentType),
-    threshold: 2048,
-    flush: zlib.Z_SYNC_FLUSH,
-  }))
+  .use(
+    koaCompress({
+      filter: contentType => /text/i.test(contentType),
+      threshold: 2048,
+      flush: zlib.Z_SYNC_FLUSH,
+    }),
+  )
   .use(koaPing())
-
   .use(koaBodyparser())
   .use(koaSession())
-  .use(koaPassport.initialize())
-  .use(koaPassport.session())
-
   // .use(koaStatic(`${CWD}/../client`))
 
   .use(router.routes())
@@ -80,17 +79,19 @@ app
 
 async function start() {
   try {
-    // log.info('Running migrations...')
-    //
-    // await db.migrate.latest()
-    //
-    // log.info('Migrations complete.')
-    //
-    // log.info('Running seed...')
-    //
-    // await db.seed.run()
-    //
-    // log.info('Seed complete.')
+    log.debug('router', util.inspect(router, { depth: null }))
+
+    log.info('Running migrations...')
+
+    await db.migrate.latest()
+
+    log.info('Migrations complete.')
+
+    log.info('Running seed...')
+
+    await db.seed.run()
+
+    log.info('Seed complete.')
 
     log.info('Starting HTTP Server...')
 

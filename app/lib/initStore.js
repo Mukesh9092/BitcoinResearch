@@ -1,23 +1,23 @@
-import { createStore } from "redux";
-import { getReducer } from "./reducer";
-import { createMiddleware } from "./middleware";
+import { createStore } from 'redux'
+import { getReducer } from './reducer'
+import { createMiddleware } from './middleware'
 
-let reduxStore = null;
+let reduxStore = null
 
 export function initStore(client, initialState) {
-  let store;
+  let store
 
   if (!process.browser || !reduxStore) {
-    const middleware = createMiddleware(client.middleware());
+    const middleware = createMiddleware(client.middleware())
 
-    store = createStore(getReducer(client), initialState, middleware);
+    store = createStore(getReducer(client), initialState, middleware)
 
     if (!process.browser) {
-      return store;
+      return store
     }
 
-    reduxStore = store;
+    reduxStore = store
   }
 
-  return reduxStore;
+  return reduxStore
 }

@@ -27,18 +27,23 @@ function sourceFilter(x) {
 }
 
 gulp.task('copy:compile', (cb) => {
-  const sourcePaths = [{
-    sourcePath: 'src/**/*',
-    targetDirectoryPath: 'build',
-  }]
+  const sourcePaths = [
+    {
+      sourcePath: 'src/**/*',
+      targetDirectoryPath: 'build',
+    },
+  ]
 
   function copyPath(path) {
     return (cb) => {
-      gulp.src(path.sourcePath)
-        .pipe(gulpMicromatch(sourceFilter, {
-          dot: true,
-          extglobs: true,
-        }))
+      gulp
+        .src(path.sourcePath)
+        .pipe(
+          gulpMicromatch(sourceFilter, {
+            dot: true,
+            extglobs: true,
+          }),
+        )
         .pipe(gulp.dest(path.targetDirectoryPath))
         .on('end', () => {
           gulpUtil.log('copy:compile', path.sourcePath)
@@ -68,10 +73,13 @@ gulp.task('copy:watch', (cb) => {
   })
 
   watcher.on('change', (sourceFilePath) => {
-    const targetFilePath = dirname(sourceFilePath.replace(sourceDirectoryPath, targetDirectoryPath))
+    const targetFilePath = dirname(
+      sourceFilePath.replace(sourceDirectoryPath, targetDirectoryPath),
+    )
 
     if (sourceFilter(sourceFilePath)) {
-      gulp.src(sourceFilePath)
+      gulp
+        .src(sourceFilePath)
         .pipe(gulp.dest(targetFilePath))
         .pipe(log.file('copy:watch'))
     }

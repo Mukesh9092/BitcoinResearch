@@ -75,55 +75,30 @@ export default class Article extends Model {
   }
 
   static getArticles(offset, limit) {
-    return Article
-      .query()
-      .offset(offset)
-      .limit(limit)
+    return Article.query().offset(offset).limit(limit)
   }
 
   static getArticlesByUserId(userId, offset, limit) {
-    return Article
-      .query()
-      .where({ userId })
-      .offset(offset)
-      .limit(limit)
+    return Article.query().where({ userId }).offset(offset).limit(limit)
   }
 
   static getArticlesByUsername(username, offset, limit) {
-    return User
-      .query()
-      .where({ username })
-      .then(([user]) => {
-        return user
-          .$relatedQuery('articles')
-          .offset(offset)
-          .limit(limit)
-      })
+    return User.query().where({ username }).then(([user]) => {
+      return user.$relatedQuery('articles').offset(offset).limit(limit)
+    })
   }
 
   static getArticlesByTag(tag, offset, limit) {
-    return Tag
-      .query()
-      .where({ label: tag })
-      .then(([tag]) => {
-        return tag
-          .$relatedQuery('articles')
-          .offset(offset)
-          .limit(limit)
-      })
+    return Tag.query().where({ label: tag }).then(([tag]) => {
+      return tag.$relatedQuery('articles').offset(offset).limit(limit)
+    })
   }
 
   static getArticleById(id) {
-    return Article
-      .query()
-      .where({ id })
-      .then(x => x[0])
+    return Article.query().where({ id }).then(x => x[0])
   }
 
   static getArticleBySlug(slug) {
-    return Article
-      .query()
-      .where({ slug })
-      .then(x => x[0])
+    return Article.query().where({ slug }).then(x => x[0])
   }
 }

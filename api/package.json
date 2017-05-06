@@ -10,7 +10,7 @@
     "gulp": "gulp",
     "start": "gulp production",
     "dev": "gulp develop",
-    "prettier": "find . -name '*.js' | grep -v node_modules | grep -v .next | xargs prettier --write",
+    "prettier": "find . -name '*.js' | grep -v node_modules | grep -v .next | xargs prettier --single-quote --trailing-comma es5 --no-semi --write",
     "posttest": "npm run lint && nsp check",
     "precommit": "lint-staged"
   },
@@ -27,6 +27,7 @@
     "chokidar": "^1.6.1",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
+    "faker": "^4.1.0",
     "graphql": "^0.9.6",
     "graphql-tools": "^0.11.0",
     "gulp": "^3.9.1",

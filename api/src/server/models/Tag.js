@@ -36,7 +36,6 @@ export default class Tag extends Model {
   }
 
   static getTags() {
-    return Tag
-      .query()
+    return Tag.query()
   }
 }

@@ -1,11 +1,11 @@
-import { applyMiddleware, compose } from "redux";
+import { applyMiddleware, compose } from 'redux'
 
 export function createMiddleware(clientMiddleware) {
-  const middleware = applyMiddleware(clientMiddleware);
+  const middleware = applyMiddleware(clientMiddleware)
 
   if (process.browser && window.devToolsExtension) {
-    return compose(middleware, window.devToolsExtension());
+    return compose(middleware, window.devToolsExtension())
   }
 
-  return middleware;
+  return middleware
 }
