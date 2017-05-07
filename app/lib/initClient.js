@@ -8,9 +8,10 @@ function getApolloClient(headers, initialState) {
     ssrMode: !process.browser,
     dataIdFromObject: result => result.id || null,
     networkInterface: createNetworkInterface({
-      uri: 'https://api.graph.cool/simple/v1/cixmkt2ul01q00122mksg82pn',
+      // TODO: Get this from environment variables.
+      uri: 'http://0.0.0.0:3001/graphql',
       opts: {
-        credentials: 'same-origin',
+        credentials: 'include',
         // Pass headers here if your graphql server requires them
       },
     }),

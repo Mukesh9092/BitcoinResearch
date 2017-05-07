@@ -79,8 +79,6 @@ app
 
 async function start() {
   try {
-    log.debug('router', util.inspect(router, { depth: null }))
-
     log.info('Running migrations...')
 
     await db.migrate.latest()
