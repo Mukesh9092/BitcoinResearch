@@ -17,7 +17,8 @@ exports.seed = (knex) => {
     log.info('Creating users.')
 
     const promises = []
-    for (let i = 0, l = 20; i < l; i += 1) {
+    let i
+    for (i = 0; i < 20; i += 1) {
       promises.push(
         knex('users').insert({
           id: i,
@@ -27,6 +28,15 @@ exports.seed = (knex) => {
         }),
       )
     }
+
+    promises.push(
+      knex('users').insert({
+        id: i + 1,
+        email: 'admin@test.com',
+        username: 'admin',
+        password: 'admin',
+      }),
+    )
 
     return Promise.all(promises)
   }
@@ -54,7 +64,7 @@ exports.seed = (knex) => {
     for (let i = 0, l = 20; i < l; i += 1) {
       const title = faker.lorem.words()
       const slug = faker.helpers.slugify(title)
-      const userId = Math.floor(Math.random() * 20) - 1 + 1
+      const userId = Math.floor(Math.random() * 20)
 
       promises.push(
         knex('articles').insert({
@@ -77,8 +87,8 @@ exports.seed = (knex) => {
 
     const promises = []
     for (let i = 0, l = 20; i < l; i += 1) {
-      const articleId = Math.floor(Math.random() * 20) - 1 + 1
-      const userId = Math.floor(Math.random() * 20) - 1 + 1
+      const articleId = Math.floor(Math.random() * 20)
+      const userId = Math.floor(Math.random() * 20)
 
       promises.push(
         knex('comments').insert({
@@ -102,8 +112,8 @@ exports.seed = (knex) => {
     for (let i = 0, l = 100; i < l; i += 1) {
       promises.push(
         knex('articles_tags').insert({
-          articleId: Math.floor(Math.random() * 20) - 1 + 1,
-          tagId: Math.floor(Math.random() * 20) - 1 + 1,
+          articleId: Math.floor(Math.random() * 20),
+          tagId: Math.floor(Math.random() * 20),
         }),
       )
     }

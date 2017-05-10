@@ -1,9 +1,6 @@
-import path from 'path'
 import zlib from 'zlib'
-import util from 'util'
 
 import Koa from 'koa'
-import { makeExecutableSchema } from 'graphql-tools'
 import koaBodyparser from 'koa-bodyparser'
 import koaCompress from 'koa-compress'
 import koaConvert from 'koa-convert'
@@ -11,11 +8,15 @@ import koaErrorHandler from 'koa-errorhandler'
 import koaGraphql from 'koa-graphql'
 import koaHelmet from 'koa-helmet'
 import koaLogger from 'koa-logger'
+import koaPassport from 'koa-passport'
 import koaPing from 'koa-ping'
 import koaResponseTime from 'koa-response-time'
 import koaRouter from 'koa-router'
 import koaSession from 'koa-generic-session'
 import log from 'loglevel'
+import { makeExecutableSchema } from 'graphql-tools'
+
+import './authentication'
 
 // Import this first.
 import getDatabase from './database'
@@ -72,7 +73,8 @@ app
   .use(koaPing())
   .use(koaBodyparser())
   .use(koaSession())
-  // .use(koaStatic(`${CWD}/../client`))
+  .use(koaPassport.initialize())
+  .use(koaPassport.session())
 
   .use(router.routes())
   .use(router.allowedMethods())

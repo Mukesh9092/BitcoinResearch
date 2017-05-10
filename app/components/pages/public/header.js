@@ -11,7 +11,7 @@ export class Header extends React.Component {
 
     return (
       <NavItem>
-        <Link href={url}>
+        <Link href={url} prefetch>
           <NavLink
             href={url}
             active={pathname === url}
@@ -30,7 +30,7 @@ export class Header extends React.Component {
       {this.renderNavLink('/', 'Home')}
       {this.renderNavLink('/about', 'About')}
       {this.renderNavLink('/contact', 'Contact')}
-      {this.renderNavLink('/cms', 'CMS')}
+      {this.renderNavLink('/login', 'Login')}
     </Nav>,
 
     <Nav className="ml-auto" navbar key="profile-dropdown">

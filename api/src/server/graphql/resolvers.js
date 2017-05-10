@@ -33,37 +33,37 @@ export default {
   },
 
   Article: {
-    user(root, args, context) {
+    user(root) {
       return User.query()
         .where({ id: root.userId })
         .then(firstResult)
         .then(jsonResult)
     },
 
-    tags(root, args, context) {
+    tags(root) {
       return Article.query()
         .findById(root.id)
         .then(result => result.$relatedQuery('tags'))
         .then(jsonResult)
     },
 
-    comments(root, args, context) {
+    comments(root) {
       return Comment.query().where({ articleId: root.id }).then(jsonResult)
     },
   },
 
   Comment: {
-    article(root, args, context) {
+    article(root) {
       return Article.query().findById(root.articleId).then(jsonResult)
     },
 
-    user(root, args, context) {
+    user(root) {
       return User.query().findById(root.userId).then(jsonResult)
     },
   },
 
   Tag: {
-    articles(root, args, context) {
+    articles(root) {
       return Tag.query()
         .findById(root.id)
         .then(result => result.$relatedQuery('articles'))
@@ -72,17 +72,17 @@ export default {
   },
 
   User: {
-    articles(root, args, context) {
+    articles(root) {
       return Article.getArticlesByUserId(root.id)
     },
 
-    comments(root, args, context) {
+    comments(root) {
       return Comment.getCommentsByUserId(root.id)
     },
   },
 
   Query: {
-    articles(root, args, context) {
+    articles(root, args) {
       const { offset, limit } = args
 
       log.debug('GraphQL.Resolvers.Query.articles', offset, limit)
@@ -90,17 +90,17 @@ export default {
       return Article.getArticles(offset, limit).then(jsonResult)
     },
 
-    articlesByUser(root, args, context) {
+    articlesByUser(root, args) {
       const { username, offset, limit } = args
 
-      log.debug('GraphQL.Resolvers.Query.articlesByUser', tag, offset, limit)
+      log.debug('GraphQL.Resolvers.Query.articlesByUser', username, offset, limit)
 
       return Article.getArticlesByUsername(username, offset, limit).then(
         jsonResult,
       )
     },
 
-    articlesByTag(root, args, context) {
+    articlesByTag(root, args) {
       const { tag, offset, limit } = args
 
       log.debug('GraphQL.Resolvers.Query.articlesByUser', tag, offset, limit)
@@ -108,43 +108,43 @@ export default {
       return Article.getArticlesByTag(tag, offset, limit).then(jsonResult)
     },
 
-    articleById(root, args, context) {
+    articleById(root, args) {
       log.debug('GraphQL.Resolvers.Query.articlesById')
 
       return Article.getArticleById(args.id).then(jsonResult)
     },
 
-    articleBySlug(root, args, context) {
+    articleBySlug(root, args) {
       log.debug('GraphQL.Resolvers.Query.articleBySlug')
 
       return Article.getArticleBySlug(args.slug).then(jsonResult)
     },
 
-    tags(root, args, context) {
+    tags() {
       log.debug('GraphQL.Resolvers.Query.tags')
 
       return Tag.getTags().then(jsonResult)
     },
 
-    users(root, args, context) {
+    users() {
       log.debug('GraphQL.Resolvers.Query.users')
 
       return User.getUsers().then(jsonResult)
     },
 
-    userById(root, args, context) {
+    userById(root, args) {
       log.debug('GraphQL.Resolvers.Query.userById')
 
       return User.getUserById(args.id).then(jsonResult)
     },
 
-    userByEmail(root, args, context) {
+    userByEmail(root, args) {
       log.debug('GraphQL.Resolvers.Query.userByEmail')
 
       return User.getUserByEmail(args.email).then(jsonResult)
     },
 
-    userByUsername(root, args, context) {
+    userByUsername(root, args) {
       log.debug('GraphQL.Resolvers.Query.userByUsername')
 
       return User.getUserByUsername(args.username).then(jsonResult)
@@ -152,7 +152,7 @@ export default {
   },
 
   Mutation: {
-    sessionWithEmail(root, args, context) {
+    sessionWithEmail(root, args) {
       const { email, password } = args
 
       log.debug('GraphQL.Resolvers.Mutation.sessionWithEmail', email, password)
@@ -160,9 +160,11 @@ export default {
       passport.authenticate('local')
 
       // TODO: Hashing function?
-      return User.query().where({ email, password })
-
-      return false
+      return User.query()
+        .where({
+          email,
+          password,
+        })
     },
   },
 }
