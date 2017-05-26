@@ -16,9 +16,10 @@ export default Component => class extends React.Component {
     const client = initClient(headers)
     const store = initStore(client, client.initialState)
 
-    const componentProps = await (Component.getInitialProps
-      ? Component.getInitialProps(context)
-      : {})
+    let componentProps = {}
+    if (Component.getInitialProps) {
+      componentProps = await Component.getInitialProps(context)
+    }
 
     const props = {
       url: {

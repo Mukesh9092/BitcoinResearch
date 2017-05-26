@@ -1,8 +1,0 @@
-app:
-  cached: true
-  build:
-    context: app
-    dockerfile: Dockerfile
-    image: eu.gcr.io/test-next.js/app
-  ports:
-    - "3000:3000"

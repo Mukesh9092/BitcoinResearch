@@ -34,31 +34,63 @@ type User {
   username: String!
   articles: [Article]
   comments: [Comment]
-  session: Session
+  sessions: [Session]
 }
 
 type Session {
-  id: String!
-  user: User!
+  app: String!
+  token: String!
+  ttl: Int!
+  user: User
+  ip: String!
+}
+
+type Sessions {
+  sessions: [Session]
+}
+
+type SessionToken {
+  token: String!
+}
+
+type SessionActivity {
+  activity: Int!
+}
+
+type SessionsDestroyed {
+  destroyed: Int!
 }
 
 # the schema allows the following query:
 type Query {
-  articles(offset: Int!, limit: Int!): [Article]
-  articlesByUser(username: String!, offset: Int!, limit: Int!): [Article]
-  articlesByTag(tag: String!, offset: Int!, limit: Int!): [Article]
-  articleById(id: String!): Article
-  articleBySlug(slug: String!): Article
+  articles(offset: Int!, limit: Int!, token: String!): [Article]
+  articlesByUser(username: String!, offset: Int!, limit: Int!, token: String!): [Article]
+  articlesByTag(tag: String!, offset: Int!, limit: Int!, token: String!): [Article]
+  articleById(id: String!, token: String!): Article
+  articleBySlug(slug: String!, token: String!): Article
 
-  tags: [Tag]
+  tags(token: String!): [Tag]
 
-  users: [User]
-  userById(id: String!): User
-  userByEmail(email: String!): User
-  userByUsername(username: String!): User
+  users(token: String!): [User]
+  userById(id: String!, token: String!): User
+  userByEmail(email: String!, token: String!): User
+  userByUsername(username: String!, token: String!): User
+
+  sessionGet(token: String!): Session
+  sessionGetActive(deltaTime: Int!): ActiveSessions
+  sessionGetActivity(deltaTime: Int!): SessionActivity
+  sessionGetUser(userId: String!): UserSessions
 }
 
 type Mutation {
+  sessionCreate(userId: String!, ip: String, ttl: Int): SessionToken
+  sessionUpdate(token: String!, d: Object!): Session
+  sessionDestroy(token: String!): SessionsDestroyed
+  sessionDestroyUser(userId: String!): SessionsDestroyed
+  sessionDestroyAll: SessionsDestroyed
+
+  sessionForGuest: Session
+  sessionForEmailPassword(email: String!, password: String!): Session
   sessionWithEmail(email: String!, password: String!): Session
 }
 

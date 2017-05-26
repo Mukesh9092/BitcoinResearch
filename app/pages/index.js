@@ -1,12 +1,13 @@
 import React from 'react'
 import { Row, Col, Jumbotron, Button } from 'reactstrap'
 
+import { Page } from '../components'
 import { Container } from '../components/common/container'
 import { Layout } from '../components/pages/public/layout'
 import withData from '../lib/withData'
 
 @withData
-export default class PublicIndexPage extends React.Component {
+export default class PublicIndexPage extends Page {
   render() {
     return (
       <Layout {...this.props}>

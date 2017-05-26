@@ -1,7 +1,5 @@
 import { ApolloClient, createNetworkInterface } from 'react-apollo'
 
-let apolloClient = null
-
 function getApolloClient(headers, initialState) {
   return new ApolloClient({
     initialState,
@@ -9,14 +7,18 @@ function getApolloClient(headers, initialState) {
     dataIdFromObject: result => result.id || null,
     networkInterface: createNetworkInterface({
       // TODO: Get this from environment variables.
-      uri: 'http://0.0.0.0:3001/graphql',
+      uri: '/api/graphql',
+      transportBatching: true,
       opts: {
-        credentials: 'include',
-        // Pass headers here if your graphql server requires them
+        mode: 'cors',
+        // credentials: 'include',
       },
     }),
   })
 }
+
+// Cached.
+let apolloClient = null
 
 export function initClient(headers, initialState = {}) {
   if (!process.browser) {

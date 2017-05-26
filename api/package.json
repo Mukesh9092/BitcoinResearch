@@ -1,18 +1,28 @@
 {
   "name": "api",
   "version": "1.0.0",
+  "description": "",
+  "author": "Tom Wieland <tom.wieland@gmail.com>",
+  "license": "ISC",
   "main": "server/server.js",
-  "engines": {
-    "node": ">=4"
-  },
   "scripts": {
-    "lint": "eslint .",
-    "gulp": "gulp",
-    "start": "gulp production",
+    "build": "gulp production",
     "dev": "gulp develop",
+    "lint": "eslint .",
+    "lint:watch": "eslint .",
+    "precommit": "lint-staged",
     "prettier": "find . -name '*.js' | grep -v node_modules | grep -v .next | xargs prettier --single-quote --trailing-comma es5 --no-semi --write",
-    "posttest": "npm run lint && nsp check",
-    "precommit": "lint-staged"
+    "start": "gulp production",
+    "gulp": "gulp"
+  },
+  "lint-staged": {
+    "gitDir": "../",
+    "linters": {
+      "*.js": [
+        "eslint --fix",
+        "git add"
+      ]
+    }
   },
   "dependencies": {
     "async": "^2.4.0",
@@ -24,11 +34,12 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "chokidar": "^1.6.1",
-    "eslint": "^3.17.1",
+    "chokidar": "^1.7.0",
+    "eslint": "^3.19.0",
     "eslint-config-loopback": "^8.0.0",
     "faker": "^4.1.0",
     "graphql": "^0.9.6",
+    "graphql-server-koa": "^0.7.2",
     "graphql-tools": "^0.11.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
@@ -45,26 +56,22 @@
     "koa-convert": "^1.2.0",
     "koa-errorhandler": "^0.1.1",
     "koa-generic-session": "^1.11.5",
-    "koa-graphql": "^0.7.0",
     "koa-helmet": "^3.1.0",
-    "koa-logger": "^2.0.1",
+    "koa-logger": "^3.0.0",
     "koa-passport": "^3.0.0",
     "koa-ping": "^0.1.1",
     "koa-response-time": "^2.0.0",
     "koa-router": "^7.1.1",
     "lodash": "^4.17.4",
     "loglevel": "^1.4.1",
+    "next": "beta",
+    "node-fetch": "^1.7.0",
     "objection": "^0.7.12",
+    "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "pg": "^6.1.5",
+    "pg": "^6.2.2",
     "rimraf": "^2.6.1",
-    "run-sequence": "^1.2.2"
-  },
-  "devDependencies": {},
-  "repository": {
-    "type": "",
-    "url": ""
-  },
-  "license": "UNLICENSED",
-  "description": "api"
+    "run-sequence": "^1.2.2",
+    "whatwg-fetch": "^2.0.3"
+  }
 }

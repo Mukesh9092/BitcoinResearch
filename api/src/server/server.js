@@ -5,7 +5,6 @@ import koaBodyparser from 'koa-bodyparser'
 import koaCompress from 'koa-compress'
 import koaConvert from 'koa-convert'
 import koaErrorHandler from 'koa-errorhandler'
-import koaGraphql from 'koa-graphql'
 import koaHelmet from 'koa-helmet'
 import koaLogger from 'koa-logger'
 import koaPassport from 'koa-passport'
@@ -14,15 +13,16 @@ import koaResponseTime from 'koa-response-time'
 import koaRouter from 'koa-router'
 import koaSession from 'koa-generic-session'
 import log from 'loglevel'
+import { graphqlKoa } from 'graphql-server-koa';
 import { makeExecutableSchema } from 'graphql-tools'
+
+import * as graphqlResolvers from './graphql/resolvers'
+import graphqlSchema from './graphql/schema'
 
 import './authentication'
 
 // Import this first.
 import getDatabase from './database'
-
-import graphqlResolvers from './graphql/resolvers'
-import graphqlSchema from './graphql/schema'
 
 const { NODE_ENV } = process.env
 
@@ -35,7 +35,6 @@ const PORT = process.env.PORT || 3000
 // const CWD = path.resolve(__dirname)
 // const ADDRESS = `http://${HOSTNAME}:${PORT}`
 
-const router = koaRouter()
 const app = new Koa()
 app.keys = ['keyboardcat']
 
@@ -45,18 +44,14 @@ app.use = x => oldUse.call(app, koaConvert(x))
 
 const db = getDatabase()
 
-router.all(
-  '/graphql',
-  koaConvert(
-    koaGraphql({
-      schema: makeExecutableSchema({
-        typeDefs: graphqlSchema,
-        resolvers: graphqlResolvers,
-      }),
-      graphiql: true,
-    }),
-  ),
-)
+const router = koaRouter()
+
+const executableSchema = makeExecutableSchema({
+  typeDefs: graphqlSchema,
+  resolvers: graphqlResolvers,
+})
+
+router.all('/api/graphql', graphqlKoa({ schema: executableSchema }));
 
 app
   .use(koaLogger())
@@ -75,12 +70,12 @@ app
   .use(koaSession())
   .use(koaPassport.initialize())
   .use(koaPassport.session())
-
   .use(router.routes())
   .use(router.allowedMethods())
 
 async function start() {
   try {
+    /*
     log.info('Running migrations...')
 
     await db.migrate.latest()
@@ -94,6 +89,7 @@ async function start() {
     log.info('Seed complete.')
 
     log.info('Starting HTTP Server...')
+    */
 
     await app.listen(PORT, HOSTNAME)
 

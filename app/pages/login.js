@@ -1,9 +1,11 @@
 import React from 'react'
 import { Row, Col } from 'reactstrap'
 
+import withData from '../lib/withData'
 import { Container } from '../components/common/container'
 import { Layout } from '../components/pages/public/layout'
-import withData from '../lib/withData'
+import { LoginForm } from '../components/pages/public/login/form'
+
 
 @withData
 export default class PublicIndexPage extends React.Component {
@@ -14,6 +16,11 @@ export default class PublicIndexPage extends React.Component {
           <Row>
             <Col>
               <h1>Login</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <LoginForm />
             </Col>
           </Row>
         </Container>
