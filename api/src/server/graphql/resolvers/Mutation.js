@@ -50,7 +50,7 @@ export default {
     return null
   },
 
-  sessionDestroyUserj(root, args) {
+  sessionDestroyUser(root, args) {
     log.debug('GraphQL.Resolvers.Mutation.sessionDestroyUser')
     return null
   },

@@ -21,11 +21,6 @@ export default class PublicIndexPage extends Page {
 
                   This should be a dashboard in the future.
                 </p>
-                <hr className="my-2" />
-                <p>For now, there's just the forms.</p>
-                <p className="lead">
-                  <Button color="primary" href="/">To the Forms!</Button>
-                </p>
               </Jumbotron>
             </Col>
           </Row>

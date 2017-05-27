@@ -1,30 +1,46 @@
+const Router = require('koa-router')
 const log = require('loglevel')
 const next = require('next')
 
 const app = require('./app')
 
-const { PORT, NODE_ENV } = process.env
+const {
+  NODE_ENV,
+  APP_HOST,
+  APP_PORT,
+} = process.env
 
-const logLevel = NODE_ENV === 'production' ? 'info' : 'debug'
+if (NODE_ENV === 'develop') {
+  log.setLevel('debug')
+}
 
 const nextApp = next({
   dev: process.env.NODE_ENV !== 'production',
 })
 const handleRequest = nextApp.getRequestHandler()
 
-log.info(`Setting loglevel to: ${logLevel}`)
-log.setLevel(logLevel)
+nextApp
+  .prepare()
+  .then(() => {
+    const router = new Router()
 
-nextApp.prepare().then(() => {
-  app.get('*', (req, res) => {
-    handleRequest(req, res)
+    router.get('*', (ctx) => {
+      handleRequest(ctx.req, ctx.res)
+      ctx.respond = false
+    })
+
+    app
+      .use(async (ctx, next) => {
+        ctx.res.statusCode = 200
+        await next()
+      })
+      .use(router.routes())
+
+    app.listen(APP_PORT, APP_HOST, (error) => {
+      if (error) {
+        throw error
+      }
+
+      log.info(`> Ready on http://${APP_HOST}:${APP_PORT}`)
+    })
   })
-
-  app.listen(PORT, (error) => {
-    if (error) {
-      throw error
-    }
-
-    log.info(`> Ready on http://0.0.0.0:${PORT}`)
-  })
-})

@@ -41,8 +41,11 @@ type Session {
   app: String!
   token: String!
   ttl: Int!
-  user: User
   ip: String!
+}
+
+input SessionData {
+  userId: String!
 }
 
 type Sessions {
@@ -77,14 +80,14 @@ type Query {
   userByUsername(username: String!, token: String!): User
 
   sessionGet(token: String!): Session
-  sessionGetActive(deltaTime: Int!): ActiveSessions
+  sessionGetActive(deltaTime: Int!): Sessions
   sessionGetActivity(deltaTime: Int!): SessionActivity
-  sessionGetUser(userId: String!): UserSessions
+  sessionGetUser(userId: String!): Sessions
 }
 
 type Mutation {
   sessionCreate(userId: String!, ip: String, ttl: Int): SessionToken
-  sessionUpdate(token: String!, d: Object!): Session
+  sessionUpdate(token: String!, d: SessionData!): Session
   sessionDestroy(token: String!): SessionsDestroyed
   sessionDestroyUser(userId: String!): SessionsDestroyed
   sessionDestroyAll: SessionsDestroyed

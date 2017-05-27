@@ -21,6 +21,17 @@ services:
     volumes:
       - ./db:/var/lib/postgresql
 
+  redis-commander:
+    depends_on:
+      - redis
+    links:
+      - redis
+    restart: always
+    build: ./redis-commander
+    ports:
+      - 4001:3000
+    command: "redis-commander --redis-host redis --redis-port 6379 --port 3000 --address 0.0.0.0"
+
   proxy:
     links:
       - app
@@ -35,29 +46,34 @@ services:
   app:
     depends_on:
       - db
+      - redis
     links:
       - db
+      - redis
     build: ./app
     ports:
       - 3001:3001
     volumes:
       - ./app:/service
     environment:
-      - API_HOST=api
-      - API_PORT=3001
-      - API_PATH=api
       - NODE_ENV=develop
-      - PORT=3001
-      - VIRTUAL_HOST=app.local
+      - APP_HOST=0.0.0.0
+      - APP_PORT=3001
+      - APP_KEYS=keyboardkat
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - API_HOST=api
+      - API_PORT=3002
+      - API_PATH=api
     command: "yarn run dev"
 
   api:
     depends_on:
       - db
-      - sessions
+      - redis
     links:
       - db
-      - sessions
+      - redis
     build: ./api
     ports:
       - 3002:3002
@@ -65,8 +81,9 @@ services:
       - ./api:/service
     environment:
       - NODE_ENV=develop
-      - HOST=0.0.0.0
-      - PORT=3002
+      - APP_HOST=0.0.0.0
+      - APP_PORT=3002
+      - APP_KEYS=keyboardkat
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DB_HOST=db
@@ -74,23 +91,20 @@ services:
       - DB_USER=test_nextjs_user
       - DB_PASS=test_nextjs_password
       - DB_NAME=test_nextjs_develop
-      - SESSIONS_HOST=sessions
-      - SESSIONS_PORT=3003
-      - SESSIONS_APP=tomwielandnl
     command: "yarn run dev"
 
-  sessions:
-    depends_on:
-      - redis
-    links:
-      - redis
-    restart: always
-    build: ./sessions
-    ports:
-      - 3003:3000
-    environment:
-      - RS_PORT=3000
-      - RS_REDISHOST=redis
-      - RS_REDISPORT=6379
-      - RS_NAMESPACE=rs
-      - RS_LOGLEVEL=info
+  # sessions:
+  #   depends_on:
+  #     - redis
+  #   links:
+  #     - redis
+  #   restart: always
+  #   build: ./sessions
+  #   ports:
+  #     - 3003:3000
+  #   environment:
+  #     - RS_PORT=3000
+  #     - RS_REDISHOST=redis
+  #     - RS_REDISPORT=6379
+  #     - RS_NAMESPACE=rs
+  #     - RS_LOGLEVEL=info
