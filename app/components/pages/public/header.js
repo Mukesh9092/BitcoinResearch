@@ -1,6 +1,7 @@
+import FaChevronLeft from 'react-icons/lib/fa/chevron-left'
 import Link from 'next/link'
 import React from 'react'
-import { Nav, NavItem, NavLink } from 'reactstrap'
+import { Nav, NavItem, NavLink, NavbarBrand } from 'reactstrap'
 
 import { Navigation } from '../../common/navigation/index'
 import UserNavigationItem from '../../common/navigation/UserNavigationItem'
@@ -10,7 +11,7 @@ export class Header extends React.Component {
     const { pathname } = this.props
 
     return (
-      <NavItem>
+      <NavItem key={label}>
         <Link href={url} prefetch>
           <NavLink
             href={url}
@@ -23,7 +24,9 @@ export class Header extends React.Component {
     )
   }
 
-  renderLeftContent = () => ([])
+  renderLeftContent = () => ([
+    <NavbarBrand key="1" href="/">Code9</NavbarBrand>,
+  ])
 
   renderCollapseContent = () => ([
     <Nav className="mr-auto" navbar key="links">
@@ -31,6 +34,8 @@ export class Header extends React.Component {
       {this.renderNavLink('/about', 'About')}
       {this.renderNavLink('/contact', 'Contact')}
       {this.renderNavLink('/login', 'Login')}
+      {this.renderNavLink('/cms', 'Dashboard')}
+      {this.renderNavLink('/cms/users', 'Users')}
     </Nav>,
 
     <Nav className="ml-auto" navbar key="profile-dropdown">

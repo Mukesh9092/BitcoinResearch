@@ -3,6 +3,15 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const util = require('util')
 
 module.exports = {
+  exportPathMap: () => ({
+    '/':          { page: '/' },
+    '/about':     { page: '/about' },
+    '/contact':   { page: '/contact' },
+    '/login':     { page: '/login' },
+    '/cms':       { page: '/cms/' },
+    '/cms/users': { page: '/cms/users' },
+  }),
+
   webpack: (config, { dev }) => {
     /*
     config.plugins.push(new webpack.LoaderOptionsPlugin({

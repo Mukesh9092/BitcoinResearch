@@ -49,6 +49,12 @@ class SessionStore {
         return
       }
 
+      const headerKeys = response.headers.keys()
+
+      for (const key of headerKeys) {
+        console.log('loginWithEmailPassword header', key, response.headers.get(key))
+      }
+
       const {
         responseId,
         responseEmail,

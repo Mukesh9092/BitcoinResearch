@@ -20,6 +20,16 @@ export default class Navigation extends React.Component {
   render() {
     const { leftContent, collapseContent, ...navbarProps } = this.props
 
+    const leftContentNav = leftContent && leftContent.length ?
+      <Nav className="mr-auto" navbar>
+        {leftContent}
+      </Nav> : null
+
+    const collapseNav = collapseContent && collapseContent.length ?
+      <Collapse isOpen={this.state.isOpen} navbar>
+        {collapseContent}
+      </Collapse> : null
+
     return (
       <Navbar
         toggleable
@@ -27,13 +37,8 @@ export default class Navigation extends React.Component {
       >
         <NavbarToggler right onClick={this.toggle} />
 
-        <Nav className="mr-auto" navbar>
-          {leftContent}
-        </Nav>
-
-        <Collapse isOpen={this.state.isOpen} navbar>
-          {collapseContent}
-        </Collapse>
+        {leftContentNav}
+        {collapseNav}
       </Navbar>
     )
   }

@@ -5,34 +5,30 @@ import {
   observer,
 } from 'mobx-react'
 
+import { ConnectedPage } from '../components'
 import { Container } from '../components/common/container'
 import { Layout } from '../components/pages/public/layout'
 import { LoginForm } from '../components/pages/public/login/form'
 
-import sessionStore from '../stores/session'
-
-@observer
-export default class PublicLoginPage extends React.Component {
-  render() {
-    console.log('PublicLoginPage#render', this.props)
+export default class PublicLoginPage extends ConnectedPage {
+  renderPageComponent() {
+    console.log('PublicLoginPage#renderPageComponent', this.props)
 
     return (
-      <Provider sessionStore={sessionStore}>
-        <Layout {...this.props}>
-          <Container>
-            <Row>
-              <Col>
-                <h1>Login</h1>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <LoginForm />
-              </Col>
-            </Row>
-          </Container>
-        </Layout>
-      </Provider>
+      <Layout {...this.props}>
+        <Container>
+          <Row>
+            <Col>
+              <h1>Login</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <LoginForm />
+            </Col>
+          </Row>
+        </Container>
+      </Layout>
     )
   }
 }
