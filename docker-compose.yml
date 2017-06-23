@@ -29,7 +29,7 @@ services:
     restart: always
     build: ./redis-commander
     ports:
-      - 4001:3000
+      - 5001:3000
     command: "redis-commander --redis-host redis --redis-port 6379 --port 3000 --address 0.0.0.0"
 
   proxy:
@@ -38,10 +38,10 @@ services:
       - api
     build: ./proxy
     ports:
-      - 3000:80
+      - 4000:80
     environment:
-      - APP_REMOTE=http://app:3001
-      - API_REMOTE=http://api:3002
+      - APP_REMOTE=http://app:4001
+      - API_REMOTE=http://api:4002
 
   app:
     depends_on:
@@ -52,18 +52,18 @@ services:
       - redis
     build: ./app
     ports:
-      - 3001:3001
+      - 4001:4001
     volumes:
       - ./app:/service
     environment:
       - NODE_ENV=develop
       - APP_HOST=0.0.0.0
-      - APP_PORT=3001
+      - APP_PORT=4001
       - APP_KEYS=keyboardkat
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - API_HOST=api
-      - API_PORT=3002
+      - API_PORT=4002
       - API_PATH=api
     command: "yarn run dev"
 
@@ -76,13 +76,13 @@ services:
       - redis
     build: ./api
     ports:
-      - 3002:3002
+      - 4002:4002
     volumes:
       - ./api:/service
     environment:
       - NODE_ENV=develop
       - APP_HOST=0.0.0.0
-      - APP_PORT=3002
+      - APP_PORT=4002
       - APP_KEYS=keyboardkat
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -91,20 +91,6 @@ services:
       - DB_USER=test_nextjs_user
       - DB_PASS=test_nextjs_password
       - DB_NAME=test_nextjs_develop
+      - GOOGLE_API_CLIENT_ID=643286914523-i8ik1vnj7t465e9kv2d8rvke6uf8h8jh.apps.googleusercontent.com
+      - GOOGLE_API_CLIENT_SECRET=uQ-0nC8m8kU_I-ZDCqjJuzf9
     command: "yarn run dev"
-
-  # sessions:
-  #   depends_on:
-  #     - redis
-  #   links:
-  #     - redis
-  #   restart: always
-  #   build: ./sessions
-  #   ports:
-  #     - 3003:3000
-  #   environment:
-  #     - RS_PORT=3000
-  #     - RS_REDISHOST=redis
-  #     - RS_REDISPORT=6379
-  #     - RS_NAMESPACE=rs
-  #     - RS_LOGLEVEL=info

@@ -9,7 +9,7 @@ const koaHelmet = require('koa-helmet')
 const koaLogger = require('koa-logger')
 const koaPing = require('koa-ping')
 const koaRedis = require('koa-redis')
-const koaSession = require('koa-generic-session')
+const koaGenericSession = require('koa-generic-session')
 const log = require('loglevel')
 
 const {
@@ -19,9 +19,10 @@ const {
   APP_KEYS,
 } = process.env
 
-if (NODE_ENV === 'develop') {
-  log.setLevel('debug')
-}
+const debugLevel = NODE_ENV === 'develop' && 'debug' || 'info'
+
+log.setLevel(debugLevel)
+console.log(`Log level is: ${debugLevel}`)
 
 const app = new Koa()
 app.keys = [APP_KEYS.split(',')]
@@ -35,14 +36,14 @@ app
   .use(koaLogger())
   .use(koaErrorHandler())
   .use(koaBodyparser())
-  .use(koaSession({
-    rolling: true,
 
+  .use(koaGenericSession({
     store: koaRedis({
       host: REDIS_HOST,
       port: REDIS_PORT,
     }),
   }))
+
   .use(koaCompress({
     filter: contentType => /text/i.test(contentType),
     threshold: 2048,

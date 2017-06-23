@@ -2,29 +2,29 @@ import {dirname} from 'path'
 
 import chokidar from 'chokidar'
 import gulp from 'gulp'
-import gulpBabel from 'gulp-babel'
+import gulpLivescript from 'gulp-livescript'
 
 import handleError from '../lib/handleError'
 import log from '../lib/log'
 
-gulp.task('babel:compile' ,cb => {
-  const sourcePath = 'src/**/*.js'
+gulp.task('livescript:compile' ,cb => {
+  const sourcePath = 'src/**/*.ls'
   const targetDirectoryPath = 'build'
 
   return gulp
     .src(sourcePath)
-    .pipe(gulpBabel())
+    .pipe(gulpLivescript({ bare: true }))
     .on('error' ,error => {
       // Explicitly only print the error, continue with all files.
-      handleError('babel:compile' ,error)
+      handleError('livescript:compile' ,error)
     })
     .pipe(gulp.dest(targetDirectoryPath))
-    .pipe(log.file('babel:compile'))
+    .pipe(log.file('livescript:compile'))
 })
 
-gulp.task('babel:watch' ,cb => {
+gulp.task('livescript:watch' ,cb => {
   const sourceDirectoryPath = 'src'
-  const sourcePath = 'src/**/*.js'
+  const sourcePath = 'src/**/*.ls'
   const targetDirectoryPath = 'build'
 
   const watcher = chokidar.watch(sourcePath ,{
@@ -39,14 +39,14 @@ gulp.task('babel:watch' ,cb => {
 
     gulp
       .src(sourceFilePath)
-      .pipe(gulpBabel())
+      .pipe(gulpLivescript({ bare: true }))
       .on('error' ,error => {
-        handleError('babel:compile' ,error)
+        handleError('livescript:compile' ,error)
 
         cb()
       })
       .pipe(gulp.dest(targetFilePath))
-      .pipe(log.file('babel:watch'))
+      .pipe(log.file('livescript:watch'))
   })
 
   cb()

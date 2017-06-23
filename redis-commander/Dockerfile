@@ -7,6 +7,4 @@ RUN apt-get upgrade -y
 # Install REST Sessions http server.
 RUN npm i -g redis-commander
 
-EXPOSE 3000
-
 CMD redis-commander --port 3000

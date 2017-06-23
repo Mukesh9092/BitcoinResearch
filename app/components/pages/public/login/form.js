@@ -1,7 +1,11 @@
 import React from 'react'
-import { graphql } from 'react-apollo'
+import {
+  inject,
+  observer,
+} from 'mobx-react'
 
 import {
+  Alert,
   Button,
   Col,
   FormGroup,
@@ -13,29 +17,53 @@ import {
   AvField,
 } from 'availity-reactstrap-validation'
 
-import sessionWithEmail from '../../../../graphql/mutations/sessionWithEmail'
-
-@graphql(
-  sessionWithEmail,
-  {
-    props: ({ mutate }) => ({
-      login: (email, password) => mutate({
-        variables: {
-          email,
-          password,
-        },
-      }),
-    }),
-  },
-)
+@inject('sessionStore') @observer
 export class LoginForm extends React.Component {
   handleValidSubmit = (event, { email, password }) => {
-    console.log('handleValidSubmit', email, password)
+    console.log('LoginForm#handleValidSubmit', email, password)
 
-    this.props.login(email, password)
+    console.log('LoginForm#handleValidSubmit before', this.props.sessionStore)
+
+    this.props.sessionStore.loginWithEmailPassword(email, password)
+
+    console.log('LoginForm#handleValidSubmit after', this.props.sessionStore)
   }
 
   render() {
+    console.log('LoginForm#render', this.props)
+
+    const {
+      errorMessage,
+      successMessage,
+    } = this.props.sessionStore
+
+    let errorMessageComponent
+    let successMessageComponent
+
+    if (errorMessage) {
+      errorMessageComponent = (
+        <FormGroup check row>
+          <Col sm={{ size: 10, offset: 2 }}>
+            <Alert color="danger">
+              {errorMessage}
+            </Alert>
+          </Col>
+        </FormGroup>
+      )
+    }
+
+    if (successMessage) {
+      successMessageComponent = (
+        <FormGroup check row>
+          <Col sm={{ size: 10, offset: 2 }}>
+            <Alert color="success">
+              {successMessage}
+            </Alert>
+          </Col>
+        </FormGroup>
+      )
+    }
+
     return (
       <AvForm
         onValidSubmit={this.handleValidSubmit}
@@ -67,6 +95,9 @@ export class LoginForm extends React.Component {
             />
           </Col>
         </FormGroup>
+
+        {errorMessageComponent}
+        {successMessageComponent}
 
         <FormGroup check row>
           <Col sm={{ size: 10, offset: 2 }}>

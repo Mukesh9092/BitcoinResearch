@@ -10,9 +10,9 @@ const {
   APP_PORT,
 } = process.env
 
-if (NODE_ENV === 'develop') {
-  log.setLevel('debug')
-}
+const logLevel = NODE_ENV === 'develop' ? 'debug' : 'info'
+log.info(`Setting loglevel to: ${logLevel}`)
+log.setLevel(logLevel)
 
 const nextApp = next({
   dev: process.env.NODE_ENV !== 'production',
@@ -30,6 +30,7 @@ nextApp
     })
 
     app
+      // Required to integrate Koa.js and Next.js.
       .use(async (ctx, next) => {
         ctx.res.statusCode = 200
         await next()

@@ -8,14 +8,10 @@ RUN apt-get upgrade -y
 RUN mkdir -p /service
 
 COPY ./package.json /service
-COPY ./yarn.lock /service
 WORKDIR /service
-RUN yarn
+RUN npm install
 
 # Copy all files into container.
 COPY . /service
-
-# Set version and start
-EXPOSE 3000
 
 CMD yarn run start

@@ -1,12 +1,9 @@
 import React from 'react'
-
 import { Row, Col, Jumbotron, Button } from 'reactstrap'
 
 import { Container } from '../components/common/container'
 import { Layout } from '../components/pages/public/layout'
-import withData from '../lib/withData'
 
-@withData
 export default class PublicAboutPage extends React.Component {
   render() {
     return (

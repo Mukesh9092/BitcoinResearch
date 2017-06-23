@@ -1,4 +1,4 @@
-import { Transform } from 'stream'
+import {Transform} from 'stream'
 import gulpUtil from 'gulp-util'
 
 class FileLogger extends Transform {
@@ -10,19 +10,19 @@ class FileLogger extends Transform {
     this.taskName = options.taskName
   }
 
-  _transform(object, encoding, cb) {
-    const fileName = object.history[0].replace(object.base, '')
+  _transform(object ,encoding ,cb) {
+    const fileName = object.history[0].replace(object.base ,'')
 
-    gulpUtil.log(this.taskName, fileName)
+    gulpUtil.log(this.taskName ,fileName)
 
-    cb(null, object, encoding)
+    cb(null ,object ,encoding)
   }
 }
 
 function file(taskName) {
-  return new FileLogger({ taskName })
+  return new FileLogger({taskName})
 }
 
 export default {
-  file,
+  file ,
 }

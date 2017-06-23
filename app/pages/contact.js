@@ -3,9 +3,7 @@ import { Row, Col } from 'reactstrap'
 
 import { Container } from '../components/common/container'
 import { Layout } from '../components/pages/public/layout'
-import withData from '../lib/withData'
 
-@withData
 export default class PublicContactPage extends React.Component {
   render() {
     return (
