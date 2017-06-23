@@ -5,20 +5,22 @@ import { ConnectedPage } from '../components'
 import { Container } from '../components/common/container'
 import { Layout } from '../components/pages/public/layout'
 
-export default class PublicContactPage extends ConnectedPage {
-  renderPageComponent() {
-    console.log('PublicContactPage#renderPageComponent', this.props)
+export default class PublicContactPage extends React.Component {
+  render() {
+    console.log('PublicContactPage#render', this.props)
 
     return (
-      <Layout {...this.props}>
-        <Container>
-          <Row>
-            <Col>
-              <h1>Contact</h1>
-            </Col>
-          </Row>
-        </Container>
-      </Layout>
+      <ConnectedPage>
+        <Layout {...this.props}>
+          <Container>
+            <Row>
+              <Col>
+                <h1>Contact</h1>
+              </Col>
+            </Row>
+          </Container>
+        </Layout>
+      </ConnectedPage>
     )
   }
 }

@@ -7,16 +7,12 @@ import {
 import withData from '../lib/withData'
 import sessionStore from '../stores/session'
 
-import Page from './Page'
-
 @withData
-export default class ConnectedPage extends Page {
+export default class ConnectedPage extends React.Component {
   render() {
-    const pageComponent = this.renderPageComponent()
-
     return (
       <Provider sessionStore={sessionStore}>
-        {pageComponent}
+        {this.props.children}
       </Provider>
     )
   }

@@ -5,20 +5,22 @@ import { ConnectedPage } from '../../components'
 import { Container } from '../../components/common/container'
 import { Layout } from '../../components/pages/cms/layout'
 
-export default class CMSIndexPage extends ConnectedPage {
-  renderPageComponent() {
-    console.log('CMSIndexPage#renderPageComponent', this.props)
+export default class CMSIndexPage extends React.Component {
+  render() {
+    console.log('CMSIndexPage#render', this.props)
 
     return (
-      <Layout {...this.props}>
-        <Container>
-          <Row>
-            <Col>
-              CMS INDEX 123
-            </Col>
-          </Row>
-        </Container>
-      </Layout>
+      <ConnectedPage>
+        <Layout {...this.props}>
+          <Container>
+            <Row>
+              <Col>
+                CMS INDEX 123
+              </Col>
+            </Row>
+          </Container>
+        </Layout>
+      </ConnectedPage>
     )
   }
 }

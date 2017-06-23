@@ -12,7 +12,6 @@ export default ComposedComponent => {
       serverState: PropTypes.object.isRequired
     }
 
-    /*
     static async getInitialProps (ctx) {
       console.log('getInitialProps', ctx)
 
@@ -54,7 +53,6 @@ export default ComposedComponent => {
         ...composedInitialProps
       }
     }
-    */
 
     constructor (props) {
       super(props)

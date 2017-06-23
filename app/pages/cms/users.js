@@ -5,20 +5,22 @@ import { ConnectedPage } from '../../components'
 import { Container } from '../../components/common/container'
 import { Layout } from '../../components/pages/cms/layout'
 
-export default class CMSUsersPage extends ConnectedPage {
-  renderPageComponent() {
-    console.log('CMSUsersPage#renderPageComponent', this.props)
+export default class CMSUsersPage extends React.Component {
+  render() {
+    console.log('CMSUsersPage#render', this.props)
 
     return (
-      <Layout {...this.props}>
-        <Container>
-          <Row>
-            <Col>
-              Users
-            </Col>
-          </Row>
-        </Container>
-      </Layout>
+      <ConnectedPage>
+        <Layout {...this.props}>
+          <Container>
+            <Row>
+              <Col>
+                Users
+              </Col>
+            </Row>
+          </Container>
+        </Layout>
+      </ConnectedPage>
     )
   }
 }
