@@ -27,8 +27,8 @@ services:
       - REDIS_PORT=4100
       - INFLUXDB_HOST=influxdb
       - INFLUXDB_PORT=4101
-      - GOOGLE_API_CLIENT_ID=643286914523-i8ik1vnj7t465e9kv2d8rvke6uf8h8jh.apps.googleusercontent.com
-      - GOOGLE_API_CLIENT_SECRET=uQ-0nC8m8kU_I-ZDCqjJuzf9
+      - GOOGLE_API_CLIENT_ID=GOOGLE_API_CLIENT
+      - GOOGLE_API_CLIENT_SECRET=GOOGLE_API_CLIENT_SECRET
     command: "yarn run dev"
 
   app:
