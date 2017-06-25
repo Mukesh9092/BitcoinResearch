@@ -2,17 +2,16 @@ path = require 'path'
 
 Knex = require 'knex'
 log = require 'loglevel'
-{ Model } = require 'objection'
 
 {
-  DB_HOST,
-  DB_PORT,
-  DB_USER,
-  DB_PASS,
-  DB_NAME,
+  POSTGRESQL_HOST,
+  POSTGRESQL_PORT,
+  POSTGRESQL_USER,
+  POSTGRESQL_PASS,
+  POSTGRESQL_NAME,
 } = process.env
 
-DB_ADDRESS = "postgresql://#{DB_USER}:#{DB_PASS}@#{DB_HOST}:#{DB_PORT}/#{DB_NAME}"
+POSTGRESQL_ADDRESS = "postgresql://#{POSTGRESQL_USER}:#{POSTGRESQL_PASS}@#{POSTGRESQL_HOST}:#{POSTGRESQL_PORT}/#{POSTGRESQL_NAME}"
 
 knex = null
 
@@ -24,7 +23,7 @@ export get-database = ->
 
   knex = Knex do
     client: 'pg'
-    connection: DB_ADDRESS
+    connection: POSTGRESQL_ADDRESS
     search-path: 'knex,public'
     pool:
       min: 2
@@ -34,8 +33,6 @@ export get-database = ->
       directory: path.resolve "#{__dirname}/migrations"
     seeds:
       directory: path.resolve "#{__dirname}/seeds"
-
-  Model.knex knex
 
   log.debug "Knex: Using NEW database connection for operation."
 

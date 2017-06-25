@@ -1,6 +1,3 @@
-{ Model } = require 'objection'
-{ debug } = require 'loglevel'
-
 {
   gen-random-string
   sha512
@@ -12,7 +9,6 @@ db = get-database!
 first = ([x]) -> x
 
 export get-users = ->
-  debug 'get-users'
   console.log 'get-users'
 
   db
@@ -20,7 +16,6 @@ export get-users = ->
     .from 'users'
 
 export get-user-by-id = (id) ->
-  debug 'get-user-by-id', id
   console.log 'get-user-by-id', id
 
   db
@@ -30,7 +25,6 @@ export get-user-by-id = (id) ->
     .then first
 
 export get-user-by-email = (email) ->
-  debug 'get-user-by-email', email
   console.log 'get-user-by-email', email
 
   db
@@ -40,7 +34,6 @@ export get-user-by-email = (email) ->
     .then first
 
 export get-user-by-email-password = (email, password) ->
-  debug 'get-user-by-email-password', email, password
   console.log 'get-user-by-email-password', email, password
 
   get-user-by-email email
@@ -53,7 +46,6 @@ export get-user-by-email-password = (email, password) ->
         throw new Error 'Incorrect password'
 
 export create-user-with-email-password = (email, password) ->
-  debug 'create-user-with-email-password', email, password
   console.log 'create-user-with-email-password', email, password
 
   password-seed = gen-random-string 64
@@ -67,7 +59,6 @@ export create-user-with-email-password = (email, password) ->
     .into 'users'
 
 export get-or-create-user-by-email-password = (email, password) ->
-  debug 'get-or-create-user-by-email-password', email, password
   console.log 'get-or-create-user-by-email-password', email, password
 
   get-user-by-email-password email, password

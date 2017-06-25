@@ -1,19 +1,11 @@
 zlib = require 'zlib'
 
-Koa = require 'koa'
-koa-bodyparser = require 'koa-bodyparser'
-koa-compress = require 'koa-compress'
-koa-convert = require 'koa-convert'
-koa-error-handler = require 'koa-errorhandler'
-koa-generic-session = require 'koa-generic-session'
-koa-helmet = require 'koa-helmet'
-koa-logger = require 'koa-logger'
-koa-ping = require 'koa-ping'
-koa-redis = require 'koa-redis'
-koa-response-time = require 'koa-response-time'
-koa-router = require 'koa-router'
+body-parser = require 'body-parser'
+express = require 'express'
+express-session = require 'express-session'
+connect-redis = require 'connect-redis'
 log = require 'loglevel'
-{ graphql-koa } = require 'graphql-server-koa'
+{ graphql-express } = require 'graphql-server-express'
 
 { passport } = require './passport'
 { executableSchema } = require './graphql'
@@ -28,74 +20,51 @@ log = require 'loglevel'
   APP_KEYS
 } = process.env
 
+RedisStore = connect-redis(express-session)
+
 debug-level = NODE_ENV is 'develop' and 'debug' or 'info'
 
 log.set-level debug-level
 console.log "Log level is: #{debug-level}"
 
-app = new Koa!
+app = express!
 app.keys = APP_KEYS.split ','
 
-#old-koa-use = app.use
-#app.use (x) -> old-koa-use.call app, koa-convert x
+app
+  .use body-parser.json!
 
-db = get-database!
+  .use express-session do
+    secret: APP_KEYS.0
+    save-uninitialized: false
+    resave: false
+    store: new RedisStore do
+      host: REDIS_HOST
+      port: REDIS_PORT
 
-graphql-router = koa-router!
-graphql-router.all '/',
-  graphql-koa schema: executable-schema
+  .use passport.initialize!
+  .use passport.session!
 
-authentication-router = koa-router!
+app.all '/api/graphql', graphql-express schema: executable-schema
 
-authentication-router.post '/local',
-  passport.authenticate 'local'
-  (context, next) ->
-    { user } = context.req
+app.post '/api/authentication/local', (passport.authenticate 'local'), (req, res, next) ->
+  { user } = req
 
-    delete user.password-seed
-    delete user.password-hash
+  delete user.password_seed
+  delete user.password_hash
 
-    context.body = user
+  res.send user
 
-authentication-router.get '/google',
-  passport.authenticate 'google', scope: <[ profile email ]>
+app.get '/api/authentication/google',
+  passport.authenticate 'google',
+    scope: <[ profile email ]>
 
-authentication-router.get '/google/callback',
+app.get '/api/authentication/google/callback',
   passport.authenticate 'google',
     success-return-to-or-redirect: '/login'
     failure-redirect: '/login'
 
-api-router = koa-router!
+error <- app.listen APP_PORT, APP_HOST
 
-api-router.use '/api/graphql',
-  graphql-router.routes!,
-  graphql-router.allowedMethods!
+return log.error error if error
 
-api-router.use '/api/authentication',
-  authentication-router.routes!,
-  authentication-router.allowedMethods!
-
-app
-  # .use koa-ping!
-  .use koa-bodyparser!
-  # .use koa-helmet!
-  # .use koa-response-time!
-  # .use koa-compress do
-  #   filter: (content-type) -> /text/i.test content-type
-  #   threshold: 2048
-  #   flush: zlib.Z_SYNC_FLUSH
-  .use koa-generic-session do
-    store: koa-redis do
-      host: REDIS_HOST
-      port: REDIS_PORT
-  .use passport.initialize!
-  .use passport.session!
-  .use api-router.routes!
-  .use api-router.allowed-methods!
-  # .use koa-logger!
-  # .use koa-error-handler!
-
-app.listen APP_PORT, APP_HOST, (error) ->
-  return log.error error if error
-
-  log.info "HTTP Server listening at http://#{APP_HOST}:#{APP_PORT}"
+log.info "HTTP Server listening at http://#{APP_HOST}:#{APP_PORT}"

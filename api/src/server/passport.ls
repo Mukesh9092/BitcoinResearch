@@ -1,6 +1,6 @@
 LocalStrategy                     = require 'passport-local'
 log                               = require 'loglevel'
-passport                          = require 'koa-passport'
+passport                          = require 'passport'
 { OAuthStrategy: GoogleStrategy } = require 'passport-google-oauth'
 
 user = require './models/user'

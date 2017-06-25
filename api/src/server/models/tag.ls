@@ -1,29 +1,10 @@
-{ Model } = require 'objection'
+{ get-database } = require '../../lib/database'
 
-export class Tag extends Model
-  tableName = 'tags'
+db = get-database!
 
-  jsonSchema =
-    type: 'object'
-    required: <[ label ]>
-    properties:
-      id:
-        type: 'integer'
-      label:
-        type: 'string'
-        min-length: 1
-        max-length: 255
+export get-tags = ->
+  console.log 'get-tags'
 
-  relation-mappings =
-    articles:
-      relation: Model.ManyToManyRelation
-      model-class: "#{__dirname}/Article"
-      join:
-        from: 'tags.id'
-        through:
-          from: 'articles_tags.tagId'
-          to: 'articles_tags.articleId'
-        to: 'articles.id'
-
-  get-tags: ->
-    @query!
+  db
+    .select!
+    .from 'tags'

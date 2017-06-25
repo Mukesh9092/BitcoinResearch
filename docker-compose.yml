@@ -1,78 +1,17 @@
 version: '3'
 
+# Ports:
+#   - Application Services: 40xx
+#   - Databases:            41xx
+#   - Dashboards:           42xx
+
 services:
-  redis:
-    restart: always
-    image: redis:latest
-    ports:
-      - 6379:6379
-    volumes:
-      - ./redis:/data
-
-  db:
-    restart: always
-    image: postgres:latest
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=test_nextjs_user
-      - POSTGRES_PASSWORD=test_nextjs_password
-      - POSTGRES_DB=test_nextjs_develop
-    volumes:
-      - ./db:/var/lib/postgresql
-
-  redis-commander:
-    depends_on:
-      - redis
-    links:
-      - redis
-    restart: always
-    build: ./redis-commander
-    ports:
-      - 5001:3000
-    command: "redis-commander --redis-host redis --redis-port 6379 --port 3000 --address 0.0.0.0"
-
-  proxy:
-    links:
-      - app
-      - api
-    build: ./proxy
-    ports:
-      - 4000:80
-    environment:
-      - APP_REMOTE=http://app:4001
-      - API_REMOTE=http://api:4002
-
-  app:
-    depends_on:
-      - db
-      - redis
-    links:
-      - db
-      - redis
-    build: ./app
-    ports:
-      - 4001:4001
-    volumes:
-      - ./app:/service
-    environment:
-      - NODE_ENV=develop
-      - APP_HOST=0.0.0.0
-      - APP_PORT=4001
-      - APP_KEYS=keyboardkat
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - API_HOST=api
-      - API_PORT=4002
-      - API_PATH=api
-    command: "yarn run dev"
-
   api:
     depends_on:
-      - db
+      - influxdb
       - redis
     links:
-      - db
+      - influxdb
       - redis
     build: ./api
     ports:
@@ -85,12 +24,70 @@ services:
       - APP_PORT=4002
       - APP_KEYS=keyboardkat
       - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=test_nextjs_user
-      - DB_PASS=test_nextjs_password
-      - DB_NAME=test_nextjs_develop
+      - REDIS_PORT=4100
+      - INFLUXDB_HOST=influxdb
+      - INFLUXDB_PORT=4101
       - GOOGLE_API_CLIENT_ID=643286914523-i8ik1vnj7t465e9kv2d8rvke6uf8h8jh.apps.googleusercontent.com
       - GOOGLE_API_CLIENT_SECRET=uQ-0nC8m8kU_I-ZDCqjJuzf9
     command: "yarn run dev"
+
+  app:
+    depends_on:
+      - redis
+      - api
+    links:
+      - redis
+      - api
+    build: ./app
+    ports:
+      - 4001:4001
+    volumes:
+      - ./app:/service
+    environment:
+      - NODE_ENV=develop
+      - APP_HOST=0.0.0.0
+      - APP_PORT=4001
+      - APP_KEYS=keyboardkat
+      - REDIS_HOST=redis
+      - REDIS_PORT=4100
+      - API_HOST=api
+      - API_PORT=4002
+      - API_PATH=api
+    command: "yarn run dev"
+
+  influxdb:
+    build: ./influxdb
+    ports:
+      - 4101:4101 #8086
+      - 4201:4201 #8083
+      - 4202:4202 #2003
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb
+
+  proxy:
+    links:
+      - app
+      - api
+    build: ./proxy
+    ports:
+      - 4000:80
+    environment:
+      - APP_REMOTE=http://app:4001
+      - API_REMOTE=http://api:4002
+
+  redis:
+    build: ./redis
+    ports:
+      - 4100:4100
+    volumes:
+      - ./redis/data:/data
+
+  redis-commander:
+    depends_on:
+      - redis
+    links:
+      - redis
+    build: ./redis-commander
+    ports:
+      - 4200:4200
+    command: "redis-commander --redis-host redis --redis-port 4100 --port 4200 --address 0.0.0.0"
