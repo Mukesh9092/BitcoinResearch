@@ -1,23 +1,26 @@
+path = require 'path'
 zlib = require 'zlib'
 
-body-parser = require 'body-parser'
-express = require 'express'
-express-session = require 'express-session'
-connect-redis = require 'connect-redis'
-log = require 'loglevel'
+body-parser         = require 'body-parser'
+connect-redis       = require 'connect-redis'
+express             = require 'express'
+express-session     = require 'express-session'
+log                 = require 'loglevel'
 { graphql-express } = require 'graphql-server-express'
 
-{ passport } = require './passport'
+#{ EventStore }       = require '../lib/event-sourcing/EventStore'
 { executableSchema } = require './graphql'
-{ getDatabase } = require '../lib/database'
+{ getDatabase }      = require '../lib/database'
+{ passport }         = require './passport'
 
 {
+  API_EVENT_STORE_DATA_PATH
+  API_HOST
+  API_KEYS
+  API_PORT
   NODE_ENV
   REDIS_HOST
   REDIS_PORT
-  APP_HOST
-  APP_PORT
-  APP_KEYS
 } = process.env
 
 RedisStore = connect-redis(express-session)
@@ -28,13 +31,13 @@ log.set-level debug-level
 console.log "Log level is: #{debug-level}"
 
 app = express!
-app.keys = APP_KEYS.split ','
+app.keys = API_KEYS.split ','
 
 app
   .use body-parser.json!
 
   .use express-session do
-    secret: APP_KEYS.0
+    secret: API_KEYS.0
     save-uninitialized: false
     resave: false
     store: new RedisStore do
@@ -63,8 +66,8 @@ app.get '/api/authentication/google/callback',
     success-return-to-or-redirect: '/login'
     failure-redirect: '/login'
 
-error <- app.listen APP_PORT, APP_HOST
+error <- app.listen API_PORT, API_HOST
 
 return log.error error if error
 
-log.info "HTTP Server listening at http://#{APP_HOST}:#{APP_PORT}"
+log.info "HTTP Server listening at http://#{API_HOST}:#{API_PORT}"

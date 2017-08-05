@@ -15,9 +15,7 @@ handle-error = (e) ->
   console.log "Error: #{e.stack or e.message or e}"
 
 copy-source-filter = (x) ->
-  | x.match /\.less$/ => false
   | x.match /\.ls$/   => false
-  | x.match /\.js$/   => false
   | otherwise         => true
 
 clean = ->
@@ -26,9 +24,12 @@ clean = ->
     (pify rimraf) 'build/*'
   ]
 
+get-source-all-files = -> gulp.src 'src/**/*'
+get-source-livescript-files = -> gulp.src 'src/**/*.ls'
+get-built-test-files = -> gulp.src 'build/**/*.test.js'
+
 compile-livescript = ->
-  gulp
-    .src 'src/**/*.ls'
+  get-source-livescript-files!
     .pipe gulp-livescript bare: true
     .on 'error', handle-error
     .pipe gulp.dest 'build'
@@ -43,8 +44,7 @@ compile-livescript-path = (source-file-path) !->
     .pipe gulp.dest target-file-path
 
 compile-copy = ->
-  gulp
-    .src 'src/**/*'
+  get-source-all-files!
     .pipe gulp-micromatch copy-source-filter,
       dot: true
       extglobs: true
@@ -58,17 +58,13 @@ compile-copy-path = (source-file-path) !->
       .src source-file-path
       .pipe gulp.dest target-file-path
 
-get-test-files = ->
-  gulp
-    .src 'build/**/*.test.js'
-
 test-prepare = ->
-  get-test-files!
+  get-built-test-files!
     .pipe gulp-istanbul!
     .pipe gulp-istanbul.hook-require!
 
 test-all = ->
-  get-test-files!
+  get-built-test-files!
     .pipe gulp-plumber!
     .pipe gulp-mocha reporter: 'spec'
 
@@ -92,7 +88,7 @@ watch = (cb) !->
 
   server-watcher.add 'build/common/**/*'
 
-  gulp-develop-server.listen path: 'build/server/server.js'
+  gulp-develop-server.listen path: 'build/server/index.js'
 
   source-watcher.on 'change', (source-file-path) !->
     | source-file-path.match /\.ls$/ => compile-livescript-path source-file-path

@@ -3,7 +3,7 @@ log                               = require 'loglevel'
 passport                          = require 'passport'
 { OAuthStrategy: GoogleStrategy } = require 'passport-google-oauth'
 
-user = require './models/user'
+user = require '../lib/models/user'
 
 {
   GOOGLE_API_CLIENT_ID

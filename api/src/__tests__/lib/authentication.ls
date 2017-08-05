@@ -4,15 +4,12 @@
 {
   gen-random-string
   sha512
-} = require './authentication'
-
-
-we = it
+} = require '../../lib/authentication'
 
 describe 'lib/authentication', !->
   describe 'gen-random-string', !->
     describe 'When passed length parameter', !->
-      we 'Should return a string of that length', ->
+      test 'Should return a string of that length', !->
         length = 64
         random-string = gen-random-string length
 
@@ -21,7 +18,7 @@ describe 'lib/authentication', !->
 
   describe 'sha512', !->
     describe 'When passed a password and a salt', !->
-      we 'Should return an object with the salt and a 128 character long string', ->
+      test 'Should return an object with the salt and a 128 character long string', !->
         password = 'keyboardcat'
         generated-salt = gen-random-string 64
         {
