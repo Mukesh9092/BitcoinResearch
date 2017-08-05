@@ -1,2 +1,2 @@
-export container from '../../common/container'
-export layout from './layout'
+export container from "../../common/container";
+export layout from "./layout";

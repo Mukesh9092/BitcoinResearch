@@ -1,14 +1,16 @@
-import Head from 'next/head'
-import React from 'react'
+import Head from "next/head";
+import React from "react";
 
-import { Header } from './header'
-import { Footer } from './footer'
+import { Header } from "./header";
+import { Footer } from "./footer";
 
-export function Layout({ children, title = 'CMS', url: { pathname } }) {
+export function Layout({ children, title = "CMS", url: { pathname } }) {
   return (
     <main>
       <Head>
-        <title>{title}</title>
+        <title>
+          {title}
+        </title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <link
@@ -23,5 +25,5 @@ export function Layout({ children, title = 'CMS', url: { pathname } }) {
       {children}
       <Footer />
     </main>
-  )
+  );
 }

@@ -12,13 +12,12 @@
     "lint": "npm run eslint .",
     "lint:fix": "npm run eslint --fix .",
     "eslint": "eslint",
+    "prettier": "prettier",
+    "prettier:all": "find . | sed '/.next/d' | sed '/node_modules/d' | sed '/.jsx*/!d' | xargs ./node_modules/.bin/prettier --write",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.js": ["prettier --write", "git add"]
   },
   "author": "",
   "license": "ISC",

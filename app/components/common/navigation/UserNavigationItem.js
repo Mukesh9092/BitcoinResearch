@@ -1,23 +1,23 @@
-import React from 'react'
+import React from "react";
 import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  NavDropdown,
-} from 'reactstrap'
+  NavDropdown
+} from "reactstrap";
 
-import Link from 'next/link'
+import Link from "next/link";
 
 export default class Header extends React.Component {
   state = {
-    isOpen: false,
-  }
+    isOpen: false
+  };
 
   toggle = () => {
     this.setState({
-      isOpen: !this.state.isOpen,
-    })
-  }
+      isOpen: !this.state.isOpen
+    });
+  };
 
   render() {
     return (
@@ -33,6 +33,6 @@ export default class Header extends React.Component {
           <DropdownItem>Another Action</DropdownItem>
         </DropdownMenu>
       </NavDropdown>
-    )
+    );
   }
 }

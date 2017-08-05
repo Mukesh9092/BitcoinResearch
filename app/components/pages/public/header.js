@@ -1,47 +1,46 @@
-import FaChevronLeft from 'react-icons/lib/fa/chevron-left'
-import Link from 'next/link'
-import React from 'react'
-import { Nav, NavItem, NavLink, NavbarBrand } from 'reactstrap'
+import FaChevronLeft from "react-icons/lib/fa/chevron-left";
+import Link from "next/link";
+import React from "react";
+import { Nav, NavItem, NavLink, NavbarBrand } from "reactstrap";
 
-import { Navigation } from '../../common/navigation/index'
-import UserNavigationItem from '../../common/navigation/UserNavigationItem'
+import { Navigation } from "../../common/navigation/index";
+import UserNavigationItem from "../../common/navigation/UserNavigationItem";
 
 export class Header extends React.Component {
   renderNavLink = (url, label) => {
-    const { pathname } = this.props
+    const { pathname } = this.props;
 
     return (
       <NavItem key={label}>
         <Link href={url} prefetch>
-          <NavLink
-            href={url}
-            active={pathname === url}
-          >
+          <NavLink href={url} active={pathname === url}>
             {label}
           </NavLink>
         </Link>
       </NavItem>
-    )
-  }
+    );
+  };
 
-  renderLeftContent = () => ([
-    <NavbarBrand key="1" href="/">Code9</NavbarBrand>,
-  ])
+  renderLeftContent = () => [
+    <NavbarBrand key="1" href="/">
+      Code9
+    </NavbarBrand>
+  ];
 
-  renderCollapseContent = () => ([
+  renderCollapseContent = () => [
     <Nav className="mr-auto" navbar key="links">
-      {this.renderNavLink('/', 'Home')}
-      {this.renderNavLink('/about', 'About')}
-      {this.renderNavLink('/contact', 'Contact')}
-      {this.renderNavLink('/login', 'Login')}
-      {this.renderNavLink('/cms', 'Dashboard')}
-      {this.renderNavLink('/cms/users', 'Users')}
+      {this.renderNavLink("/", "Home")}
+      {this.renderNavLink("/about", "About")}
+      {this.renderNavLink("/contact", "Contact")}
+      {this.renderNavLink("/login", "Login")}
+      {this.renderNavLink("/cms", "Dashboard")}
+      {this.renderNavLink("/cms/users", "Users")}
     </Nav>,
 
     <Nav className="ml-auto" navbar key="profile-dropdown">
       <UserNavigationItem />
-    </Nav>,
-  ])
+    </Nav>
+  ];
 
   render() {
     return (
@@ -53,6 +52,6 @@ export class Header extends React.Component {
           collapseContent={this.renderCollapseContent()}
         />
       </header>
-    )
+    );
   }
 }

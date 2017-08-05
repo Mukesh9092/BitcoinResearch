@@ -1,4 +1,4 @@
-import { gql } from 'react-apollo'
+import { gql } from "react-apollo";
 
 export default gql`
   mutation loginWithEmailPassword($email: String!, $password: String!) {
@@ -10,4 +10,4 @@ export default gql`
       }
     }
   }
-`
+`;

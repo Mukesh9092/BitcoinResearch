@@ -1,13 +1,13 @@
-import React from 'react'
-import { Row, Col } from 'reactstrap'
+import React from "react";
+import { Row, Col } from "reactstrap";
 
-import { ConnectedPage } from '../components/index'
-import { Container } from '../components/common/container'
-import { Layout } from '../components/pages/public/layout'
+import { ConnectedPage } from "../components/index";
+import { Container } from "../components/common/container";
+import { Layout } from "../components/pages/public/layout";
 
 export default class PublicContactPage extends React.Component {
   render() {
-    console.log('PublicContactPage#render', this.props)
+    console.log("PublicContactPage#render", this.props);
 
     return (
       <ConnectedPage>
@@ -21,6 +21,6 @@ export default class PublicContactPage extends React.Component {
           </Container>
         </Layout>
       </ConnectedPage>
-    )
+    );
   }
 }

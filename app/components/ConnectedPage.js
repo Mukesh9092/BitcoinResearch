@@ -1,11 +1,8 @@
-import React from 'react'
-import {
-  Provider,
-  observer,
-} from 'mobx-react'
+import React from "react";
+import { Provider, observer } from "mobx-react";
 
-import withData from '../lib/withData'
-import sessionStore from '../stores/session'
+import withData from "../lib/withData";
+import sessionStore from "../stores/session";
 
 @withData
 export default class ConnectedPage extends React.Component {
@@ -14,6 +11,6 @@ export default class ConnectedPage extends React.Component {
       <Provider sessionStore={sessionStore}>
         {this.props.children}
       </Provider>
-    )
+    );
   }
 }

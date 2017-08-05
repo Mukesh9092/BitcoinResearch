@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+pushd api;
+rm -rf node_modules package-lock.json;
+npm-up --update;
+npm i;
+popd;
+
+pushd app;
+rm -rf node_modules package-lock.json;
+npm-up --update;
+npm i;
+popd;

@@ -1,67 +1,63 @@
-import React from 'react'
-import {
-  inject,
-  observer,
-} from 'mobx-react'
+import React from "react";
+import { inject, observer } from "mobx-react";
 
-import {
-  Alert,
-  Button,
-  Col,
-  FormGroup,
-  Label,
-} from 'reactstrap'
+import { Alert, Button, Col, FormGroup, Label } from "reactstrap";
 
-import {
-  AvForm,
-  AvField,
-} from 'availity-reactstrap-validation'
+import { AvForm, AvField } from "availity-reactstrap-validation";
 
-@inject('sessionStore') @observer
+@inject("sessionStore")
+@observer
 export class LoginForm extends React.Component {
   handleValidSubmit = (event, { email, password }) => {
-    console.log('LoginForm#handleValidSubmit', email, password)
+    console.log("LoginForm#handleValidSubmit", email, password);
 
-    console.log('LoginForm#handleValidSubmit before', this.props.sessionStore)
+    console.log("LoginForm#handleValidSubmit before", this.props.sessionStore);
 
-    this.props.sessionStore.loginWithEmailPassword(email, password)
+    this.props.sessionStore.loginWithEmailPassword(email, password);
 
-    console.log('LoginForm#handleValidSubmit after', this.props.sessionStore)
-  }
+    console.log("LoginForm#handleValidSubmit after", this.props.sessionStore);
+  };
 
   render() {
-    console.log('LoginForm#render', this.props)
+    console.log("LoginForm#render", this.props);
 
-    const {
-      errorMessage,
-      successMessage,
-    } = this.props.sessionStore
+    const { errorMessage, successMessage } = this.props.sessionStore;
 
-    let errorMessageComponent
-    let successMessageComponent
+    let errorMessageComponent;
+    let successMessageComponent;
 
     if (errorMessage) {
       errorMessageComponent = (
         <FormGroup check row>
-          <Col sm={{ size: 10, offset: 2 }}>
+          <Col
+            sm={{
+              size: 10,
+              offset: 2
+            }}
+          >
             <Alert color="danger">
               {errorMessage}
             </Alert>
           </Col>
         </FormGroup>
-      )
+      );
     }
 
     if (successMessage) {
       successMessageComponent = (
         <FormGroup check row>
-          <Col sm={{ size: 10, offset: 2 }}>
+          <Col
+            sm={{
+              size: 10,
+              offset: 2
+            }}
+          >
             <Alert color="success">
               {successMessage}
             </Alert>
           </Col>
         </FormGroup>
-      )
+      );
     }
 
     return (
@@ -70,13 +66,17 @@ export class LoginForm extends React.Component {
         onInvalidSubmit={this.handleInvalidSubmit}
       >
         <FormGroup row>
-          <Label for="email" sm={2}>Email</Label>
+          <Label for="email" sm={2}>
+            Email
+          </Label>
           <Col sm={10}>
             <AvField
               type="email"
               name="email"
               id="email"
-              ref={(x) => { this.emailRef = x }}
+              ref={x => {
+                this.emailRef = x;
+              }}
               autoFocus
               required
             />
@@ -84,13 +84,17 @@ export class LoginForm extends React.Component {
         </FormGroup>
 
         <FormGroup row>
-          <Label for="password" sm={2}>Password</Label>
+          <Label for="password" sm={2}>
+            Password
+          </Label>
           <Col sm={10}>
             <AvField
               type="password"
               name="password"
               id="password"
-              ref={(x) => { this.passwordRef = x }}
+              ref={x => {
+                this.passwordRef = x;
+              }}
               required
             />
           </Col>
@@ -100,11 +104,16 @@ export class LoginForm extends React.Component {
         {successMessageComponent}
 
         <FormGroup check row>
-          <Col sm={{ size: 10, offset: 2 }}>
+          <Col
+            sm={{
+              size: 10,
+              offset: 2
+            }}
+          >
             <Button type="submit">Login</Button>
           </Col>
         </FormGroup>
       </AvForm>
-    )
+    );
   }
 }

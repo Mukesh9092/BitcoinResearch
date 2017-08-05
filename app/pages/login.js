@@ -1,14 +1,14 @@
-import React from 'react'
-import { Row, Col } from 'reactstrap'
+import React from "react";
+import { Row, Col } from "reactstrap";
 
-import { ConnectedPage } from '../components/index'
-import { Container } from '../components/common/container'
-import { Layout } from '../components/pages/public/layout'
-import { LoginForm } from '../components/pages/public/login/form'
+import { ConnectedPage } from "../components/index";
+import { Container } from "../components/common/container";
+import { Layout } from "../components/pages/public/layout";
+import { LoginForm } from "../components/pages/public/login/form";
 
 export default class PublicLoginPage extends React.Component {
   render() {
-    console.log('PublicLoginPage#render', this.props)
+    console.log("PublicLoginPage#render", this.props);
 
     return (
       <ConnectedPage>
@@ -27,6 +27,6 @@ export default class PublicLoginPage extends React.Component {
           </Container>
         </Layout>
       </ConnectedPage>
-    )
+    );
   }
 }

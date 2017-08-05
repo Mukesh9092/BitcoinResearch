@@ -1,3 +1,3 @@
-export header from './header'
-export layout from './layout'
-export footer from './footer'
+export header from "./header";
+export layout from "./layout";
+export footer from "./footer";

@@ -1,9 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export function Footer() {
-  return (
-    <footer>
-      CMS Footer
-    </footer>
-  )
+  return <footer>CMS Footer</footer>;
 }
