@@ -6,30 +6,17 @@ version: '3'
 #   - Dashboards:           42xx
 
 services:
-  api:
-    depends_on:
-      - influxdb
-      - redis
+  proxy:
     links:
-      - influxdb
-      - redis
-    build: ./api
+      # - app
+      - api
+    build: ./proxy
     ports:
-      - 4002:4002
-    volumes:
-      - ./api:/service
+      - 4000:4000
     environment:
-      - NODE_ENV=develop
-      - APP_HOST=0.0.0.0
-      - APP_PORT=4002
-      - APP_KEYS=keyboardkat
-      - REDIS_HOST=redis
-      - REDIS_PORT=4100
-      - INFLUXDB_HOST=influxdb
-      - INFLUXDB_PORT=4101
-      - GOOGLE_API_CLIENT_ID=GOOGLE_API_CLIENT
-      - GOOGLE_API_CLIENT_SECRET=GOOGLE_API_CLIENT_SECRET
-    command: "yarn run dev"
+      - "PROXY_PORT=4000"
+      - "APP_REMOTE=http://app:4001"
+      - "API_REMOTE=http://api:4002"
 
   app:
     depends_on:
@@ -45,15 +32,58 @@ services:
       - ./app:/service
     environment:
       - NODE_ENV=develop
-      - APP_HOST=0.0.0.0
+      - APP_HOST=app
       - APP_PORT=4001
       - APP_KEYS=keyboardkat
-      - REDIS_HOST=redis
-      - REDIS_PORT=4100
       - API_HOST=api
       - API_PORT=4002
       - API_PATH=api
-    command: "yarn run dev"
+    command: "npm run dev"
+
+  api:
+    depends_on:
+      - influxdb
+      - redis
+    links:
+      - influxdb
+      - redis
+    build: ./api
+    ports:
+      - 4002:4002
+    volumes:
+      - ./api:/service
+    environment:
+      - API_EVENT_STORE_DATA_PATH=/service/event-store_data
+      - API_HOST=api
+      - API_KEYS=keyboardkat
+      - API_PORT=4002
+      - GOOGLE_API_CLIENT_ID=GOOGLE_API_CLIENT
+      - GOOGLE_API_CLIENT_SECRET=GOOGLE_API_CLIENT_SECRET
+      - INFLUXDB_HOST=influxdb
+      - INFLUXDB_PORT=4101
+      - NODE_ENV=develop
+      - REDIS_HOST=redis
+      - REDIS_PORT=4100
+      - RETHINKDB_DB=tomwielandnl_develop
+      - RETHINKDB_HOST=rethinkdb
+      - RETHINKDB_PORT=4102
+    command: "npm run dev"
+
+  redis:
+    build: ./redis
+    ports:
+      - 4100:4100
+    volumes:
+      - ./redis/data:/data
+
+  rethinkdb:
+    build: ./rethinkdb
+    ports:
+      - 4102:4102 # 28015
+      - 4103:4103 # 29015
+      - 4203:4203 # 8080
+    volumes:
+      - ./rethinkdb/data:/data
 
   influxdb:
     build: ./influxdb
@@ -64,30 +94,12 @@ services:
     volumes:
       - ./influxdb/data:/var/lib/influxdb
 
-  proxy:
-    links:
-      - app
-      - api
-    build: ./proxy
-    ports:
-      - 4000:80
-    environment:
-      - APP_REMOTE=http://app:4001
-      - API_REMOTE=http://api:4002
-
-  redis:
-    build: ./redis
-    ports:
-      - 4100:4100
-    volumes:
-      - ./redis/data:/data
-
-  redis-commander:
-    depends_on:
-      - redis
-    links:
-      - redis
-    build: ./redis-commander
-    ports:
-      - 4200:4200
-    command: "redis-commander --redis-host redis --redis-port 4100 --port 4200 --address 0.0.0.0"
+  #redis-commander:
+  #  depends_on:
+  #    - redis
+  #  links:
+  #    - redis
+  #  build: ./redis-commander
+  #  ports:
+  #    - 4200:4200
+  #  command: "redis-commander --redis-host redis --redis-port 4100 --port 4200 --address 0.0.0.0"

@@ -1,3 +1,4 @@
+/*
 import React from 'react'
 import { shallow } from 'enzyme'
 import renderer from 'react-test-renderer'
@@ -21,3 +22,4 @@ describe('Test1', () => {
     expect(actual).toEqual(expected)
   })
 })
+*/

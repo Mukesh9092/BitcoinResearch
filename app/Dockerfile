@@ -1,8 +1,4 @@
-FROM node:latest
-
-# Install packages
-RUN apt-get update -y
-RUN apt-get upgrade -y
+FROM node:8
 
 # Create app directory
 RUN mkdir -p /service
@@ -14,4 +10,6 @@ RUN npm install
 # Copy all files into container.
 COPY . /service
 
-CMD yarn run start
+CMD npm run start
+
+EXPOSE 4001

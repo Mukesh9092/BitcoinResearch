@@ -1,2 +1,2 @@
 export container from './container'
-export navigation from './navigation'
+export navigation from './navigation/index'

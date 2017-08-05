@@ -1,6 +1,8 @@
 .idea
 .next
 .tmp
+influxdb/data
+rethinkdb/data
 node_modules
 
 *.log

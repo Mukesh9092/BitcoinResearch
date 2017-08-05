@@ -1,2 +1,2 @@
-export cms from './cms'
-export public from './public'
+export cms from './cms/index'
+export public from './public/index'

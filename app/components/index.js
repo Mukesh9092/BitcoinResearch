@@ -1,3 +1,3 @@
 export ConnectedPage from './ConnectedPage'
-export common from './common'
-export pages from './pages'
+export common from './common/index'
+export pages from './pages/index'
