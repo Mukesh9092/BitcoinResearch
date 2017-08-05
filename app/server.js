@@ -27,11 +27,11 @@ app
 
     log.info(`> Starting server...`)
 
-    server.listen(APP_PORT, error => {
+    server.listen(APP_PORT, APP_HOST, error => {
       if (error) {
         throw error
       }
 
-      log.info(`> Ready on http://localhost:${APP_PORT}`)
+      log.info(`> Ready on http://${APP_HOST}:${APP_PORT}`)
     })
   })
