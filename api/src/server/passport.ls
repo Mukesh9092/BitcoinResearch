@@ -13,9 +13,13 @@ user = require '../lib/models/user'
 callback-result = (cb) -> (result) -> cb null, result
 
 passport.serialize-user (user, cb) ->
+  console.log "passport.serialize-user", user
+
   cb null, user.id
 
 passport.deserialize-user (id, cb) ->
+  console.log "passport.deserialize-user", id
+
   user.get-user-by-id id
     .then callback-result cb
     .catch cb
@@ -26,9 +30,14 @@ local-strategy-options =
   session: true
 
 local-strategy-callback = (email, password, cb) ->
+  console.log "passport.local-strategy-callback", email, password
+
   user.get-or-create-user-by-email-password email, password
+    .then (x) ->
+      console.log "passport.local-strategy-callback x", x
+      x
     .then callback-result cb
-    .catch -> cb!
+    .catch cb
 
 passport.use new LocalStrategy local-strategy-options, local-strategy-callback
 

@@ -8,6 +8,8 @@ rethinkdb = require 'rethinkdb'
 } = require '../../lib/authentication'
 
 export get-users = ->
+  console.log "get-users"
+
   db <- get-database!
     .then
 
@@ -19,6 +21,8 @@ export get-users = ->
   cursor.toArray
 
 export get-user-by-id = (id) ->
+  console.log "get-user-by-id", id
+
   db <- get-database!
     .then
 
@@ -34,31 +38,35 @@ export get-user-by-id = (id) ->
   result
 
 export get-user-by-email = (email) ->
-  db <- get-database!
-    .then
+  console.log "get-user-by-email", email
 
-  cursor <- rethinkdb
-    .table 'users'
-    .filter rethinkdb.row 'email' .eq email
-    .run db
-    .then
+  get-database!
+    .then (db) ->
+      rethinkdb
+        .table 'users'
+        .filter email: email
+        .run db
+        .then (cursor) -> cursor.to-array!
+        .then ([result]) ->
+          console.log "get-user-by-email result", result
 
-  [result] <- cursor.toArray
-    .then
-
-  result
+          result
 
 export get-user-by-email-password = (email, password) ->
-  user <- get-user-by-email-password email, password
-    .then
+  console.log "get-user-by-email-password", email, password
 
-  { password-hash } = sha512 password, user.password_seed
+  get-user-by-email email
+    .then (user) ->
+      { password-hash } = sha512 password, user.password_seed
 
-  user if user.password_hash is password-hash
-
-  throw new Error 'Incorrect password'
+      if user.password_hash is password-hash
+        user
+      else
+        throw new Error 'Incorrect password'
 
 export create-user-with-email-password = (email, password) ->
+  console.log "create-user-with-email-password", email, password
+
   db <- get-database!
     .then
 
@@ -80,10 +88,11 @@ export create-user-with-email-password = (email, password) ->
   result
 
 export get-or-create-user-by-email-password = (email, password) ->
-  user <- get-user-by-email-password email, password
-    .then
+  console.log "get-or-create-user-by-email-password", email, password
 
-  user or create-user-with-email-password email, password
+  get-user-by-email-password email, password
+    .then (user) ->
+      user or create-user-with-email-password email, password
 
 export get-user-by-google-id = (google-id) ->
 export get-user-by-google-profile = (profile, token, secret) ->
