@@ -30,12 +30,7 @@ local-strategy-options =
   session: true
 
 local-strategy-callback = (email, password, cb) ->
-  console.log "passport.local-strategy-callback", email, password
-
   user.get-or-create-user-by-email-password email, password
-    .then (x) ->
-      console.log "passport.local-strategy-callback x", x
-      x
     .then callback-result cb
     .catch cb
 

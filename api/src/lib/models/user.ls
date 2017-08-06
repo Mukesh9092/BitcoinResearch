@@ -57,7 +57,12 @@ export get-user-by-email-password = (email, password) ->
 
   get-user-by-email email
     .then (user) ->
+      console.log "get-user-by-email-password user", user
+
       { password-hash } = sha512 password, user.password_seed
+
+      console.log 'password-hash', password-hash
+      console.log 'user.password_hash', user.password_hash
 
       if user.password_hash is password-hash
         user
