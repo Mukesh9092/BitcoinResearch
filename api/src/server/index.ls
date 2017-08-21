@@ -52,14 +52,14 @@ app
       host: REDIS_HOST
       port: REDIS_PORT
 
-  #.use passport.initialize!
-  #.use passport.session!
+  .use passport.initialize!
+  .use passport.session!
 
 app.all '/api/graphql', graphql-express schema: executable-schema
 
 # app.post '/api/authentication/local', passport.authenticate 'local'
 
-app.post '/api/authentication/local', /*(passport.authenticate 'local', session: true),*/ (req, res, next) ->
+app.post '/api/authentication/local', (passport.authenticate 'local', session: true), (req, res, next) ->
   log.info "req.sessionID", req.sessionID
   log.info "req.session", req.session
   log.info "req.user", req.user
