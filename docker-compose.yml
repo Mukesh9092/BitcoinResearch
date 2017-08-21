@@ -94,12 +94,12 @@ services:
     volumes:
       - ./influxdb/data:/var/lib/influxdb
 
-  redis-commander:
-    depends_on:
-      - redis
-    links:
-      - redis
-    build: ./redis-commander
-    ports:
-      - 4200:4200
-    command: "redis-commander --redis-host redis --redis-port 4100 --port 4200 --address 0.0.0.0"
+  # redis-commander:
+  #   depends_on:
+  #     - redis
+  #   links:
+  #     - redis
+  #   build: ./redis-commander
+  #   ports:
+  #     - 4200:4200
+  #   command: "redis-commander --redis-host redis --redis-port 4100 --port 4200 --address 0.0.0.0"

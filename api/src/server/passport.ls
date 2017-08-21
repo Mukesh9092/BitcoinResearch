@@ -36,6 +36,7 @@ local-strategy-callback = (email, password, cb) ->
 
 passport.use new LocalStrategy local-strategy-options, local-strategy-callback
 
+/*
 google-strategy-options =
   consumer-key: GOOGLE_API_CLIENT_ID
   consumer-secret: GOOGLE_API_CLIENT_SECRET
@@ -48,5 +49,6 @@ google-strategy-callback = (token, secret, profile, cb) ->
     .catch cb
 
 passport.use new GoogleStrategy google-strategy-options, google-strategy-callback
+*/
 
 export passport

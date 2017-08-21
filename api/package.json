@@ -27,6 +27,7 @@
     "chai": "^4.1.1",
     "concurrently": "^3.5.0",
     "connect-redis": "^3.3.0",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
     "express-session": "^1.15.5",
     "faker": "^4.1.0",
