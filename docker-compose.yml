@@ -42,10 +42,8 @@ services:
 
   api:
     depends_on:
-      - influxdb
       - redis
     links:
-      - influxdb
       - redis
     build: ./api
     ports:
@@ -53,14 +51,11 @@ services:
     volumes:
       - ./api:/service
     environment:
-      - API_EVENT_STORE_DATA_PATH=/service/event-store_data
       - API_HOST=api
       - API_KEYS=keyboardkat
       - API_PORT=4002
       - GOOGLE_API_CLIENT_ID=GOOGLE_API_CLIENT
       - GOOGLE_API_CLIENT_SECRET=GOOGLE_API_CLIENT_SECRET
-      - INFLUXDB_HOST=influxdb
-      - INFLUXDB_PORT=4101
       - NODE_ENV=develop
       - REDIS_HOST=redis
       - REDIS_PORT=4100
@@ -84,15 +79,6 @@ services:
       - 4203:4203 # 8080
     volumes:
       - ./rethinkdb/data:/data
-
-  influxdb:
-    build: ./influxdb
-    ports:
-      - 4101:4101 #8086
-      - 4201:4201 #8083
-      - 4202:4202 #2003
-    volumes:
-      - ./influxdb/data:/var/lib/influxdb
 
   # redis-commander:
   #   depends_on:

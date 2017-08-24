@@ -12,8 +12,6 @@ COPY . /service
 
 WORKDIR /service
 
-RUN npm run clean; npm run livescript;
-
 CMD npm run start
 
 EXPOSE 4002

@@ -19,8 +19,6 @@ export class LoginForm extends React.Component {
   };
 
   render() {
-    console.log("LoginForm#render", this.props);
-
     const { errorMessage, successMessage } = this.props.sessionStore;
 
     let errorMessageComponent;
