@@ -2,7 +2,7 @@ const path = require('path')
 const zlib = require('zlib')
 
 const bodyParser = require('body-parser')
-// const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
 const express = require('express')
 
 const { formatError } = require('../lib/error')
@@ -26,7 +26,7 @@ const app = express()
 app.keys = API_KEYS.split(',')
 
 app
-  // .use(cookieParser())
+  .use(cookieParser())
   .use(bodyParser.json())
 
 setupPassport(app)

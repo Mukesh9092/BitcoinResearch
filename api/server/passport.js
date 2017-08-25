@@ -57,8 +57,8 @@ function setupPassport(app) {
         secure: false,
         maxAge: 60 * 60 * 24,
       },
-      saveUninitialized: true,
-      resave: true,
+      saveUninitialized: false,
+      resave: false,
       store: redisStore,
     }))
     .use(passport.initialize())

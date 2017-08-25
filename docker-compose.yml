@@ -65,27 +65,28 @@ services:
     command: "npm run dev"
 
   redis:
-    build: ./redis
+    image: redis:latest
     ports:
       - 4100:4100
     volumes:
       - ./redis/data:/data
+    command: "redis-server --port 4100"
 
   rethinkdb:
     build: ./rethinkdb
     ports:
       - 4102:4102 # 28015
       - 4103:4103 # 29015
-      - 4203:4203 # 8080
+      - 4200:4200 # 8080
     volumes:
       - ./rethinkdb/data:/data
 
-  # redis-commander:
-  #   depends_on:
-  #     - redis
-  #   links:
-  #     - redis
-  #   build: ./redis-commander
-  #   ports:
-  #     - 4200:4200
-  #   command: "redis-commander --redis-host redis --redis-port 4100 --port 4200 --address 0.0.0.0"
+  redis-commander:
+    depends_on:
+      - redis
+    links:
+      - redis
+    build: ./redis-commander
+    ports:
+      - 4201:4201
+    command: "redis-commander --redis-host redis --redis-port 4100 --port 4201 --address 0.0.0.0"
