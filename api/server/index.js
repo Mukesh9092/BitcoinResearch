@@ -11,19 +11,19 @@ const { setupGraphQL } = require('./graphql')
 const { setupPassport } = require('./passport')
 
 const {
-  API_EVENT_STORE_DATA_PATH,
   API_HOST,
   API_KEYS,
   API_PORT,
   NODE_ENV,
-  REDIS_HOST,
-  REDIS_PORT,
+  PROXY_HOST,
 } = process.env
 
 const debugLevel = NODE_ENV === 'develop' ? 'debug' : 'info'
 
 const app = express()
 app.keys = API_KEYS.split(',')
+
+app.set('trust proxy', PROXY_HOST)
 
 app
   .use(cookieParser())

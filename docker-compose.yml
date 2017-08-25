@@ -14,7 +14,8 @@ services:
     ports:
       - 4000:4000
     environment:
-      - "PROXY_PORT=4000"
+      - PROXY_HOST=proxy
+      - PROXY_PORT=4000
       - "APP_REMOTE=http://app:4001"
       - "API_REMOTE=http://api:4002"
 
@@ -31,13 +32,14 @@ services:
     volumes:
       - ./app:/service
     environment:
-      - NODE_ENV=develop
-      - APP_HOST=app
-      - APP_PORT=4001
-      - APP_KEYS=keyboardkat
       - API_HOST=api
-      - API_PORT=4002
       - API_PATH=api
+      - API_PORT=4002
+      - APP_HOST=app
+      - APP_KEYS=keyboardkat
+      - APP_PORT=4001
+      - NODE_ENV=develop
+      - PROXY_HOST=proxy
     command: "npm run dev"
 
   api:
@@ -57,6 +59,7 @@ services:
       - GOOGLE_API_CLIENT_ID=GOOGLE_API_CLIENT
       - GOOGLE_API_CLIENT_SECRET=GOOGLE_API_CLIENT_SECRET
       - NODE_ENV=develop
+      - PROXY_HOST=proxy
       - REDIS_HOST=redis
       - REDIS_PORT=4100
       - RETHINKDB_DB=tomwielandnl_develop
