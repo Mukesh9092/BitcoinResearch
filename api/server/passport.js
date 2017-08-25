@@ -54,11 +54,13 @@ function setupPassport(app) {
       cookie: {
         path: '/',
         httpOnly: true,
+        sameSite: true,
         secure: false,
-        maxAge: 60 * 60 * 24,
+        maxAge: 24 * 60 * 60 * 1000,
       },
       saveUninitialized: false,
       resave: false,
+      rolling: true,
       store: redisStore,
     }))
     .use(passport.initialize())
