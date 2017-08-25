@@ -6,7 +6,7 @@ const toArray = x => x.toArray()
 const firstElement = ([x]) => x
 
 function getArticles() {
-  console.log('lib/models/article getArticles')
+  // console.log('lib/models/article getArticles')
 
   return getDatabase()
     .then((db) => {
@@ -18,7 +18,7 @@ function getArticles() {
 }
 
 function getArticlesByUserId(userId) {
-  console.log('lib/models/article getArticlesByUserId', userId)
+  // console.log('lib/models/article getArticlesByUserId', userId)
 
   return getDatabase()
     .then((db) => {
@@ -31,7 +31,7 @@ function getArticlesByUserId(userId) {
 }
 
 function getArticlesByUsername(username) {
-  console.log('lib/models/article getArticlesByUsername', username)
+  // console.log('lib/models/article getArticlesByUsername', username)
 
   return getDatabase()
     .then((db) => {
@@ -44,7 +44,7 @@ function getArticlesByUsername(username) {
 }
 
 function getArticlesByEmail(email) {
-  console.log('lib/models/article getArticlesByEmail', email)
+  // console.log('lib/models/article getArticlesByEmail', email)
 
   return getDatabase()
     .then((db) => {
@@ -57,13 +57,13 @@ function getArticlesByEmail(email) {
 }
 
 function getArticlesByTag(tag) {
-  console.log('lib/models/article getArticlesByTag', tag)
+  // console.log('lib/models/article getArticlesByTag', tag)
 
   return []
 }
 
 function getArticleById(id) {
-  console.log('lib/models/article getArticleById', id)
+  // console.log('lib/models/article getArticleById', id)
 
   return getDatabase()
     .then((db) => {
@@ -77,7 +77,7 @@ function getArticleById(id) {
 }
 
 function getArticleBySlug(slug) {
-  console.log('lib/models/article getArticleBySlug', slug)
+  // console.log('lib/models/article getArticleBySlug', slug)
 
   return getDatabase()
     .then((db) => {

@@ -33,14 +33,10 @@ const localStrategy = new LocalStrategy({
 
 function setupPassport(app) {
   passport.serializeUser((user, cb) => {
-    console.log('passport.serializeUser', user)
-
     cb(null, user.id)
   })
 
   passport.deserializeUser((id, cb) => {
-    console.log('passport.deserializeUser', id)
-
     user.getUserById(id)
       .then(result => cb(null, result))
       .catch(cb)
@@ -56,7 +52,7 @@ function setupPassport(app) {
         httpOnly: true,
         sameSite: true,
         secure: false,
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 1000 * 60 * 60 * 24 * 365,
       },
       saveUninitialized: false,
       resave: false,

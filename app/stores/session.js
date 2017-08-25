@@ -27,6 +27,7 @@ class SessionStore {
       console.log("EMAIL", email);
 
       const response = await fetch("/api/authentication/local", {
+        credentials: 'include',
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"

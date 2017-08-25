@@ -23,7 +23,7 @@ const debugLevel = NODE_ENV === 'develop' ? 'debug' : 'info'
 const app = express()
 app.keys = API_KEYS.split(',')
 
-app.set('trust proxy', PROXY_HOST)
+// app.set('trust proxy', PROXY_HOST)
 
 app
   .use(cookieParser())

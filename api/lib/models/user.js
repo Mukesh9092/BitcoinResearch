@@ -4,7 +4,7 @@ const { getDatabase } = require('../../lib/database')
 const { genRandomString, sha512 } = require('../../lib/authentication')
 
 const toArray = x => x.toArray()
-const firstElement = ([x]) => x
+const firstElement = (x) => x[0]
 
 function toJSON(_user) {
   const user = Object.assign({}, _user)
@@ -16,7 +16,7 @@ function toJSON(_user) {
 }
 
 function getUsers() {
-  console.log('lib/models/user getUsers')
+  // console.log('lib/models/user getUsers')
 
   return getDatabase()
     .then((db) => {
@@ -28,7 +28,7 @@ function getUsers() {
 }
 
 function getUserById(id) {
-  console.log('lib/models/user getUserById', id)
+  // console.log('lib/models/user getUserById', id)
 
   return getDatabase()
     .then((db) => {
@@ -36,12 +36,11 @@ function getUserById(id) {
         .table('users')
         .get(id)
         .run(db)
-        .then(firstElement)
     })
 }
 
 function getUserByEmail(email) {
-  console.log('lib/models/user getUserByEmail', email)
+  // console.log('lib/models/user getUserByEmail', email)
 
   return getDatabase()
     .then((db) => {
@@ -55,7 +54,7 @@ function getUserByEmail(email) {
 }
 
 function getUserByEmailPassword(email, password) {
-  console.log('lib/models/user getUserByEmailPassword', email, password)
+  // console.log('lib/models/user getUserByEmailPassword', email, password)
 
   return getUserByEmail(email)
     .then((user) => {
@@ -72,7 +71,7 @@ function getUserByEmailPassword(email, password) {
 }
 
 function createUserByEmailPassword(email, password) {
-  console.log('lib/models/user createUserByEmailPassword', email, password)
+  // console.log('lib/models/user createUserByEmailPassword', email, password)
 
   return getDatabase()
     .then((db) => {
@@ -92,7 +91,7 @@ function createUserByEmailPassword(email, password) {
 }
 
 function getOrCreateUserByEmailPassword(email, password) {
-  console.log('lib/models/user getOrCreateUserByEmailPassword', email, password)
+  // console.log('lib/models/user getOrCreateUserByEmailPassword', email, password)
 
   return getUserByEmailPassword(email, password)
     .then((user) => {
