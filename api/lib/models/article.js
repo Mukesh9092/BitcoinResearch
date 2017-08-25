@@ -5,7 +5,9 @@ const { getDatabase } = require('../../lib/database')
 const toArray = x => x.toArray()
 const firstElement = ([x]) => x
 
-exports.getArticles = () => {
+function getArticles() {
+  console.log('lib/models/article getArticles')
+
   return getDatabase()
     .then((db) => {
       return rethinkdb
@@ -15,18 +17,22 @@ exports.getArticles = () => {
     })
 }
 
-exports.getArticlesByUserId = (user_id) => {
+function getArticlesByUserId(userId) {
+  console.log('lib/models/article getArticlesByUserId', userId)
+
   return getDatabase()
     .then((db) => {
       return rethinkdb
         .table('articles')
-        .filter(rethinkdb.row('user_id').eq(user_id))
+        .filter(rethinkdb.row('userId').eq(userId))
         .run(db)
         .then(toArray)
     })
 }
 
-exports.getArticlesByUsername = (user_name) => {
+function getArticlesByUsername(username) {
+  console.log('lib/models/article getArticlesByUsername', username)
+
   return getDatabase()
     .then((db) => {
       return rethinkdb
@@ -37,7 +43,9 @@ exports.getArticlesByUsername = (user_name) => {
     })
 }
 
-exports.getArticlesByEmail = (email) => {
+function getArticlesByEmail(email) {
+  console.log('lib/models/article getArticlesByEmail', email)
+
   return getDatabase()
     .then((db) => {
       return rethinkdb
@@ -48,11 +56,15 @@ exports.getArticlesByEmail = (email) => {
     })
 }
 
-exports.getArticlesByTag = (email) => {
+function getArticlesByTag(tag) {
+  console.log('lib/models/article getArticlesByTag', tag)
+
   return []
 }
 
-exports.getArticleById = () => {
+function getArticleById(id) {
+  console.log('lib/models/article getArticleById', id)
+
   return getDatabase()
     .then((db) => {
       return rethinkdb
@@ -64,7 +76,9 @@ exports.getArticleById = () => {
     })
 }
 
-exports.getArticleById = () => {
+function getArticleBySlug(slug) {
+  console.log('lib/models/article getArticleBySlug', slug)
+
   return getDatabase()
     .then((db) => {
       return rethinkdb
@@ -74,4 +88,16 @@ exports.getArticleById = () => {
         .then(toArray)
         .then(firstElement)
     })
+}
+
+module.exports = {
+  getArticles,
+  getArticlesByEmail,
+  getArticlesByTag,
+  getArticlesByUsername,
+  getArticlesByUserId,
+  getArticlesByEmail,
+  getArticlesByTag,
+  getArticleById,
+  getArticleBySlug,
 }

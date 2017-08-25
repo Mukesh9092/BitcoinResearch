@@ -1,15 +1,14 @@
 const { Kind } = require('graphql/language')
 const { isArray, invokeMap } = require('lodash')
 const { makeExecutableSchema } = require('graphql-tools')
+const { graphqlExpress } = require('graphql-server-express')
 
 const user = require('../lib/models/user')
 const { Article } = require('../lib/models/article')
 
-exports.firstResult = ([a]) => a
+const jsonResult = (a) => isArray(a) ? invokeMap(a, 'toJSON') : a.toJSON()
 
-exports.jsonResult = (a) => isArray(a) ? invokeMap(a, 'toJSON') : a.toJSON()
-
-exports.schema = `
+const schema = `
   scalar Date
 
   type Article {
@@ -52,7 +51,7 @@ exports.schema = `
   }
 `
 
-exports.resolvers = {
+const resolvers = {
   Article: {
     user: (root) => {
       return user.getUserById(root.userId)
@@ -113,7 +112,15 @@ exports.resolvers = {
   },
 }
 
-exports.executableSchema = makeExecutableSchema({
-  typeDefs: exports.schema,
-  resolvers: exports.resolvers,
-})
+function setupGraphQL(app) {
+  app.all('/api/graphql', graphqlExpress({
+    schema: makeExecutableSchema({
+      typeDefs: schema,
+      resolvers,
+    })
+  }))
+}
+
+module.exports = {
+  setupGraphQL,
+}

@@ -1,7 +1,6 @@
 const path = require('path')
 
 const faker = require('faker')
-const log = require('loglevel')
 const pify = require('pify')
 const rethinkdb = require('rethinkdb')
 
@@ -16,7 +15,7 @@ const {
 const tables = [ 'users', 'articles' ]
 
 const createTable = (db, table) => {
-  log.info(`Creating table '${table}'.`)
+  console.log(`Creating table '${table}'.`)
 
   return rethinkdb
     .tableCreate(table)
@@ -24,7 +23,7 @@ const createTable = (db, table) => {
 }
 
 const destroyTable = (db, table) => {
-  log.info(`Destroying table '${table}'.`)
+  console.log(`Destroying table '${table}'.`)
 
   return rethinkdb
     .tableDrop(table)
@@ -39,7 +38,7 @@ const createTableRecord = (db, table, record) => {
 }
 
 const createUsers = (db) => {
-  log.info('Creating users.')
+  console.log('Creating users.')
 
   const promises = []
 
@@ -75,7 +74,7 @@ const createUsers = (db) => {
 }
 
 const createArticles = (db) => {
-  log.info('Creating articles.')
+  console.log('Creating articles.')
 
   const promises = []
 
@@ -90,7 +89,7 @@ const createArticles = (db) => {
       body: faker.lorem.paragraphs(10),
       created: new Date(),
       updated: new Date(),
-      user_id: Math.floor(Math.random() * 20),
+      userId: Math.floor(Math.random() * 20),
     }))
   }
 
@@ -115,7 +114,7 @@ exports.getDatabase = () => {
 }
 
 exports.createTables = () => {
-  log.info(`Creating tables: ${tables.join(', ')}.`)
+  console.log(`Creating tables: ${tables.join(', ')}.`)
 
   return getDatabase()
     .then((db) => Promise.all(tables.map(createTable(db))))
@@ -128,7 +127,7 @@ exports.destroyTables = () => {
         .tableList()
         .run(db)
         .then((dbTables) => {
-          log.info(`Destroying tables: ${dbTables.join(', ')}.`)
+          console.log(`Destroying tables: ${dbTables.join(', ')}.`)
 
           return Promise.all(dbTables.map(destroyTable(db)))
         })
@@ -136,7 +135,7 @@ exports.destroyTables = () => {
 }
 
 exports.createSeed = () => {
-  log.info('Creating seed.')
+  console.log('Creating seed.')
 
   return getDatabase()
     .then((db) => Promise.all([
