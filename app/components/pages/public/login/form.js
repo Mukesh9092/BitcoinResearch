@@ -8,61 +8,76 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 @inject("sessionStore")
 @observer
 export class LoginForm extends React.Component {
-  handleValidSubmit = (event, { email, password }) => {
-    console.log("LoginForm#handleValidSubmit", email, password);
+  handleValidSubmit = async (event, { email, password }) => {
+    try {
+      console.log("LoginForm#handleValidSubmit", email, password);
 
-    console.log("LoginForm#handleValidSubmit before", this.props.sessionStore);
+      console.log(
+        "LoginForm#handleValidSubmit before",
+        this.props.sessionStore
+      );
 
-    this.props.sessionStore.loginWithEmailPassword(email, password);
+      await this.props.sessionStore.loginWithEmailPassword(email, password);
 
-    console.log("LoginForm#handleValidSubmit after", this.props.sessionStore);
+      console.log("LoginForm#handleValidSubmit after", this.props.sessionStore);
+    } catch (error) {
+      console.log("##### ERROR", error);
+    }
   };
+
+  renderErrorMessage() {
+    const { errorMessage } = this.props.sessionStore;
+
+    if (!errorMessage) {
+      return null;
+    }
+
+    return (
+      <FormGroup check row>
+        <Col
+          sm={{
+            size: 10,
+            offset: 2
+          }}
+        >
+          <Alert color="danger">
+            {errorMessage}
+          </Alert>
+        </Col>
+      </FormGroup>
+    );
+  }
+
+  renderSuccessMessage() {
+    const { successMessage } = this.props.sessionStore;
+
+    if (!successMessage) {
+      return null;
+    }
+
+    return (
+      <FormGroup check row>
+        <Col
+          sm={{
+            size: 10,
+            offset: 2
+          }}
+        >
+          <Alert color="success">
+            {successMessage}
+          </Alert>
+        </Col>
+      </FormGroup>
+    );
+  }
 
   render() {
     const { errorMessage, successMessage } = this.props.sessionStore;
 
-    let errorMessageComponent;
-    let successMessageComponent;
-
-    if (errorMessage) {
-      errorMessageComponent = (
-        <FormGroup check row>
-          <Col
-            sm={{
-              size: 10,
-              offset: 2
-            }}
-          >
-            <Alert color="danger">
-              {errorMessage}
-            </Alert>
-          </Col>
-        </FormGroup>
-      );
-    }
-
-    if (successMessage) {
-      successMessageComponent = (
-        <FormGroup check row>
-          <Col
-            sm={{
-              size: 10,
-              offset: 2
-            }}
-          >
-            <Alert color="success">
-              {successMessage}
-            </Alert>
-          </Col>
-        </FormGroup>
-      );
-    }
+    debugger;
 
     return (
-      <AvForm
-        onValidSubmit={this.handleValidSubmit}
-        onInvalidSubmit={this.handleInvalidSubmit}
-      >
+      <AvForm onValidSubmit={this.handleValidSubmit}>
         <FormGroup row>
           <Label for="email" sm={2}>
             Email
@@ -98,8 +113,8 @@ export class LoginForm extends React.Component {
           </Col>
         </FormGroup>
 
-        {errorMessageComponent}
-        {successMessageComponent}
+        {this.renderErrorMessage()}
+        {this.renderSuccessMessage()}
 
         <FormGroup check row>
           <Col

@@ -7,8 +7,6 @@ import { Layout } from "../components/pages/public/layout";
 
 export default class PublicContactPage extends React.Component {
   render() {
-    console.log("PublicContactPage#render", this.props);
-
     return (
       <ConnectedPage>
         <Layout {...this.props}>

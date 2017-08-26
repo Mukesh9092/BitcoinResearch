@@ -7,8 +7,6 @@ import { Layout } from "../components/pages/public/layout";
 
 export default class PublicIndexPage extends React.Component {
   render() {
-    console.log("PublicIndexPage#render", this.props);
-
     return (
       <ConnectedPage>
         <Layout {...this.props}>

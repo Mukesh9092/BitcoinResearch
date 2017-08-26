@@ -7,8 +7,6 @@ import { Layout } from "../../components/pages/cms/layout";
 
 export default class CMSIndexPage extends React.Component {
   render() {
-    console.log("CMSIndexPage#render", this.props);
-
     return (
       <ConnectedPage>
         <Layout {...this.props}>

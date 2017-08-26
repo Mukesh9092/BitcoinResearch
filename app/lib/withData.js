@@ -4,8 +4,6 @@ import { ApolloProvider, getDataFromTree } from "react-apollo";
 import initApollo from "./initApollo";
 
 export default ComposedComponent => {
-  console.log("withData", ComposedComponent);
-
   return class WithData extends React.Component {
     static displayName = `WithData(${ComposedComponent.displayName})`;
     static propTypes = {
@@ -13,8 +11,6 @@ export default ComposedComponent => {
     };
 
     static async getInitialProps(ctx) {
-      console.log("getInitialProps", ctx);
-
       let serverState = {};
 
       // Evaluate the composed component's getInitialProps()
@@ -61,13 +57,9 @@ export default ComposedComponent => {
     constructor(props) {
       super(props);
       this.apollo = initApollo(this.props.serverState);
-      console.log("constructor", props, this);
     }
 
     render() {
-      console.log("render", this.props);
-      console.log("render ComposedComponent", ComposedComponent);
-
       return (
         <ApolloProvider client={this.apollo}>
           <ComposedComponent {...this.props} />

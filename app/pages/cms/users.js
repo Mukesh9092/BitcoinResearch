@@ -7,8 +7,6 @@ import { Layout } from "../../components/pages/cms/layout";
 
 export default class CMSUsersPage extends React.Component {
   render() {
-    console.log("CMSUsersPage#render", this.props);
-
     return (
       <ConnectedPage>
         <Layout {...this.props}>

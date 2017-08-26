@@ -8,8 +8,6 @@ import { LoginForm } from "../components/pages/public/login/form";
 
 export default class PublicLoginPage extends React.Component {
   render() {
-    console.log("PublicLoginPage#render", this.props);
-
     return (
       <ConnectedPage>
         <Layout {...this.props}>
