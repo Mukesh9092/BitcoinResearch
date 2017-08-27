@@ -7,16 +7,8 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 
 @inject("sessionStore")
 @observer
-export class LoginForm extends React.Component {
-  handleValidSubmit = async (event, { email, password }) => {
-    try {
-      await this.props.sessionStore.loginWithEmailPassword(email, password);
-    } catch (error) {
-      console.log("##### ERROR", error);
-    }
-  };
-
-  renderErrorMessage() {
+class ErrorMessage extends React.Component {
+  render() {
     const { errorMessage } = this.props.sessionStore;
 
     if (!errorMessage) {
@@ -38,8 +30,12 @@ export class LoginForm extends React.Component {
       </FormGroup>
     );
   }
+}
 
-  renderSuccessMessage() {
+@inject("sessionStore")
+@observer
+class SuccessMessage extends React.Component {
+  render() {
     const { successMessage } = this.props.sessionStore;
 
     if (!successMessage) {
@@ -61,11 +57,21 @@ export class LoginForm extends React.Component {
       </FormGroup>
     );
   }
+}
+
+@inject("sessionStore")
+@observer
+export class LoginForm extends React.Component {
+  handleValidSubmit = async (event, { email, password }) => {
+    try {
+      await this.props.sessionStore.loginWithEmailPassword(email, password);
+    } catch (error) {
+      console.log("##### ERROR", error);
+    }
+  };
 
   render() {
     console.log("##### Form Render", this.props);
-
-    const { errorMessage, successMessage } = this.props.sessionStore;
 
     return (
       <AvForm onValidSubmit={this.handleValidSubmit}>
@@ -104,8 +110,8 @@ export class LoginForm extends React.Component {
           </Col>
         </FormGroup>
 
-        {this.renderErrorMessage()}
-        {this.renderSuccessMessage()}
+        <ErrorMessage />
+        <SuccessMessage />
 
         <FormGroup check row>
           <Col
