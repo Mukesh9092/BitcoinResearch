@@ -10,25 +10,49 @@ class SessionStore {
   @observable email;
   @observable successMessage;
   @observable errorMessage;
-  @observable testKey;
 
   constructor() {
-    this.userId = null;
-    this.email = null;
-    this.successMessage = null;
-    this.errorMessage = null;
-    this.testKey = 0;
+    this.initializeFromLocalStorage();
   }
 
-  loginWithEmailPassword = async (email, password) => {
-    console.log("SessionStore loginWithEmailPassword", email, password);
+  initializeFromLocalStorage = () => {
+    if (!process.browser) {
+      return;
+    }
 
+    const { localStorage } = window;
+
+    this.userId = localStorage.getItem("userId");
+    this.email = localStorage.getItem("email");
+  };
+
+  setInLocalStorage = () => {
+    if (!process.browser) {
+      return;
+    }
+
+    const { localStorage } = window;
+
+    localStorage.setItem("userId", this.userId);
+    localStorage.setItem("email", this.email);
+  };
+
+  clearLocalStorage = () => {
+    if (!process.browser) {
+      return;
+    }
+
+    const { localStorage } = window;
+
+    localStorage.removeItem("userId");
+    localStorage.removeItem("email");
+  };
+
+  loginWithEmailPassword = async (email, password) => {
     this.userId = null;
     this.email = null;
     this.successMessage = null;
     this.errorMessage = null;
-
-    console.log("EMAIL", email);
 
     const response = await fetch("/api/authentication/local", {
       credentials: "include",
@@ -43,8 +67,6 @@ class SessionStore {
       })
     });
 
-    console.log("SessionStore loginWithEmailPassword response", response);
-
     const { status } = response;
 
     switch (status) {
@@ -58,6 +80,8 @@ class SessionStore {
         this.userId = responseId;
         this.email = responseEmail;
         this.successMessage = "Login successful";
+
+        this.setInLocalStorage();
         break;
 
       case STATUS_INTERNAL_SERVER_ERROR:
