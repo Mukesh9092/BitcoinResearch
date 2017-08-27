@@ -6,29 +6,21 @@ const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
 
 class SessionStore {
-  @observable userId = null;
-  @observable email = null;
-  @observable successMessage = null;
-  @observable errorMessage = null;
-  @observable testKey = 0;
+  @observable userId;
+  @observable email;
+  @observable successMessage;
+  @observable errorMessage;
+  @observable testKey;
 
   constructor() {
-    _.bindAll(this, ["loginWithEmailPassword"]);
-
+    this.userId = null;
+    this.email = null;
+    this.successMessage = null;
+    this.errorMessage = null;
     this.testKey = 0;
   }
 
-  plus() {
-    this.testKey = this.testKey + 1;
-  }
-
-  minus() {
-    this.testKey = this.testKey + 1;
-  }
-
-  async loginWithEmailPassword(email, password) {
-    debugger;
-
+  loginWithEmailPassword = async (email, password) => {
     console.log("SessionStore loginWithEmailPassword", email, password);
 
     this.userId = null;
@@ -55,8 +47,6 @@ class SessionStore {
 
     const { status } = response;
 
-    debugger;
-
     switch (status) {
       case STATUS_UNAUTHORIZED:
         this.errorMessage = "Invalid email or password";
@@ -75,7 +65,7 @@ class SessionStore {
         this.errorMessage = "Server Error";
         break;
     }
-  }
+  };
 }
 
 export default new SessionStore();

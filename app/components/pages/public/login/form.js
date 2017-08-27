@@ -8,38 +8,13 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 @inject("sessionStore")
 @observer
 export class LoginForm extends React.Component {
-  handleValidSubmit = (event, { email, password }) => {
-    console.log("##### Handle Valid Submit", this.props);
-
-    this.props.sessionStore.testKey = Math.random();
-  };
-
-  handlePlus = () => {
-    this.props.sessionStore.plus();
-  };
-
-  handleMinus = () => {
-    this.props.sessionStore.minus();
-  };
-
-  /*
   handleValidSubmit = async (event, { email, password }) => {
     try {
-      console.log("LoginForm#handleValidSubmit", email, password);
-
-      console.log(
-        "LoginForm#handleValidSubmit before",
-        this.props.sessionStore
-      );
-
       await this.props.sessionStore.loginWithEmailPassword(email, password);
-
-      console.log("LoginForm#handleValidSubmit after", this.props.sessionStore);
     } catch (error) {
       console.log("##### ERROR", error);
     }
   };
-  */
 
   renderErrorMessage() {
     const { errorMessage } = this.props.sessionStore;
@@ -87,10 +62,6 @@ export class LoginForm extends React.Component {
     );
   }
 
-  componentWillReact() {
-    console.log("##### Component Will React", this.props);
-  }
-
   render() {
     console.log("##### Form Render", this.props);
 
@@ -98,16 +69,6 @@ export class LoginForm extends React.Component {
 
     return (
       <AvForm onValidSubmit={this.handleValidSubmit}>
-        <div>
-          TESTKEY: {this.props.sessionStore.testKey}
-          <button type="button" onClick={this.handlePlus}>
-            +
-          </button>
-          <button type="button" onClick={this.handleMinus}>
-            -
-          </button>
-        </div>
-
         <FormGroup row>
           <Label for="email" sm={2}>
             Email
