@@ -1,7 +1,6 @@
 const LocalStrategy = require("passport-local");
 const connectRedis = require("connect-redis");
 const expressSession = require("express-session");
-const log = require("loglevel");
 const passport = require("passport");
 const { OAuthStrategy: GoogleStrategy } = require("passport-google-oauth");
 

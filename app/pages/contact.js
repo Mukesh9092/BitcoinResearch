@@ -1,24 +1,29 @@
 import React from "react";
 import { Row, Col } from "reactstrap";
 
-import { ConnectedPage } from "../components/index";
+import withApolloProvider from "../lib/graphql/withApolloProvider";
+import withMobXProvider from "../lib/mobx/withMobXProvider";
+import sessionStore from "../stores/session";
+
 import { Container } from "../components/common/container";
 import { Layout } from "../components/pages/public/layout";
 
+@withApolloProvider
+@withMobXProvider({
+  sessionStore
+})
 export default class PublicContactPage extends React.Component {
   render() {
     return (
-      <ConnectedPage>
-        <Layout {...this.props}>
-          <Container>
-            <Row>
-              <Col>
-                <h1>Contact</h1>
-              </Col>
-            </Row>
-          </Container>
-        </Layout>
-      </ConnectedPage>
+      <Layout {...this.props}>
+        <Container>
+          <Row>
+            <Col>
+              <h1>Contact</h1>
+            </Col>
+          </Row>
+        </Container>
+      </Layout>
     );
   }
 }

@@ -10,9 +10,20 @@ class SessionStore {
   @observable email = null;
   @observable successMessage = null;
   @observable errorMessage = null;
+  @observable testKey = 0;
 
   constructor() {
     _.bindAll(this, ["loginWithEmailPassword"]);
+
+    this.testKey = 0;
+  }
+
+  plus() {
+    this.testKey = this.testKey + 1;
+  }
+
+  minus() {
+    this.testKey = this.testKey + 1;
   }
 
   async loginWithEmailPassword(email, password) {
