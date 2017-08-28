@@ -1,5 +1,5 @@
-const { create-seed } = require('../lib/database')
+const { createSeed } = require("../lib/database");
 
-createSeed!
-  .then(() => process.exit())
-  .catch((error) => throw error)
+createSeed().then(() => process.exit()).catch(error => {
+  throw error;
+});

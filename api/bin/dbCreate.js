@@ -1,5 +1,5 @@
-const { create-tables } = require('../lib/database')
+const { createTables } = require("../lib/database");
 
-createTables()
-  .then(() => process.exit())
-  .catch((error) => throw error)
+createTables().then(() => process.exit()).catch(error => {
+  throw error;
+});

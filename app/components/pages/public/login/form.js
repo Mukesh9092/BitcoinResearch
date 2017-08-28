@@ -63,16 +63,10 @@ class SuccessMessage extends React.Component {
 @observer
 export class LoginForm extends React.Component {
   handleValidSubmit = async (event, { email, password }) => {
-    try {
-      await this.props.sessionStore.loginWithEmailPassword(email, password);
-    } catch (error) {
-      console.log("##### ERROR", error);
-    }
+    await this.props.sessionStore.loginWithEmailPassword(email, password);
   };
 
   render() {
-    console.log("##### Form Render", this.props);
-
     return (
       <AvForm onValidSubmit={this.handleValidSubmit}>
         <FormGroup row>

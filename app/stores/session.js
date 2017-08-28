@@ -1,11 +1,10 @@
-import _ from "lodash";
 import { observable } from "mobx";
 
 const STATUS_INTERNAL_SERVER_ERROR = 500;
 const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
 
-class SessionStore {
+class Session {
   @observable userId;
   @observable email;
   @observable successMessage;
@@ -92,5 +91,11 @@ class SessionStore {
   };
 }
 
-export default new SessionStore();
-export { SessionStore };
+const store = new Session();
+
+if (process.browser) {
+  window.sessionStore = store;
+}
+
+export default store;
+export { Session };

@@ -1,5 +1,5 @@
-const { destroy-tables } = require('../lib/database')
+const { destroyTables } = require("../lib/database");
 
-destroyTables!
-  .then(() => process.exit())
-  .catch((error) => throw error)
+destroyTables().then(() => process.exit()).catch(error => {
+  throw error;
+});

@@ -3,6 +3,7 @@ import { Row, Col } from "reactstrap";
 
 import withApolloProvider from "../../lib/graphql/withApolloProvider";
 import withMobXProvider from "../../lib/mobx/withMobXProvider";
+import withAuthentication from "../../lib/authentication/withAuthentication";
 import sessionStore from "../../stores/session";
 
 import { Container } from "../../components/common/container";
@@ -12,6 +13,7 @@ import { Layout } from "../../components/pages/cms/layout";
 @withMobXProvider({
   sessionStore
 })
+@withAuthentication
 export default class CMSIndexPage extends React.Component {
   render() {
     return (
