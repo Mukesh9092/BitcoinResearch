@@ -7,6 +7,9 @@ version: '3'
 
 services:
   proxy:
+    depends_on:
+      - app
+      - api
     links:
       - app
       - api
@@ -46,8 +49,10 @@ services:
   api:
     depends_on:
       - redis
+      - rethinkdb
     links:
       - redis
+      - rethinkdb
     build: ./api
     ports:
       - 4002:4002

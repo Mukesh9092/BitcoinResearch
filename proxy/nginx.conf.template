@@ -10,7 +10,8 @@ env API_REMOTE;
 
 http {
     server {
-        listen ${PROXY_PORT} ;
+        #listen ${PROXY_PORT} ;
+        listen 4000 ;
 
         location / {
             proxy_set_header X-Real-IP $remote_addr;
@@ -18,7 +19,8 @@ http {
             proxy_set_header Host $http_host;
             proxy_set_header X-NginX-Proxy true;
 
-            proxy_pass ${APP_REMOTE} ;
+            #proxy_pass ${APP_REMOTE} ;
+            proxy_pass http://app:4001 ;
             proxy_redirect off;
         }
 
@@ -28,7 +30,8 @@ http {
             proxy_set_header Host $http_host;
             proxy_set_header X-NginX-Proxy true;
 
-            proxy_pass ${API_REMOTE} ;
+            #proxy_pass ${API_REMOTE} ;
+            proxy_pass http://api:4002 ;
             proxy_redirect off;
         }
     }

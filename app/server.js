@@ -3,7 +3,7 @@ const path = require("path");
 const express = require("express");
 const next = require("next");
 
-const { setupPassport } = require('./commonLibrary/passport')
+const { passport, setupPassport } = require("./commonLibrary/passport");
 
 const { NODE_ENV, APP_HOST, APP_PORT } = process.env;
 
@@ -16,17 +16,39 @@ const app = express();
 
 setupPassport(app);
 
-app.use((req, res, next) => {
-  console.log('req', req.url, req.headers, req.sessionID, req.user);
-  next();
-})
+app.get("*", (req, res, next) => {
+  console.log("REQUEST", req.url, req.headers);
 
-app.get("*", nextApplicationRequestHandler);
+  passport.authenticate("local", (error, user, info) => {
+    console.log("Passport Authenticate", error, user, info);
+
+    if (error) {
+      console.log("Passport Authenticate ERROR:", error);
+      return;
+    }
+
+    if (!user) {
+      console.log("Passport Authenticate NO USER", info);
+    }
+
+    console.log("Passport Authenticate USER", user);
+
+    req.login(user, error => {
+      console.log("Passport Authenticate AFTER LOGIN", error);
+
+      if (error) {
+        console.log("Passport Authenticate AFTER LOGIN ERROR", error);
+        return;
+      }
+
+      nextApplicationRequestHandler(req, res, next);
+    });
+  })(req, res, next);
+});
 
 nextApplication
   .prepare()
   .then(() => {
-
     console.log(`> Starting server...`);
 
     app.listen(APP_PORT, APP_HOST, error => {
@@ -37,6 +59,6 @@ nextApplication
       console.log(`> Ready on http://${APP_HOST}:${APP_PORT}`);
     });
   })
-  .catch((error) => {
+  .catch(error => {
     console.error(error);
   });

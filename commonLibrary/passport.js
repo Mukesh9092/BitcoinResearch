@@ -1,17 +1,13 @@
 const LocalStrategy = require("passport-local");
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
 const connectRedis = require("connect-redis");
-const cookieParser = require('cookie-parser')
+const cookieParser = require("cookie-parser");
 const expressSession = require("express-session");
 const passport = require("passport");
 
 const user = require("./models/user");
 
-const {
-  REDIS_HOST,
-  REDIS_PORT,
-  SERVICE_SECRET,
-} = process.env;
+const { REDIS_HOST, REDIS_PORT, SERVICE_SECRET } = process.env;
 
 const RedisStore = connectRedis(expressSession);
 
@@ -21,7 +17,11 @@ const redisStore = new RedisStore({
 });
 
 const localStrategyImplementation = (email, password, cb) => {
-  console.log('commonLibrary/passport localStrategyImplementation', email, password);
+  console.log(
+    "commonLibrary/passport localStrategyImplementation",
+    email,
+    password
+  );
 
   user
     .getUserByEmailPassword(email, password)
@@ -40,18 +40,21 @@ const localStrategy = new LocalStrategy(
   localStrategyImplementation
 );
 
-const setupPassport = (app) => {
+const setupPassport = app => {
   passport.serializeUser((user, cb) => {
-    console.log('commonLibrary/passport serializeUser', user)
+    console.log("commonLibrary/passport serializeUser", user);
     cb(null, user.id);
   });
 
   passport.deserializeUser((id, cb) => {
-    console.log('commonLibrary/passport deserializeUser', id)
-    user.getUserById(id).then((result) => {
-      console.log('commonLibrary/passport deserializeUser result', result)
-      cb(null, result)
-    }).catch(cb);
+    console.log("commonLibrary/passport deserializeUser", id);
+    user
+      .getUserById(id)
+      .then(result => {
+        console.log("commonLibrary/passport deserializeUser result", result);
+        cb(null, result);
+      })
+      .catch(cb);
   });
 
   passport.use(localStrategy);
@@ -59,7 +62,6 @@ const setupPassport = (app) => {
   app
     .use(cookieParser())
     .use(bodyParser.json())
-
     .use(
       expressSession({
         secret: SERVICE_SECRET,
@@ -79,9 +81,9 @@ const setupPassport = (app) => {
     )
     .use(passport.initialize())
     .use(passport.session());
-}
+};
 
-const setupPassportLocalEndpoint = (app) => {
+const setupPassportLocalEndpoint = app => {
   app.post(
     "/api/authentication/local",
     passport.authenticate("local"),
@@ -89,9 +91,10 @@ const setupPassportLocalEndpoint = (app) => {
       res.send(user.toJSON(req.user));
     }
   );
-}
+};
 
 module.exports = {
+  passport,
   setupPassport,
-  setupPassportLocalEndpoint,
+  setupPassportLocalEndpoint
 };
