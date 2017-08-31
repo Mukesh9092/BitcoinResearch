@@ -1,6 +1,6 @@
 const rethinkdb = require('rethinkdb')
 
-const { getDatabase } = require('../../lib/database')
+const { getDatabase } = require('../database')
 
 const toArray = x => x.toArray()
 const firstElement = ([x]) => x

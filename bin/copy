@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+pushd ./bin/copy-common-library;
+gulp;
+popd;

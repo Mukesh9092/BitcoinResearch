@@ -11,7 +11,7 @@ export class Header extends React.Component {
     const { pathname } = this.props;
 
     return (
-      <NavItem>
+      <NavItem key={url}>
         <Link href={url} prefetch>
           <NavLink href={url} active={pathname === url}>
             {label}
@@ -22,7 +22,7 @@ export class Header extends React.Component {
   };
 
   renderLeftContent = () => [
-    <NavItem>
+    <NavItem key="left">
       <Link href="/" prefetch>
         <NavLink href="/">
           <FaChevronLeft

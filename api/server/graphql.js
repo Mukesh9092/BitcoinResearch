@@ -3,8 +3,8 @@ const { isArray, invokeMap } = require('lodash')
 const { makeExecutableSchema } = require('graphql-tools')
 const { graphqlExpress } = require('graphql-server-express')
 
-const user = require('../lib/models/user')
-const { Article } = require('../lib/models/article')
+const user = require('../commonLibrary/models/user')
+const { Article } = require('../commonLibrary/models/article')
 
 const jsonResult = (a) => isArray(a) ? invokeMap(a, 'toJSON') : a.toJSON()
 

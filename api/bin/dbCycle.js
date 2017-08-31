@@ -1,4 +1,4 @@
-const { createSeed, createTables, destroyTables } = require("../lib/database");
+const { createSeed, createTables, destroyTables } = require("../commonLibrary/database");
 
 destroyTables()
   .then(createTables)

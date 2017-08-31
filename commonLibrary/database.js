@@ -1,7 +1,6 @@
 const path = require('path')
 
 const faker = require('faker')
-const pify = require('pify')
 const rethinkdb = require('rethinkdb')
 
 const { genRandomString, sha512 } = require('./authentication')

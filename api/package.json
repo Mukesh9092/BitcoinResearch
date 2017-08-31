@@ -35,7 +35,6 @@
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0",
     "passport-local-authenticate": "^1.2.0",
-    "pify": "^3.0.0",
     "rethinkdb": "^2.3.3"
   }
 }

@@ -1,12 +1,17 @@
 const LocalStrategy = require("passport-local");
+const bodyParser = require('body-parser')
 const connectRedis = require("connect-redis");
+const cookieParser = require('cookie-parser')
 const expressSession = require("express-session");
 const passport = require("passport");
-const { OAuthStrategy: GoogleStrategy } = require("passport-google-oauth");
 
-const user = require("../lib/models/user");
+const user = require("./models/user");
 
-const { REDIS_HOST, REDIS_PORT } = process.env;
+const {
+  REDIS_HOST,
+  REDIS_PORT,
+  SERVICE_SECRET,
+} = process.env;
 
 const RedisStore = connectRedis(expressSession);
 
@@ -16,6 +21,8 @@ const redisStore = new RedisStore({
 });
 
 const localStrategyImplementation = (email, password, cb) => {
+  console.log('commonLibrary/passport localStrategyImplementation', email, password);
+
   user
     .getUserByEmailPassword(email, password)
     .then(user => cb(null, user))
@@ -33,21 +40,29 @@ const localStrategy = new LocalStrategy(
   localStrategyImplementation
 );
 
-function setupPassport(app) {
+const setupPassport = (app) => {
   passport.serializeUser((user, cb) => {
+    console.log('commonLibrary/passport serializeUser', user)
     cb(null, user.id);
   });
 
   passport.deserializeUser((id, cb) => {
-    user.getUserById(id).then(result => cb(null, result)).catch(cb);
+    console.log('commonLibrary/passport deserializeUser', id)
+    user.getUserById(id).then((result) => {
+      console.log('commonLibrary/passport deserializeUser result', result)
+      cb(null, result)
+    }).catch(cb);
   });
 
   passport.use(localStrategy);
 
   app
+    .use(cookieParser())
+    .use(bodyParser.json())
+
     .use(
       expressSession({
-        secret: app.keys[0],
+        secret: SERVICE_SECRET,
         cookie: {
           path: "/",
           httpOnly: true,
@@ -57,13 +72,16 @@ function setupPassport(app) {
         },
         saveUninitialized: false,
         resave: false,
-        rolling: true,
+        //rolling: true,
+        rolling: false,
         store: redisStore
       })
     )
     .use(passport.initialize())
     .use(passport.session());
+}
 
+const setupPassportLocalEndpoint = (app) => {
   app.post(
     "/api/authentication/local",
     passport.authenticate("local"),
@@ -74,5 +92,6 @@ function setupPassport(app) {
 }
 
 module.exports = {
-  setupPassport
+  setupPassport,
+  setupPassportLocalEndpoint,
 };

@@ -40,6 +40,7 @@ services:
       - APP_PORT=4001
       - NODE_ENV=develop
       - PROXY_HOST=proxy
+      - SERVICE_SECRET=keyboardcat
     command: "npm run dev"
 
   api:
@@ -65,6 +66,7 @@ services:
       - RETHINKDB_DB=tomwielandnl_develop
       - RETHINKDB_HOST=rethinkdb
       - RETHINKDB_PORT=4102
+      - SERVICE_SECRET=keyboardcat
     command: "npm run dev"
 
   redis:
