@@ -3,35 +3,36 @@
 const path = require('path')
 
 const gulp = require('gulp')
-const rimraf = require('rimraf')
+const cpr = require('cpr')
+const async = require('async')
 
 const projectDirectoryPath = path.resolve(`${__dirname}/../..`)
 console.log('Project directory path:', projectDirectoryPath)
 
-gulp.task('clean', (cb) => {
-  rimraf(`${projectDirectoryPath}/app/commonLibrary`, (error) => {
-    if (error) {
-      return cb(error)
-    }
+const services = [
+  'api',
+  'application',
+  'authentication',
+]
 
-    rimraf(`${projectDirectoryPath}/api/commonLibrary`, (error) => {
-      if (error) {
-        return cb(error)
-      }
+gulp.task('copy', (cb) => {
+  const from = `${projectDirectoryPath}/lib`
 
-      cb()
-    })
-  })
-})
+  async.each(services, (service, cb) => {
+    const to = `${projectDirectoryPath}/services/${service}/lib`
 
-gulp.task('copy', () => {
-  return gulp.src(`${projectDirectoryPath}/commonLibrary/**/*`)
-    .pipe(gulp.dest(`${projectDirectoryPath}/app/commonLibrary`))
-    .pipe(gulp.dest(`${projectDirectoryPath}/api/commonLibrary`))
+    console.log(`Copying from "${from}" to "${to}".`)
+
+    cpr(from, to, {
+      deleteFirst: true,
+      overwrite: true,
+      confirm: true,
+    }, cb)
+  }, cb)
 })
 
 gulp.task('watch', () => {
-  const watcher = gulp.watch(`${projectDirectoryPath}/commonLibrary/**/*`, ['copy'])
+  const watcher = gulp.watch(`${projectDirectoryPath}/lib/**/*`, ['copy'])
 })
 
-gulp.task('default', ['clean', 'copy', 'watch'])
+gulp.task('default', ['copy', 'watch'])

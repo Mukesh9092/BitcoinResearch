@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gulp": "^3.9.1",
-    "rimraf": "^2.6.1"
+    "async": "^2.5.0",
+    "cpr": "^2.2.0",
+    "gulp": "^3.9.1"
   }
 }
