@@ -1,9 +1,9 @@
 import React from "react";
 import { Row, Col } from "reactstrap";
 
-import withApolloProvider from "../../lib/graphql/withApolloProvider";
-import withMobXProvider from "../../lib/mobx/withMobXProvider";
-import withAuthentication from "../../lib/authentication/withAuthentication";
+import withApolloProvider from "../../lib/react/withApolloProvider";
+import withMobXProvider from "../../lib/react/withMobXProvider";
+import withAuthentication from "../../lib/react/withAuthentication";
 import sessionStore from "../../stores/session";
 
 import { Container } from "../../components/common/container";
@@ -13,7 +13,9 @@ import { Layout } from "../../components/pages/cms/layout";
 @withMobXProvider({
   sessionStore
 })
-@withAuthentication
+@withAuthentication({
+  isAuthenticated: (ctx) => !!sessionStore.userId,
+})
 export default class CMSIndexPage extends React.Component {
   render() {
     return (

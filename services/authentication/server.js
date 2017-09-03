@@ -6,6 +6,8 @@ const setupSessions = require('./lib/services/setupSessions')
 const setupPassport = require('./lib/services/setupPassport')
 const { formatError } = require('./lib/errors')
 
+const user = require('./lib/models/user')
+
 const {
   AUTHENTICATION_HOST,
   AUTHENTICATION_PORT,

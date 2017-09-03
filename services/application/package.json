@@ -8,22 +8,7 @@
     "dev": "NODE_ENV=develop node server.js",
     "start": "NODE_ENV=develop node server.js",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "lint": "npm run eslint .",
-    "lint:fix": "npm run eslint --fix .",
-    "eslint": "eslint",
-    "prettier": "prettier",
-    "prettier:all": "find . | sed '/.next/d' | sed '/node_modules/d' | sed '/.jsx*/!d' | xargs ./node_modules/.bin/prettier --write",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "gitDir": "../",
-    "linters": {
-      "*.js": [
-        "prettier --write",
-        "git add"
-      ]
-    }
+    "test:watch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
@@ -40,20 +25,17 @@
     "body-parser": "^1.17.2",
     "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
-    "eslint": "^4.5.0",
-    "eslint-config-prettier": "^2.3.0",
-    "eslint-plugin-prettier": "^2.2.0",
     "express": "^4.15.4",
     "express-session": "^1.15.5",
     "faker": "^4.1.0",
     "husky": "^0.14.3",
+    "jest": "^20.0.4",
     "lint-staged": "^4.0.4",
     "mobx": "^3.2.2",
     "mobx-react": "^4.2.2",
     "next": "^3.0.6",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "prettier": "^1.5.3",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-apollo": "^1.4.15",

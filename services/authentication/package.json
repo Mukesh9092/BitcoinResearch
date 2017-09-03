@@ -6,10 +6,12 @@
   "license": "ISC",
   "main": "server.js",
   "scripts": {
-    "server:watch": "nodemon --watch . server",
+    "dev": "npm run server:watch",
     "server": "node server",
+    "server:watch": "nodemon --watch . server",
     "start": "npm run server",
-    "dev": "npm run server:watch"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "JSONStream": "^1.3.1",
@@ -23,6 +25,7 @@
     "graphql-server-express": "^1.0.5",
     "graphql-tools": "^1.1.0",
     "highland": "^2.11.1",
+    "jest": "^20.0.4",
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.1",
     "nodemon": "^1.11.0",

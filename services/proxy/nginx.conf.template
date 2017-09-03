@@ -21,7 +21,7 @@ http {
             proxy_set_header X-NginX-Proxy true;
 
             #proxy_pass ${AUTHENTICATION_REMOTE} ;
-            proxy_pass http://authentication:4002 ;
+            proxy_pass http://authentication:4003 ;
             proxy_redirect off;
         }
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Col, Jumbotron, Button } from "reactstrap";
 
-import withApolloProvider from "../lib/graphql/withApolloProvider";
-import withMobXProvider from "../lib/mobx/withMobXProvider";
+import withApolloProvider from "../lib/react/withApolloProvider";
+import withMobXProvider from "../lib/react/withMobXProvider";
 import sessionStore from "../stores/session";
 
 import { Container } from "../components/common/container";
