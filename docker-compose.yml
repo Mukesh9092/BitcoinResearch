@@ -25,6 +25,11 @@ services:
       - APPLICATION_HOST=application
       - APPLICATION_PORT=4001
       - NODE_ENV=develop
+      - REDIS_HOST=redis
+      - REDIS_PORT=4100
+      - RETHINKDB_DB=tomwielandnl_develop
+      - RETHINKDB_HOST=rethinkdb
+      - RETHINKDB_PORT=4102
       - SERVICE_SECRET=keyboardcat
     command: "npm run dev"
 
@@ -63,9 +68,6 @@ services:
     ports:
       - 4003:4003
     environment:
-      - "API_REMOTE=http://api:4002"
-      - "APPLICATION_REMOTE=http://application:4001"
-      - "AUTHENTICATION_REMOTE=http://authentication:4001"
       - AUTHENTICATION_HOST=authentication
       - AUTHENTICATION_PORT=4003
       - NODE_ENV=develop

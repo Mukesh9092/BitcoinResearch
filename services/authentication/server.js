@@ -20,7 +20,7 @@ setupSessions(app)
 setupPassport(app)
 
 app.post("/api/authentication/local", passport.authenticate("local"), (req, res) => {
-  res.send(user.toJSON(req.user));
+  res.send(req.session);
 });
 
 app.listen(AUTHENTICATION_PORT, AUTHENTICATION_HOST, (error) => {

@@ -14,7 +14,7 @@ import { Layout } from "../../components/pages/cms/layout";
   sessionStore
 })
 @withAuthentication({
-  isAuthenticated: (ctx) => !!sessionStore.userId,
+  isAuthenticated: sessionStore.isAuthenticated,
 })
 export default class CMSIndexPage extends React.Component {
   render() {

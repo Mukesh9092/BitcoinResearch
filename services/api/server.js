@@ -1,10 +1,11 @@
 const express = require('express')
 
 const setupGenericExpressService = require('./lib/services/setupGenericExpressService')
-const setupSessions = require('./lib/services/setupSessions')
+const setupGraphQL = require('./middleware/setupGraphQL')
 const setupPassport = require('./lib/services/setupPassport')
+const setupPoloniex = require('./middleware/setupPoloniex')
+const setupSessions = require('./lib/services/setupSessions')
 const { formatError } = require('./lib/errors')
-const { setupGraphQL } = require('./graphql')
 
 const {
   API_HOST,
@@ -17,6 +18,7 @@ setupGenericExpressService(app)
 setupSessions(app)
 setupPassport(app)
 setupGraphQL(app)
+setupPoloniex(app)
 
 app.listen(API_PORT, API_HOST, (error) => {
   if (error) {

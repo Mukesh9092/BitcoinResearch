@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "npm run server:watch",
     "server": "node server",
-    "server:watch": "nodemon --watch . server",
+    "server:watch": "nodemon --watch . --delay 2500ms server",
     "start": "npm run server",
     "test": "jest",
     "test:watch": "jest --watch"

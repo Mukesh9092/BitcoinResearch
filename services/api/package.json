@@ -6,13 +6,13 @@
   "license": "ISC",
   "main": "server.js",
   "scripts": {
-    "db-create": "node bin/db-create",
-    "db-cycle": "node bin/db-cycle",
-    "db-destroy": "node bin/db-destroy",
-    "db-seed": "node bin/db-seed",
+    "db-create": "node bin/dbCreate",
+    "db-cycle": "node bin/dbCycle",
+    "db-destroy": "node bin/dbDestroy",
+    "db-seed": "node bin/dbSeed",
     "dev": "npm run server:watch",
     "server": "node server",
-    "server:watch": "nodemon --watch . server",
+    "server:watch": "nodemon --watch . --delay 2500ms server",
     "start": "npm run server",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -36,6 +36,7 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-authenticate": "^1.2.0",
+    "poloniex.js": "0.0.7",
     "rethinkdb": "^2.3.3"
   }
 }
