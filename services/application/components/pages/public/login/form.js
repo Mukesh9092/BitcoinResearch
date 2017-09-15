@@ -1,4 +1,5 @@
 import React from "react";
+import Router from "next/router";
 import { inject, observer } from "mobx-react";
 
 import { Alert, Button, Col, FormGroup, Label } from "reactstrap";
@@ -64,6 +65,7 @@ class SuccessMessage extends React.Component {
 export class LoginForm extends React.Component {
   handleValidSubmit = async (event, { email, password }) => {
     await this.props.sessionStore.loginWithEmailPassword(email, password);
+    await Router.push("/cms");
   };
 
   render() {

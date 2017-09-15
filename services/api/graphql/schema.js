@@ -15,11 +15,13 @@ const schema = `
   type User {
     id: String!
     email: String!
+    username: String!
   }
 
   type Session {
     token: String!
     ttl: Int!
+    user: User!
   }
 
   type RootQuery {

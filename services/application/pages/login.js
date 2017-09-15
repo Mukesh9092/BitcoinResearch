@@ -3,6 +3,7 @@ import { Row, Col } from "reactstrap";
 
 import withApolloProvider from "../lib/react/withApolloProvider";
 import withMobXProvider from "../lib/react/withMobXProvider";
+import withoutAuthentication from "../lib/react/authentication/withoutAuthentication";
 import sessionStore from "../stores/session";
 
 import { Container } from "../components/common/container";
@@ -12,6 +13,10 @@ import { LoginForm } from "../components/pages/public/login/form";
 @withApolloProvider
 @withMobXProvider({
   sessionStore
+})
+@withoutAuthentication({
+  isAuthenticated: sessionStore.isAuthenticated,
+  redirectPath: "/cms",
 })
 export default class PublicLoginPage extends React.Component {
   render() {

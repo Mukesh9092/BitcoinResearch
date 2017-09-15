@@ -3,12 +3,16 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  NavDropdown
+  NavDropdown,
+  NavItem,
+  NavLink,
 } from "reactstrap";
 
 import Link from "next/link";
 
-export default class Header extends React.Component {
+import sessionStore from '../../../stores/session';
+
+export default class UserNavigationItem extends React.Component {
   state = {
     isOpen: false
   };
@@ -20,17 +24,29 @@ export default class Header extends React.Component {
   };
 
   render() {
+    if (!sessionStore.isAuthenticated()) {
+      return (
+        <NavItem key="login">
+          <Link href="/login" prefetch>
+            <NavLink href="/login">
+              Login
+            </NavLink>
+          </Link>
+        </NavItem>
+      );
+    }
+
     return (
       <NavDropdown isOpen={this.state.isOpen} toggle={this.toggle}>
         <DropdownToggle nav caret>
-          Logged Out
+          Logged In
         </DropdownToggle>
         <DropdownMenu right>
-          <DropdownItem header>Header</DropdownItem>
-          <DropdownItem disabled>Action</DropdownItem>
-          <DropdownItem>Another Action</DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem>Another Action</DropdownItem>
+          <DropdownItem>
+            <Link href="/cms" prefetch>
+              CMS
+            </Link>
+          </DropdownItem>
         </DropdownMenu>
       </NavDropdown>
     );

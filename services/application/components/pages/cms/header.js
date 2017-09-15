@@ -37,10 +37,6 @@ export class Header extends React.Component {
 
   renderCollapseContent = () => [
     <Nav className="mr-auto" navbar key="links">
-      {this.renderNavLink("/", "Home")}
-      {this.renderNavLink("/about", "About")}
-      {this.renderNavLink("/contact", "Contact")}
-      {this.renderNavLink("/login", "Login")}
       {this.renderNavLink("/cms", "Dashboard")}
       {this.renderNavLink("/cms/users", "Users")}
     </Nav>,

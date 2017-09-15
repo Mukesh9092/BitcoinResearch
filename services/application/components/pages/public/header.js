@@ -32,9 +32,6 @@ export class Header extends React.Component {
       {this.renderNavLink("/", "Home")}
       {this.renderNavLink("/about", "About")}
       {this.renderNavLink("/contact", "Contact")}
-      {this.renderNavLink("/login", "Login")}
-      {this.renderNavLink("/cms", "Dashboard")}
-      {this.renderNavLink("/cms/users", "Users")}
     </Nav>,
 
     <Nav className="ml-auto" navbar key="profile-dropdown">

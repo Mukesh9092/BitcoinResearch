@@ -2,17 +2,28 @@ import React from "react";
 import { Row, Col, Jumbotron, Button } from "reactstrap";
 
 import withApolloProvider from "../lib/react/withApolloProvider";
-import withMobXProvider from "../lib/react/withMobXProvider";
+// import withMobXProvider from "../lib/react/withMobXProvider";
 import sessionStore from "../stores/session";
+import userStore from "../stores/user";
 
 import { Container } from "../components/common/container";
 import { Layout } from "../components/pages/public/layout";
 
 @withApolloProvider
-@withMobXProvider({
-  sessionStore
-})
 export default class PublicIndexPage extends React.Component {
+  static async getInitialProps({ req }) {
+    if (process.browser) {
+      await sessionStore.loadFromBrowser();
+      await userStore.loadFromBrowser();
+    } else {
+      await sessionStore.loadFromServer(req);
+
+      if (sessionStore.userId) {
+        await userStore.loadFromServer(req);
+      }
+    }
+  }
+
   render() {
     return (
       <Layout {...this.props}>

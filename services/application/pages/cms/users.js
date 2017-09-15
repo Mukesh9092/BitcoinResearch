@@ -3,7 +3,7 @@ import { Row, Col } from "reactstrap";
 
 import withApolloProvider from "../../lib/react/withApolloProvider";
 import withMobXProvider from "../../lib/react/withMobXProvider";
-import withAuthentication from "../../lib/react/withAuthentication";
+import withAuthentication from "../../lib/react/authentication/withAuthentication";
 import sessionStore from "../../stores/session";
 
 import { Container } from "../../components/common/container";
@@ -15,6 +15,7 @@ import { Layout } from "../../components/pages/cms/layout";
 })
 @withAuthentication({
   isAuthenticated: sessionStore.isAuthenticated,
+  redirectPath: "/login",
 })
 export default class CMSUsersPage extends React.Component {
   render() {
