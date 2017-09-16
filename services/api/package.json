@@ -10,10 +10,8 @@
     "db-cycle": "node bin/dbCycle",
     "db-destroy": "node bin/dbDestroy",
     "db-seed": "node bin/dbSeed",
-    "dev": "npm run server:watch",
-    "server": "node server",
-    "server:watch": "nodemon --watch . --delay 2500ms server",
-    "start": "npm run server",
+    "dev": "pm2-dev /service/server.js",
+    "start": "pm2-docker /service/server.js",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -32,10 +30,10 @@
     "jest": "^20.0.4",
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.1",
-    "nodemon": "^1.11.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-authenticate": "^1.2.0",
+    "pm2": "^2.7.0",
     "poloniex.js": "0.0.7",
     "rethinkdb": "^2.3.3"
   }

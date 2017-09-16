@@ -2,32 +2,17 @@ const express = require('express')
 const passport = require('passport')
 
 const setupGenericExpressService = require('./lib/services/setupGenericExpressService')
-const setupSessions = require('./lib/services/setupSessions')
 const setupPassport = require('./lib/services/setupPassport')
-const { formatError } = require('./lib/errors')
-
+const setupSessions = require('./lib/services/setupSessions')
 const user = require('./lib/models/user')
+const { startExpressServiceWith } = require('./lib/service')
 
-const {
-  AUTHENTICATION_HOST,
-  AUTHENTICATION_PORT,
-} = process.env
+startExpressServiceWith((app) => {
+  setupGenericExpressService(app)
+  setupSessions(app)
+  setupPassport(app)
 
-const app = express()
-
-setupGenericExpressService(app)
-setupSessions(app)
-setupPassport(app)
-
-app.post("/api/authentication/local", passport.authenticate("local"), (req, res) => {
-  res.send(req.session);
-});
-
-app.listen(AUTHENTICATION_PORT, AUTHENTICATION_HOST, (error) => {
-  if (error) {
-    console.log(formatError(error))
-    return
-  }
-
-  console.log(`HTTP Server listening at http://${AUTHENTICATION_HOST}:${AUTHENTICATION_PORT}`)
+  app.post("/api/authentication/local", passport.authenticate("local"), (req, res) => {
+    res.send(req.session)
+  })
 })

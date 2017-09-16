@@ -10,8 +10,6 @@ RUN npm install
 # Copy all files into container.
 COPY . /service
 
-WORKDIR /service
-
 CMD npm run start
 
-EXPOSE 4002
+EXPOSE 8002

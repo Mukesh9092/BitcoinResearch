@@ -7,12 +7,13 @@ events { worker_connections 1024; }
 env API_REMOTE;
 env APPLICATION_REMOTE;
 env AUTHENTICATION_REMOTE;
-env PROXY_PORT;
+env SERVICE_HOST;
+env SERVICE_PORT;
 
 http {
     server {
-        #listen ${PROXY_PORT} ;
-        listen 4000 ;
+        #listen ${SERVICE_PORT} ;
+        listen 8000 ;
 
         location /api/authentication {
             proxy_set_header X-Real-IP $remote_addr;

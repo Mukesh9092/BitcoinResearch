@@ -1,126 +1,109 @@
 version: '3'
 
 # Ports:
-#   - Application Services: 40xx
-#   - Databases:            41xx
-#   - Dashboards:           42xx
+#   - Application Services: 80xx
+#   - Databases:            81xx
+#   - Dashboards:           82xx
 
 services:
-  application:
-    depends_on:
-      - redis
-      - api
-    links:
-      - redis
-      - api
-    build: ./services/application
+  test:
+    build: ./services/test
     ports:
-      - 4001:4001
-    volumes:
-      - ./services/application:/service
+      - 8005:8005
     environment:
-      - API_HOST=api
-      - API_PATH=api
-      - API_PORT=4002
-      - APPLICATION_HOST=application
-      - APPLICATION_PORT=4001
+      - SERVICE_HOST=test
+      - SERVICE_PORT=8005
       - NODE_ENV=develop
       - REDIS_HOST=redis
-      - REDIS_PORT=4100
+      - REDIS_PORT=8100
       - RETHINKDB_DB=tomwielandnl_develop
       - RETHINKDB_HOST=rethinkdb
-      - RETHINKDB_PORT=4102
+      - RETHINKDB_PORT=8102
       - SERVICE_SECRET=keyboardcat
     command: "npm run dev"
 
-  api:
-    depends_on:
-      - redis
-      - rethinkdb
-    links:
-      - redis
-      - rethinkdb
-    build: ./services/api
-    ports:
-      - 4002:4002
-    volumes:
-      - ./services/api:/service
-    environment:
-      - API_HOST=api
-      - API_PORT=4002
-      - NODE_ENV=develop
-      - REDIS_HOST=redis
-      - REDIS_PORT=4100
-      - RETHINKDB_DB=tomwielandnl_develop
-      - RETHINKDB_HOST=rethinkdb
-      - RETHINKDB_PORT=4102
-      - SERVICE_SECRET=keyboardcat
-    command: "npm run dev"
-
-  authentication:
-    depends_on:
-      - redis
-      - rethinkdb
-    links:
-      - redis
-      - rethinkdb
-    build: ./services/authentication
-    ports:
-      - 4003:4003
-    environment:
-      - AUTHENTICATION_HOST=authentication
-      - AUTHENTICATION_PORT=4003
-      - NODE_ENV=develop
-      - REDIS_HOST=redis
-      - REDIS_PORT=4100
-      - RETHINKDB_DB=tomwielandnl_develop
-      - RETHINKDB_HOST=rethinkdb
-      - RETHINKDB_PORT=4102
-      - SERVICE_SECRET=keyboardcat
-    command: "npm run dev"
-
-  proxy:
-    depends_on:
-      - api
-      - application
-      - authentication
-    links:
-      - api
-      - application
-      - authentication
-    build: ./services/proxy
-    ports:
-      - 4000:4000
-    environment:
-      - "API_REMOTE=http://api:4002"
-      - "APPLICATION_REMOTE=http://application:4001"
-      - "AUTHENTICATION_REMOTE=http://authentication:4001"
-      - PROXY_HOST=proxy
-      - PROXY_PORT=4000
-
-  redis:
-    image: redis:latest
-    ports:
-      - 4100:4100
-    volumes:
-      - ./services/redis/data:/data
-    command: "redis-server --port 4100"
-
-  redis-commander:
-    depends_on:
-      - redis
-    links:
-      - redis
-    build: ./services/redis-commander
-    ports:
-      - 4201:4201
-    command: "redis-commander --redis-host redis --redis-port 4100 --port 4201 --address 0.0.0.0"
-
-  rethinkdb:
-    build: ./services/rethinkdb
-    ports:
-      - 4102:4102 # 28015
-      - 4103:4103 # 29015
-      - 4200:4200 # 8080
-    volumes:
-      - ./services/rethinkdb/data:/data
+#  api:
+#    build: ./services/api
+#    ports:
+#      - 8002:8002
+#    volumes:
+#      - ./services/api:/service
+#    environment:
+#      - SERVICE_HOST=api
+#      - SERVICE_PORT=8002
+#      - NODE_ENV=develop
+#      - REDIS_HOST=redis
+#      - REDIS_PORT=8100
+#      - RETHINKDB_DB=tomwielandnl_develop
+#      - RETHINKDB_HOST=rethinkdb
+#      - RETHINKDB_PORT=8102
+#      - SERVICE_SECRET=keyboardcat
+#    command: "npm run dev"
+#
+#  authentication:
+#    build: ./services/authentication
+#    ports:
+#      - 8003:8003
+#    environment:
+#      - SERVICE_HOST=authentication
+#      - SERVICE_PORT=8003
+#      - NODE_ENV=develop
+#      - REDIS_HOST=redis
+#      - REDIS_PORT=8100
+#      - RETHINKDB_DB=tomwielandnl_develop
+#      - RETHINKDB_HOST=rethinkdb
+#      - RETHINKDB_PORT=8102
+#      - SERVICE_SECRET=keyboardcat
+#    command: "npm run dev"
+#
+#  application:
+#    build: ./services/application
+#    ports:
+#      - 8001:8001
+#    volumes:
+#      - ./services/application:/service
+#    environment:
+#      - SERVICE_HOST=application
+#      - SERVICE_PORT=8001
+#      - NODE_ENV=develop
+#      - REDIS_HOST=redis
+#      - REDIS_PORT=8100
+#      - RETHINKDB_DB=tomwielandnl_develop
+#      - RETHINKDB_HOST=rethinkdb
+#      - RETHINKDB_PORT=8102
+#      - SERVICE_SECRET=keyboardcat
+#    command: "npm run dev"
+#
+#  proxy:
+#    build: ./services/proxy
+#    ports:
+#      - 8000:8000
+#    environment:
+#      - "API_REMOTE=http://api:8002"
+#      - "APPLICATION_REMOTE=http://application:8001"
+#      - "AUTHENTICATION_REMOTE=http://authentication:8001"
+#      - SERVICE_HOST=proxy
+#      - SERVICE_PORT=8000
+#
+#  redis:
+#    image: redis:latest
+#    ports:
+#      - 8100:8100
+#    volumes:
+#      - ./services/redis/data:/data
+#    command: "redis-server --port 8100"
+#
+#  redis-commander:
+#    build: ./services/redis-commander
+#    ports:
+#      - 8201:8201
+#    command: "redis-commander --redis-host redis --redis-port 8100 --port 8201 --address 0.0.0.0"
+#
+#  rethinkdb:
+#    build: ./services/rethinkdb
+#    ports:
+#      - 8102:8102 # 28015
+#      - 8103:8103 # 29015
+#      - 8200:8200 # 8080
+#    volumes:
+#      - ./services/rethinkdb/data:/data
