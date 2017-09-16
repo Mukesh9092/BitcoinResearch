@@ -1,15 +1,17 @@
+# Use the latest Node.js base image.
 FROM node:8
+
+# Expose the application's ports.
+EXPOSE 8001
 
 # Create app directory
 RUN mkdir -p /service
 
-COPY ./package.json /service
-WORKDIR /service
-RUN npm install
-
 # Copy all files into container.
 COPY . /service
 
-CMD npm run start
+# Run commands from this directory.
+WORKDIR /service
 
-EXPOSE 8003
+# Run this command to start the application.
+CMD ./start.sh

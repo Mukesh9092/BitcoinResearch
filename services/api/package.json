@@ -10,8 +10,8 @@
     "db-cycle": "node bin/dbCycle",
     "db-destroy": "node bin/dbDestroy",
     "db-seed": "node bin/dbSeed",
-    "dev": "pm2-dev /service/server.js",
-    "start": "pm2-docker /service/server.js",
+    "dev": "pm2-dev pm2.json",
+    "start": "pm2-docker pm2.json",
     "test": "jest",
     "test:watch": "jest --watch"
   },

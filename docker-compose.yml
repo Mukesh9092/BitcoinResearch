@@ -6,13 +6,15 @@ version: '3'
 #   - Dashboards:           82xx
 
 services:
-  test:
-    build: ./services/test
+  api:
+    build: ./services/api
     ports:
-      - 8005:8005
+      - 8002:8002
+    volumes:
+      - ./services/api:/service
     environment:
-      - SERVICE_HOST=test
-      - SERVICE_PORT=8005
+      - SERVICE_HOST=api
+      - SERVICE_PORT=8002
       - NODE_ENV=develop
       - REDIS_HOST=redis
       - REDIS_PORT=8100
@@ -20,90 +22,79 @@ services:
       - RETHINKDB_HOST=rethinkdb
       - RETHINKDB_PORT=8102
       - SERVICE_SECRET=keyboardcat
-    command: "npm run dev"
 
-#  api:
-#    build: ./services/api
-#    ports:
-#      - 8002:8002
-#    volumes:
-#      - ./services/api:/service
-#    environment:
-#      - SERVICE_HOST=api
-#      - SERVICE_PORT=8002
-#      - NODE_ENV=develop
-#      - REDIS_HOST=redis
-#      - REDIS_PORT=8100
-#      - RETHINKDB_DB=tomwielandnl_develop
-#      - RETHINKDB_HOST=rethinkdb
-#      - RETHINKDB_PORT=8102
-#      - SERVICE_SECRET=keyboardcat
-#    command: "npm run dev"
-#
-#  authentication:
-#    build: ./services/authentication
-#    ports:
-#      - 8003:8003
-#    environment:
-#      - SERVICE_HOST=authentication
-#      - SERVICE_PORT=8003
-#      - NODE_ENV=develop
-#      - REDIS_HOST=redis
-#      - REDIS_PORT=8100
-#      - RETHINKDB_DB=tomwielandnl_develop
-#      - RETHINKDB_HOST=rethinkdb
-#      - RETHINKDB_PORT=8102
-#      - SERVICE_SECRET=keyboardcat
-#    command: "npm run dev"
-#
-#  application:
-#    build: ./services/application
-#    ports:
-#      - 8001:8001
-#    volumes:
-#      - ./services/application:/service
-#    environment:
-#      - SERVICE_HOST=application
-#      - SERVICE_PORT=8001
-#      - NODE_ENV=develop
-#      - REDIS_HOST=redis
-#      - REDIS_PORT=8100
-#      - RETHINKDB_DB=tomwielandnl_develop
-#      - RETHINKDB_HOST=rethinkdb
-#      - RETHINKDB_PORT=8102
-#      - SERVICE_SECRET=keyboardcat
-#    command: "npm run dev"
-#
-#  proxy:
-#    build: ./services/proxy
-#    ports:
-#      - 8000:8000
-#    environment:
-#      - "API_REMOTE=http://api:8002"
-#      - "APPLICATION_REMOTE=http://application:8001"
-#      - "AUTHENTICATION_REMOTE=http://authentication:8001"
-#      - SERVICE_HOST=proxy
-#      - SERVICE_PORT=8000
-#
-#  redis:
-#    image: redis:latest
-#    ports:
-#      - 8100:8100
-#    volumes:
-#      - ./services/redis/data:/data
-#    command: "redis-server --port 8100"
-#
-#  redis-commander:
-#    build: ./services/redis-commander
-#    ports:
-#      - 8201:8201
-#    command: "redis-commander --redis-host redis --redis-port 8100 --port 8201 --address 0.0.0.0"
-#
-#  rethinkdb:
-#    build: ./services/rethinkdb
-#    ports:
-#      - 8102:8102 # 28015
-#      - 8103:8103 # 29015
-#      - 8200:8200 # 8080
-#    volumes:
-#      - ./services/rethinkdb/data:/data
+  authentication:
+    build: ./services/authentication
+    ports:
+      - 8003:8003
+    volumes:
+      - ./services/authentication:/service
+    environment:
+      - SERVICE_HOST=authentication
+      - SERVICE_PORT=8003
+      - NODE_ENV=develop
+      - REDIS_HOST=redis
+      - REDIS_PORT=8100
+      - RETHINKDB_DB=tomwielandnl_develop
+      - RETHINKDB_HOST=rethinkdb
+      - RETHINKDB_PORT=8102
+      - SERVICE_SECRET=keyboardcat
+
+  application:
+    build: ./services/application
+    ports:
+      - 8001:8001
+    volumes:
+      - ./services/application:/service
+    environment:
+      - SERVICE_HOST=application
+      - SERVICE_PORT=8001
+      - NODE_ENV=develop
+      - REDIS_HOST=redis
+      - REDIS_PORT=8100
+      - RETHINKDB_DB=tomwielandnl_develop
+      - RETHINKDB_HOST=rethinkdb
+      - RETHINKDB_PORT=8102
+      - SERVICE_SECRET=keyboardcat
+
+  proxy:
+    depends_on:
+      - api
+      - application
+      - authentication
+    links:
+      - api
+      - application
+      - authentication
+    build: ./services/proxy
+    ports:
+      - 8000:8000
+    environment:
+      - "API_REMOTE=http://api:8002"
+      - "APPLICATION_REMOTE=http://application:8001"
+      - "AUTHENTICATION_REMOTE=http://authentication:8003"
+      - SERVICE_HOST=proxy
+      - SERVICE_PORT=8000
+
+  redis:
+    image: redis:latest
+    ports:
+      - 8100:8100
+    volumes:
+      - ./services/redis/data:/data
+    command: "redis-server --port 8100"
+
+  redis-commander:
+    build: ./services/redis-commander
+    ports:
+      - 8201:8201
+    command: "redis-commander --redis-host redis --redis-port 8100 --port 8201 --address 0.0.0.0"
+
+  rethinkdb:
+    build: ./services/rethinkdb
+    ports:
+      - 8102:8102 # 28015
+      - 8103:8103 # 29015
+      - 8200:8200 # 8080
+    volumes:
+      - ./services/rethinkdb/data:/data

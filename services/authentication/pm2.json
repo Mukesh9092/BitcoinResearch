@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "authentication",
+      "script": "server.js",
+      "ignore_watch": ["node_modules"]
+    }
+  ]
+}

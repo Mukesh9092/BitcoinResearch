@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "next build",
-    "dev": "pm2-dev --ignore /service/.next /service/server.js",
-    "start": "pm2-docker /service/server.js",
+    "dev": "pm2-dev pm2.json",
+    "start": "pm2-docker pm2.json",
     "test": "jest",
     "test:watch": "jest --watch"
   },

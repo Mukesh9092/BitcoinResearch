@@ -13,7 +13,6 @@ const services = [
   'api',
   'application',
   'authentication',
-  'test',
 ]
 
 gulp.task('copy', (cb) => {

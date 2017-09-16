@@ -22,7 +22,7 @@ http {
             proxy_set_header X-NginX-Proxy true;
 
             #proxy_pass ${AUTHENTICATION_REMOTE} ;
-            proxy_pass http://authentication:4003 ;
+            proxy_pass http://authentication:8003 ;
             proxy_redirect off;
         }
 
@@ -33,7 +33,7 @@ http {
             proxy_set_header X-NginX-Proxy true;
 
             #proxy_pass ${API_REMOTE} ;
-            proxy_pass http://api:4002 ;
+            proxy_pass http://api:8002 ;
             proxy_redirect off;
         }
 
@@ -44,7 +44,7 @@ http {
             proxy_set_header X-NginX-Proxy true;
 
             #proxy_pass ${APPLICATION_REMOTE} ;
-            proxy_pass http://application:4001 ;
+            proxy_pass http://application:8001 ;
             proxy_redirect off;
         }
     }
