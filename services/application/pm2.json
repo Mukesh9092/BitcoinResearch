@@ -1,9 +1,0 @@
-{
-  "apps": [
-    {
-      "name": "application",
-      "script": "server.js",
-      "ignore_watch": [".next", "node_modules"]
-    }
-  ]
-}

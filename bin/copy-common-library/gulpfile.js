@@ -13,6 +13,10 @@ const services = [
   'api',
   'application',
   'authentication',
+  'proxy',
+  'redis',
+  'redis-commander',
+  'rethinkdb',
 ]
 
 gulp.task('copy', (cb) => {
