@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 pushd ./bin/copy-common-library;
-gulp;
+npm run start;
 popd;
