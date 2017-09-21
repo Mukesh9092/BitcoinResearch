@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 export NODE_ENV=develop
+export PROXY_HOST=0.0.0.0
+export PROXY_PORT=8000
+export API_HOST=0.0.0.0
+export API_PORT=8001
+export APPLICATION_HOST=0.0.0.0
+export APPLICATION_PORT=8002
+export AUTHENTICATION_HOST=0.0.0.0
+export AUTHENTICATION_PORT=8003
 export REDIS_HOST=0.0.0.0
 export REDIS_PORT=6379
 export RETHINKDB_DB=tomwielandnl_develop

@@ -29,9 +29,11 @@ class User {
     const query = {
       query: gql`
         query userById($id: String!) {
-          id: $id
-          email
-          username
+          userById(id: $id) {
+            id
+            email
+            username
+          }
         }
       `,
       variables: {
