@@ -2,7 +2,6 @@ import React from "react";
 import { Row, Col, Jumbotron, Button } from "reactstrap";
 
 import withApolloProvider from "../lib/react/withApolloProvider";
-// import withMobXProvider from "../lib/react/withMobXProvider";
 import sessionStore from "../stores/session";
 import userStore from "../stores/user";
 
@@ -14,7 +13,10 @@ export default class PublicIndexPage extends React.Component {
   static async getInitialProps({ req }) {
     if (process.browser) {
       await sessionStore.loadFromBrowser();
-      await userStore.loadFromBrowser();
+
+      if (sessionStore.userId) {
+        await userStore.loadFromBrowser();
+      }
     } else {
       await sessionStore.loadFromServer(req);
 
@@ -22,6 +24,7 @@ export default class PublicIndexPage extends React.Component {
         await userStore.loadFromServer(req);
       }
     }
+
   }
 
   render() {

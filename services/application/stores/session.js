@@ -13,6 +13,14 @@ class Session {
 
   @observable loaded;
 
+  constructor() {
+    if (process.browser) {
+      this.loadFromBrowser();
+    } else {
+      this.loadFromServer();
+    }
+  }
+
   async loadFromServer(req) {
     const userId = get(req, "session.passport.user");
 

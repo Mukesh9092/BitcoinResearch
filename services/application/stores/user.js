@@ -13,23 +13,25 @@ class User {
 
   @observable loaded;
 
-  async loadFromBrowser(req) {
-
+  constructor() {
+    if (process.browser) {
+      this.loadFromBrowser();
+    } else {
+      this.loadFromServer();
+    }
   }
 
-  async loadFromServer(req) {
+  async load(req) {
     const userId = sessionStore.userId;
 
-    console.log('User#loadFromServer userId', userId)
+    console.log('User#load userId', userId)
 
     const query = {
       query: gql`
-        query currentUser($id: String!) {
-          userById(id: $id) {
-            id
-            email
-            username
-          }
+        query userById($id: String!) {
+          id: $id
+          email
+          username
         }
       `,
       variables: {
@@ -37,13 +39,21 @@ class User {
       },
     }
 
-    console.log('User#loadFromServer query', query)
+    console.log('User#load query', query)
 
     const result = await apolloClient.query(query)
 
-    console.log('User#loadFromServer result', result)
+    console.log('User#load result', result)
 
     // this.loaded = true;
+  }
+
+  async loadFromBrowser() {
+    await this.load();
+  }
+
+  async loadFromServer(req) {
+    await this.load(req);
   }
 }
 
