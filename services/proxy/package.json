@@ -6,8 +6,7 @@
   "license": "ISC",
   "main": "server.js",
   "scripts": {
-    "dev":
-      "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
+    "dev": "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
     "start": "node server.js",
     "test": "jest",
     "test:watch": "jest --watch"

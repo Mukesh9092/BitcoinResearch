@@ -10,8 +10,7 @@
     "db-cycle": "node bin/dbCycle",
     "db-destroy": "node bin/dbDestroy",
     "db-seed": "node bin/dbSeed",
-    "dev":
-      "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
+    "dev": "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
     "start": "node server.js",
     "test": "jest",
     "test:watch": "jest --watch"
