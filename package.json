@@ -9,15 +9,12 @@
     "lint:fix": "npm run eslint --fix .",
     "precommit": "lint-staged",
     "prettier": "prettier",
-    "prettier:all": "find . | sed '/.next/d' | sed '/node_modules/d' | xargs ./node_modules/.bin/prettier --write"
+    "prettier:all": "find . -name '*.js' | sed '/.next/d' | sed '/node_modules/d' | xargs ./node_modules/.bin/prettier --write"
   },
   "lint-staged": {
     "gitDir": "./",
     "linters": {
-      "*.js": [
-        "prettier --write",
-        "git add"
-      ]
+      "*.js": ["prettier --write", "git add"]
     }
   },
   "repository": {

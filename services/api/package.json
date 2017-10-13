@@ -10,7 +10,8 @@
     "db-cycle": "node bin/dbCycle",
     "db-destroy": "node bin/dbDestroy",
     "db-seed": "node bin/dbSeed",
-    "dev": "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
+    "dev":
+      "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
     "start": "node server.js",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -29,12 +30,13 @@
     "highland": "^2.11.1",
     "jest": "^21.1.0",
     "lodash": "^4.17.4",
+    "morgan": "^1.9.0",
     "node-fetch": "^1.7.3",
     "nodemon": "^1.12.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passport-local-authenticate": "^1.2.0",
-    "poloniex.js": "^0.0.7",
+    "poloniex.js": "0.0.7",
     "rethinkdb": "^2.3.3"
   }
 }

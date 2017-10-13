@@ -8,6 +8,12 @@
     "transform-decorators-legacy",
     "transform-class-properties",
     "transform-object-rest-spread",
-    "transform-runtime"
+    "transform-runtime",
+    [
+      "babel-plugin-inline-import",
+      {
+        "extensions": [".css"]
+      }
+    ]
   ]
 }

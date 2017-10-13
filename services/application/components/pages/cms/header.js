@@ -39,6 +39,7 @@ export class Header extends React.Component {
     <Nav className="mr-auto" navbar key="links">
       {this.renderNavLink("/cms", "Dashboard")}
       {this.renderNavLink("/cms/users", "Users")}
+      {this.renderNavLink("/cms/currencies", "Currencies")}
     </Nav>,
 
     <Nav className="ml-auto" navbar key="profile-button">

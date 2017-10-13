@@ -1,0 +1,33 @@
+{
+  "name": "proxy",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Tom Wieland <tom.wieland@gmail.com>",
+  "license": "ISC",
+  "main": "server.js",
+  "scripts": {
+    "dev":
+      "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
+    "start": "node server.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "connect-redis": "^3.3.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.4",
+    "express-session": "^1.15.5",
+    "faker": "^4.1.0",
+    "http-proxy": "^1.16.2",
+    "jest": "^21.1.0",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.12.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-authenticate": "^1.2.0",
+    "redis": "^2.8.0",
+    "redis-streams": "^1.1.0",
+    "rethinkdb": "^2.3.3"
+  }
+}

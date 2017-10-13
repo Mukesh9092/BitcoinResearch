@@ -5,13 +5,14 @@ import {
   DropdownToggle,
   NavDropdown,
   NavItem,
-  NavLink,
+  NavLink
 } from "reactstrap";
+import { observer, inject } from "mobx-react";
 
 import Link from "next/link";
 
-import sessionStore from '../../../stores/session';
-
+@inject("application")
+@observer
 export default class UserNavigationItem extends React.Component {
   state = {
     isOpen: false
@@ -24,31 +25,44 @@ export default class UserNavigationItem extends React.Component {
   };
 
   render() {
-    if (!sessionStore.isAuthenticated()) {
+    const { application } = this.props;
+
+    console.log("UserNavigationItem#render", this.props);
+
+    if (
+      application &&
+      application.session &&
+      application.session.isAuthenticated()
+    ) {
       return (
-        <NavItem key="login">
-          <Link href="/login" prefetch>
-            <NavLink href="/login">
-              Login
-            </NavLink>
-          </Link>
-        </NavItem>
+        <NavDropdown isOpen={this.state.isOpen} toggle={this.toggle}>
+          <DropdownToggle nav caret>
+            Logged In
+          </DropdownToggle>
+          <DropdownMenu right>
+            <DropdownItem>
+              <Link href="/cms" prefetch>
+                <a href="/cms">CMS</a>
+              </Link>
+            </DropdownItem>
+            <DropdownItem
+              onClick={() => {
+                application.session.logout();
+              }}
+            >
+              Logout
+            </DropdownItem>
+          </DropdownMenu>
+        </NavDropdown>
       );
     }
 
     return (
-      <NavDropdown isOpen={this.state.isOpen} toggle={this.toggle}>
-        <DropdownToggle nav caret>
-          Logged In
-        </DropdownToggle>
-        <DropdownMenu right>
-          <DropdownItem>
-            <Link href="/cms" prefetch>
-              CMS
-            </Link>
-          </DropdownItem>
-        </DropdownMenu>
-      </NavDropdown>
+      <NavItem key="login">
+        <Link href="/login" prefetch>
+          <NavLink href="/login">Login</NavLink>
+        </Link>
+      </NavItem>
     );
   }
 }

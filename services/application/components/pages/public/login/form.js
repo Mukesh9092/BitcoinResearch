@@ -1,18 +1,23 @@
 import React from "react";
 import Router from "next/router";
+import { get, isString, isEmpty } from "lodash";
 import { inject, observer } from "mobx-react";
 
 import { Alert, Button, Col, FormGroup, Label } from "reactstrap";
 
 import { AvForm, AvField } from "availity-reactstrap-validation";
 
-@inject("sessionStore")
+@inject("application")
 @observer
 class ErrorMessage extends React.Component {
   render() {
-    const { errorMessage } = this.props.sessionStore;
+    console.log("ErrorMessage#render", this.props);
 
-    if (!errorMessage) {
+    const errorMessage = get(this.props, "application.session.errorMessage");
+
+    console.log("ErrorMessage#render errorMessage", errorMessage);
+
+    if (!isString(errorMessage) || isEmpty(errorMessage)) {
       return null;
     }
 
@@ -24,22 +29,36 @@ class ErrorMessage extends React.Component {
             offset: 2
           }}
         >
-          <Alert color="danger">
-            {errorMessage}
-          </Alert>
+          {errorMessage}
         </Col>
       </FormGroup>
     );
   }
 }
 
-@inject("sessionStore")
+@inject("application")
 @observer
 class SuccessMessage extends React.Component {
   render() {
-    const { successMessage } = this.props.sessionStore;
+    console.log("SuccessMessage#render", this.props);
 
-    if (!successMessage) {
+    const successMessage = get(
+      this.props,
+      "application.session.successMessage"
+    );
+
+    console.log(
+      "SuccessMessage#render successMessage",
+      successMessage,
+      isString(successMessage),
+      isEmpty(successMessage)
+    );
+
+    if (
+      !successMessage ||
+      !isString(successMessage) ||
+      isEmpty(successMessage)
+    ) {
       return null;
     }
 
@@ -51,24 +70,29 @@ class SuccessMessage extends React.Component {
             offset: 2
           }}
         >
-          <Alert color="success">
-            {successMessage}
-          </Alert>
+          {successMessage}
         </Col>
       </FormGroup>
     );
   }
 }
 
-@inject("sessionStore")
+@inject("application")
 @observer
 export class LoginForm extends React.Component {
   handleValidSubmit = async (event, { email, password }) => {
-    await this.props.sessionStore.loginWithEmailPassword(email, password);
-    await Router.push("/cms");
+    console.log("LoginForm#render", email, password, this.props);
+
+    const session = get(this.props, "application.session");
+
+    await session.loginWithEmailPassword(email, password);
+
+    // await Router.push("/cms");
   };
 
   render() {
+    console.log("LoginForm#render", this.props);
+
     return (
       <AvForm onValidSubmit={this.handleValidSubmit}>
         <FormGroup row>

@@ -1,8 +1,9 @@
 const schema = `
   scalar Date
-  
+
   type Currency {
     id: Int!
+    key: String!
     name: String!
     txFee:  String!
     minConf: Int!
@@ -10,6 +11,17 @@ const schema = `
     disabled: Boolean!
     delisted: Boolean!
     frozen: Boolean!
+  }
+
+  type Candlestick {
+    date: Date!
+    high: Float!
+    low: Float!
+    open: Float!
+    close: Float!
+    volume: Float!
+    quoteVolume: Float!
+    weightedAverage: Float!
   }
 
   type User {
@@ -28,9 +40,11 @@ const schema = `
     users: [User]
     userById(id: String!): User
     userByEmail(email: String!): User
-    
+
     currencies: [Currency]
     currencyById(id: Int!): Currency
+
+    candlesticks(currencyA: String!, currencyB: String!, period: Int!, start: String!, end: String!): [Candlestick]
   }
 
   type RootMutation {
@@ -41,6 +55,6 @@ const schema = `
     query: RootQuery
     mutation: RootMutation
   }
-`
+`;
 
 module.exports = schema;

@@ -1,40 +1,39 @@
 import React from "react";
+import { Provider } from "mobx-react";
 import { Row, Col } from "reactstrap";
 
-import withApolloProvider from "../lib/react/withApolloProvider";
-import withMobXProvider from "../lib/react/withMobXProvider";
-import withoutAuthentication from "../lib/react/authentication/withoutAuthentication";
-import sessionStore from "../stores/session";
-
+import ApplicationPage from "../components/ApplicationPage";
 import { Container } from "../components/common/container";
 import { Layout } from "../components/pages/public/layout";
 import { LoginForm } from "../components/pages/public/login/form";
 
-@withApolloProvider
-@withMobXProvider({
-  sessionStore
-})
-@withoutAuthentication({
-  isAuthenticated: sessionStore.isAuthenticated,
-  redirectPath: "/cms",
-})
-export default class PublicLoginPage extends React.Component {
+export default class PublicLoginPage extends ApplicationPage {
+  static async getInitialProps(ctx) {
+    const initialProps = await super.getInitialProps(ctx);
+
+    this.ensureUnauthenticated(ctx, initialProps.application);
+
+    return initialProps;
+  }
+
   render() {
     return (
-      <Layout {...this.props}>
-        <Container>
-          <Row>
-            <Col>
-              <h1>Login</h1>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <LoginForm />
-            </Col>
-          </Row>
-        </Container>
-      </Layout>
+      <Provider application={this.application || this.props.application}>
+        <Layout {...this.props}>
+          <Container>
+            <Row>
+              <Col>
+                <h1>Login</h1>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <LoginForm />
+              </Col>
+            </Row>
+          </Container>
+        </Layout>
+      </Provider>
     );
   }
 }

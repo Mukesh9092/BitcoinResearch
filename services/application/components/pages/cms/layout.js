@@ -8,15 +8,18 @@ export function Layout({ children, title = "CMS", url: { pathname } }) {
   return (
     <main>
       <Head>
-        <title>
-          {title}
-        </title>
+        <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <link
           rel="stylesheet"
           type="text/css"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/react-table/6.6.0/react-table.css"
         />
         <link rel="stylesheet" type="text/css" href="/static/nprogress.css" />
       </Head>

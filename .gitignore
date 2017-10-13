@@ -1,8 +1,9 @@
 .idea
 .next
 .tmp
-influxdb/data
-rethinkdb/data
 node_modules
+services/influxdb/data
+services/rethinkdb/data
+services/redis/*.rdb
 
 *.log

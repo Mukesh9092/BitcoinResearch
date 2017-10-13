@@ -14,4 +14,4 @@ COPY . /service
 WORKDIR /service
 
 # Run this command to start the application.
-CMD ./start.sh
+CMD ./start-docker.sh

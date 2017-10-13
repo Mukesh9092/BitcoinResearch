@@ -2,4 +2,10 @@
 
 source ./lib/service-env-local.sh
 
-exec nginx -c $(pwd)/nginx.local.conf
+export SERVICE_HOST=0.0.0.0
+export SERVICE_PORT=8000
+export SERVICE_SECRET=keyboardcat
+
+npm install
+
+exec npm run dev

@@ -1,16 +1,16 @@
-const express = require('express')
+const express = require("express");
 
-const setupGenericExpressService = require('./lib/services/setupGenericExpressService')
-const setupGraphQL = require('./middleware/setupGraphQL')
-const setupPassport = require('./lib/services/setupPassport')
-const setupPoloniex = require('./middleware/setupPoloniex')
-const setupSessions = require('./lib/services/setupSessions')
-const { startExpressServiceWith } = require('./lib/service')
+const authenticationHeaderInjection = require("./lib/middleware/authenticationHeaderInjection");
+const expressServiceWith = require("./lib/middleware/expressServiceWith");
+const genericExpressService = require("./lib/middleware/genericExpressService");
+const graphql = require("./middleware/graphql");
+const logger = require("./lib/middleware/logger");
+const poloniex = require("./middleware/poloniex");
 
-startExpressServiceWith((app) => {
-  setupGenericExpressService(app)
-  setupSessions(app)
-  setupPassport(app)
-  setupGraphQL(app)
-  setupPoloniex(app)
-})
+expressServiceWith(app => {
+  genericExpressService(app);
+  logger(app);
+  authenticationHeaderInjection(app);
+  graphql(app);
+  poloniex(app);
+});

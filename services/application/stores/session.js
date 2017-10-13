@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+import Router from "next/router";
 import { get } from "lodash";
 import { observable } from "mobx";
 
@@ -5,65 +7,62 @@ const STATUS_INTERNAL_SERVER_ERROR = 500;
 const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
 
-class Session {
+export class Session {
   @observable userId;
 
   @observable successMessage;
   @observable errorMessage;
 
-  @observable loaded;
+  constructor(initialData) {
+    console.log("Session#constructor", initialData);
 
-  constructor() {
-    if (process.browser) {
-      this.loadFromBrowser();
-    } else {
-      this.loadFromServer();
+    if (initialData) {
+      this.userId = initialData.userId;
     }
   }
 
-  async loadFromServer(req) {
-    const userId = get(req, "session.passport.user");
+  static getBrowserInstance(initialData) {
+    console.log("Session#getBrowserInstance");
 
-    console.log('Session#loadFromServer userId', userId)
-
-    if (userId) {
-      console.log('Session#loadFromServer setting userId')
-
-      this.userId = userId;
-    }
-
-    this.loaded = true;
-  };
-
-  async loadFromBrowser() {
-    const { localStorage } = window;
-
-    const userId = localStorage.getItem("userId");
-
-    console.log('Session#loadFromBrowser userId', userId)
+    const instance = new Session(initialData);
+    const userId = window.localStorage.getItem("userId");
 
     if (userId) {
-      console.log('Session#loadFromBrowser setting userId')
-
-      this.userId = userId;
+      instance.userId = userId;
     }
 
-    this.loaded = true
-  };
+    return instance;
+  }
+
+  static async getServerInstance(ctx) {
+    console.log("Session#getServerInstance");
+
+    const instance = new Session();
+
+    const userId = get(ctx.req, "session.passport.user");
+
+    if (userId) {
+      instance.userId = userId;
+    }
+
+    return instance;
+  }
 
   async setInLocalStorage() {
-    const { localStorage } = window;
+    console.log("Session#setInLocalStorage", this.userId);
 
-    localStorage.setItem("userId", this.userId);
-  };
+    window.localStorage.setItem("userId", this.userId);
+  }
 
   async removeFromLocalStorage() {
-    const { localStorage } = window;
+    console.log("Session#removeFromLocalStorage");
 
-    localStorage.removeItem("userId");
-  };
+    window.localStorage.removeItem("userId");
+  }
 
   async loginWithEmailPassword(email, password) {
+    console.log("Session#loginWithEmailPassword", email, password);
+
     this.userId = null;
 
     const response = await fetch("/api/authentication/local", {
@@ -81,37 +80,41 @@ class Session {
 
     const { status } = response;
 
-    switch (status) {
-      case STATUS_UNAUTHORIZED:
-        this.errorMessage = "Invalid email or password";
-        break;
+    console.log("Session#loginWithEmailPassword response", status, response);
 
-      case STATUS_OK:
-        const json = await response.json();
-
-        this.userId = json.passport.user;
-        this.successMessage = "Login successful";
-
-        this.setInLocalStorage();
-        break;
-
-      case STATUS_INTERNAL_SERVER_ERROR:
-      default:
-        this.errorMessage = "Server Error";
-        break;
+    if (status === STATUS_INTERNAL_SERVER_ERROR) {
+      this.errorMessage = "Server Error";
+      return;
     }
-  };
+
+    if (status === STATUS_UNAUTHORIZED) {
+      this.errorMessage = "Invalid email or password";
+      return;
+    }
+
+    const json = await response.json();
+    this.userId = json.passport.user;
+    this.successMessage = "Login successful";
+    this.setInLocalStorage();
+
+    await Router.push("/cms");
+  }
+
+  async logout() {
+    console.log("Session#logout");
+
+    await this.removeFromLocalStorage();
+
+    await fetch("/api/authentication/logout", { credentials: "same-origin" });
+
+    this.userId = null;
+    this.successMessage = null;
+    this.errorMessage = null;
+
+    await Router.push("/");
+  }
 
   isAuthenticated = () => {
     return !!this.userId;
-  }
+  };
 }
-
-const store = new Session();
-
-if (process.browser) {
-  window.sessionStore = store;
-}
-
-export default store;
-export { Session };

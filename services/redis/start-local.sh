@@ -2,4 +2,4 @@
 
 source ./lib/service-env-local.sh
 
-exec redis
+exec redis-server

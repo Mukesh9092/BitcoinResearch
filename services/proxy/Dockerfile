@@ -1,6 +1,17 @@
-FROM nginx:1.13.3-alpine
-RUN apk add --no-cache gettext
-COPY nginx.conf.template /etc/nginx/nginx.conf
-#RUN envsubst '${PROXY_PORT},${APP_REMOTE},${API_REMOTE}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
-CMD nginx -g 'daemon off;'
-EXPOSE 8000
+# Use the latest Node.js base image.
+FROM node:8
+
+# Expose the application's ports.
+EXPOSE 8001
+
+# Create app directory
+RUN mkdir -p /service
+
+# Copy all files into container.
+COPY . /service
+
+# Run commands from this directory.
+WORKDIR /service
+
+# Run this command to start the application.
+CMD ./start-docker.sh
