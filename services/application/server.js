@@ -19,7 +19,7 @@ nextApp
       logger(app);
       authenticationHeaderExtraction(app);
 
-      app.get("*", nextApp.getRequestHandler());
+      app.use(nextApp.getRequestHandler());
     });
   })
   .catch(error => {

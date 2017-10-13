@@ -20,11 +20,18 @@ export default class ApplicationPage extends React.Component {
     console.log("ApplicationPage#ensureAuthenticated");
 
     if (process.browser) {
+      console.log(
+        "ApplicationPage#ensureAuthenticated browser isAuthenticated",
+        application.session.isAuthenticated()
+      );
+
       if (!application.session.isAuthenticated()) {
         Router.push("/login");
       }
     } else {
-      if (!!ctx.req.user) {
+      console.log("ApplicationPage#ensureAuthenticated server", ctx.req.user);
+
+      if (!ctx.req.user) {
         ctx.res.writeHead(302, {
           Location: "/login"
         });
@@ -37,10 +44,17 @@ export default class ApplicationPage extends React.Component {
     console.log("ApplicationPage#ensureUnauthenticated");
 
     if (process.browser) {
+      console.log(
+        "ApplicationPage#ensureAuthenticated browser isAuthenticated",
+        application.session.isAuthenticated()
+      );
+
       if (application.session.isAuthenticated()) {
         Router.push("/cms");
       }
     } else {
+      console.log("ApplicationPage#ensureUnauthenticated server", ctx.req.user);
+
       if (!!ctx.req.user) {
         ctx.res.writeHead(302, {
           Location: "/cms"

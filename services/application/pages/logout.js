@@ -25,12 +25,7 @@ export default class PublicLoginPage extends ApplicationPage {
           <Container>
             <Row>
               <Col>
-                <h1>Login</h1>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <LoginForm />
+                <h1>Logging out...</h1>
               </Col>
             </Row>
           </Container>

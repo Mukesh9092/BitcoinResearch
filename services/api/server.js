@@ -1,6 +1,6 @@
 const express = require("express");
 
-const authenticationHeaderInjection = require("./lib/middleware/authenticationHeaderInjection");
+const authenticationHeaderExtraction = require("./lib/middleware/authenticationHeaderExtraction");
 const expressServiceWith = require("./lib/middleware/expressServiceWith");
 const genericExpressService = require("./lib/middleware/genericExpressService");
 const graphql = require("./middleware/graphql");
@@ -10,7 +10,7 @@ const poloniex = require("./middleware/poloniex");
 expressServiceWith(app => {
   genericExpressService(app);
   logger(app);
-  authenticationHeaderInjection(app);
+  authenticationHeaderExtraction(app);
   graphql(app);
   poloniex(app);
 });
