@@ -1,7 +1,6 @@
 const { Kind } = require("graphql/language");
 
-const store = require('../lib/models/store');
-const candlestick = require("../lib/models/candlestick");
+const store = require('../lib/database/store');
 const user = require("../lib/models/user");
 
 const { isDate, isString, isNumber } = require('lodash');
