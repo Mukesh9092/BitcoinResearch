@@ -93,6 +93,12 @@ export class LoginForm extends React.Component {
   render() {
     console.log("LoginForm#render", this.props);
 
+    const isLoggingIn = get(this.props, "application.session.isLoggingIn");
+
+    if (isLoggingIn) {
+      console.log("WAT")
+    }
+
     return (
       <AvForm onValidSubmit={this.handleValidSubmit}>
         <FormGroup row>
@@ -109,6 +115,7 @@ export class LoginForm extends React.Component {
               }}
               autoFocus
               required
+              disabled={isLoggingIn}
             />
           </Col>
         </FormGroup>
@@ -126,6 +133,7 @@ export class LoginForm extends React.Component {
                 this.passwordRef = x;
               }}
               required
+              disabled={isLoggingIn}
             />
           </Col>
         </FormGroup>
@@ -140,7 +148,12 @@ export class LoginForm extends React.Component {
               offset: 2
             }}
           >
-            <Button type="submit">Login</Button>
+            <Button
+              type="submit"
+              disabled={isLoggingIn}
+            >
+              Login
+            </Button>
           </Col>
         </FormGroup>
       </AvForm>

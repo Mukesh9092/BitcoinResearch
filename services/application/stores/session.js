@@ -8,16 +8,22 @@ const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
 
 export class Session {
-  @observable userId;
-
-  @observable successMessage;
-  @observable errorMessage;
+  @observable userId = null;
+  @observable successMessage = null;
+  @observable errorMessage = null;
+  @observable loading = false;
+  @observable loggingIn = false;
+  @observable loggingOut = false;
 
   constructor(initialData) {
     console.log("Session#constructor", initialData);
 
     if (initialData) {
       this.userId = initialData.userId;
+      this.successMessage = initialData.successMessage;
+      this.errorMessage = initialData.errorMessage;
+      this.loading = initialData.loading;
+      this.isLoggingIn = initialData.isLoggingIn;
     }
   }
 
@@ -64,6 +70,9 @@ export class Session {
     console.log("Session#loginWithEmailPassword", email, password);
 
     this.userId = null;
+    this.successMessage = null;
+    this.errorMessage = null;
+    this.isLoggingIn = true;
 
     const response = await fetch("/api/authentication/local", {
       credentials: "include",
@@ -82,6 +91,8 @@ export class Session {
 
     console.log("Session#loginWithEmailPassword response", status, response);
 
+    this.isLoggingIn = false;
+
     if (status === STATUS_INTERNAL_SERVER_ERROR) {
       this.errorMessage = "Server Error";
       return;
@@ -94,14 +105,18 @@ export class Session {
 
     const json = await response.json();
     this.userId = json.passport.user;
-    this.successMessage = "Login successful";
     this.setInLocalStorage();
+    this.successMessage = "Login successful";
 
     await Router.push("/cms");
+
+    // Just skip these, immediately redirect.
   }
 
   async logout() {
     console.log("Session#logout");
+
+    this.loggingOut = true;
 
     await this.removeFromLocalStorage();
 
@@ -110,6 +125,8 @@ export class Session {
     this.userId = null;
     this.successMessage = null;
     this.errorMessage = null;
+
+    this.loggingOut = false;
 
     await Router.push("/");
   }

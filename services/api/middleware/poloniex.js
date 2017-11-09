@@ -22,8 +22,12 @@ module.exports = app => {
       const values = Object.values(currencies);
 
       const combined = values.map((currency, i) => {
+        const poloniexID = currency.id;
+        delete currency.id;
+
         return {
           ...currency,
+          poloniexID,
           key: keys[i]
         };
       });

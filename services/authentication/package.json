@@ -31,6 +31,7 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passport-local-authenticate": "^1.2.0",
+    "react-stockcharts": "^0.6.1",
     "rethinkdb": "^2.3.3"
   }
 }

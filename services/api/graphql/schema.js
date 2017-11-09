@@ -2,7 +2,7 @@ const schema = `
   scalar Date
 
   type Currency {
-    id: Int!
+    id: String!
     key: String!
     name: String!
     txFee:  String!
@@ -13,8 +13,22 @@ const schema = `
     frozen: Boolean!
   }
 
+  type OrderBook {
+    currencyA: Currency!
+    currencyB: Currency!
+    asks: [OrderBookEntry]
+    bids: [OrderBookEntry]
+  }
+
+  type OrderBookEntry {
+    price: Float!
+    amount: Int!
+  }
+
   type Candlestick {
-    date: Date!
+    id: Int!
+    currencyA: Currency!
+    currencyB: Currency!
     high: Float!
     low: Float!
     open: Float!
@@ -22,6 +36,18 @@ const schema = `
     volume: Float!
     quoteVolume: Float!
     weightedAverage: Float!
+  }
+
+  type LoanOrders {
+    offers: [LoanOrder]
+    demands: [LoanOrder]
+  }
+
+  type LoanOrder {
+    rate: Float!
+    amount: Float!
+    rangeMin: Int!
+    rangeMax: Int!
   }
 
   type User {
@@ -44,7 +70,7 @@ const schema = `
     currencies: [Currency]
     currencyById(id: Int!): Currency
 
-    candlesticks(currencyA: String!, currencyB: String!, period: Int!, start: String!, end: String!): [Candlestick]
+    candlesticks(currencyA: String!, currencyB: String!, period: Int!, start: Date!, end: Date!): [Candlestick]
   }
 
   type RootMutation {

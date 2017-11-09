@@ -13,3 +13,5 @@ export REDIS_PORT=6379
 export RETHINKDB_DB=tomwielandnl_develop
 export RETHINKDB_HOST=0.0.0.0
 export RETHINKDB_PORT=8102
+export POLONIEX_API_KEY=ABC
+export POLONIEX_API_SECRET=DEF
