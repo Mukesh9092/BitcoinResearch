@@ -16,7 +16,8 @@ const services = [
   "proxy",
   "redis",
   "redis-commander",
-  "rethinkdb"
+  "rethinkdb",
+  "rethinkdb-chateau",
 ];
 
 gulp.task("copy", cb => {

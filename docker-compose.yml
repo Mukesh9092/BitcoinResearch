@@ -87,8 +87,8 @@ services:
   redis-commander:
     build: ./services/redis-commander
     ports:
-      - 8201:8201
-    command: "redis-commander --redis-host redis --redis-port 8100 --port 8201 --address 0.0.0.0"
+      - 8202:8202
+    command: "redis-commander --redis-host redis --redis-port 8100 --port 8202 --address 0.0.0.0"
 
   rethinkdb:
     build: ./services/rethinkdb
@@ -98,3 +98,8 @@ services:
       - 8200:8200 # 8080
     volumes:
       - ./services/rethinkdb/data:/data
+
+  rethinkdb-chateau:
+    build: ./services/rethinkdb-chateau
+    ports:
+      - 8201:8201

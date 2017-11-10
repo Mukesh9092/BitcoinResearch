@@ -20,6 +20,7 @@ export class User {
       this.email = initialData.email;
       this.username = initialData.username;
     }
+
     this.session = session;
   }
 
@@ -69,7 +70,13 @@ export class User {
     };
 
     const {
-      data: { userById: { id, email, username } }
+      data: {
+        userById: {
+          id,
+          email,
+          username
+        }
+      }
     } = await apolloClient.query(query);
 
     this.id = id;

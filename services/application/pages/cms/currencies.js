@@ -22,6 +22,8 @@ export default class CMSCurrenciesPage extends ApplicationPage {
 
     await currencies.load();
 
+    console.log('currencies', currencies)
+
     return {
       ...initialProps,
       currencies

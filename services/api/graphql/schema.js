@@ -26,7 +26,7 @@ const schema = `
   }
 
   type Candlestick {
-    id: Int!
+    id: Date!
     currencyA: Currency!
     currencyB: Currency!
     high: Float!

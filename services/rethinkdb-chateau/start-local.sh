@@ -2,4 +2,4 @@
 
 source ./lib/service-env-local.sh
 
-node ./lib/db-create.js
+exec chateau -f ./config.js

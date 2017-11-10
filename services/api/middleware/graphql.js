@@ -6,11 +6,11 @@ const schema = require("../graphql/schema");
 
 module.exports = app => {
   app.all("/api/graphql", (req, res, next) => {
-    console.log("REQUEST", req.url);
-    console.log("HEADERS", req.headers);
-    console.log("BODY", req.body);
-    console.log("SESSION", req.session);
-    console.log("USER", req.user);
+    // console.log("GRAPHQL REQUEST", req.url);
+    // console.log("GRAPHQL HEADERS", req.headers);
+    // console.log("GRAPHQL BODY", req.body);
+    // console.log("GRAPHQL SESSION", req.session);
+    // console.log("GRAPHQL USER", req.user);
 
     graphqlExpress({
       schema: makeExecutableSchema({
