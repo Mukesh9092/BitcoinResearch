@@ -1,12 +1,15 @@
 const fetch = require("isomorphic-fetch");
-const { sortBy } = require('lodash');
+const {
+  filter,
+  sortBy,
+} = require('lodash');
 
 const store = require('../../../lib/database/store')
 
 const fetchPoloniex = require('../fetchPoloniex');
 
 const sanitize = (a) => {
-  return sortBy(a, ['key'])
+  return sortBy(filter(a, x => !x.frozen && !x.delisted && !x.disabled), ['key'])
 };
 
 const sanitizePoloniex = (a) => {
