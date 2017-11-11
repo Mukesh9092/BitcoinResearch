@@ -6,11 +6,11 @@ import * as cryptoCoins from "react-cryptocoins";
 import ReactTable from "react-table";
 // import "react-table/react-table.css";
 
-import ApplicationPage from "../../components/ApplicationPage";
-import { Application } from "../../stores/application";
-import { Container } from "../../components/common/container";
-import { Currencies } from "../../stores/currencies";
-import { Layout } from "../../components/pages/cms/layout";
+import ApplicationPage from "../../../components/ApplicationPage";
+import { Application } from "../../../stores/application";
+import { Container } from "../../../components/common/container";
+import { Currencies } from "../../../stores/currencies";
+import { Layout } from "../../../components/pages/cms/layout";
 
 export default class CMSCurrenciesPage extends ApplicationPage {
   static async getInitialProps(ctx) {
@@ -32,8 +32,6 @@ export default class CMSCurrenciesPage extends ApplicationPage {
 
   renderCurrencies() {
     const { currencies } = this.props;
-
-    console.log("currencies", currencies);
 
     return currencies.list.map(currency => {
       const { key, name, minConf, txFee, depositAddress } = currency;
@@ -120,7 +118,7 @@ export default class CMSCurrenciesPage extends ApplicationPage {
                       ]
                     }
                   ]}
-                  defaultPageSize={10}
+                  defaultPageSize={50}
                   className="-striped -highlight"
                 />
               </Col>

@@ -1,5 +1,8 @@
 const express = require("express");
 const next = require("next");
+const { parse } = require("url");
+
+const pathMatch = require("path-match")();
 
 const authenticationHeaderExtraction = require("./lib/middleware/authenticationHeaderExtraction");
 const expressServiceWith = require("./lib/middleware/expressServiceWith");
@@ -11,6 +14,10 @@ const nextApp = next({
   dev: process.env.NODE_ENV !== "production"
 });
 
+const paths = [
+  { path: '/cms/currencies/:currencyPair/chart', page: '/cms/currencies/chart.js' },
+];
+
 nextApp
   .prepare()
   .then(() => {
@@ -19,7 +26,25 @@ nextApp
       logger(app);
       authenticationHeaderExtraction(app);
 
-      app.use(nextApp.getRequestHandler());
+      const nextRequestHandler = nextApp.getRequestHandler();
+
+      app.use((req, res) => {
+        const { pathname, query } = parse(req.url, true);
+
+        let x;
+        let params;
+        for (let i = 0, l = paths.length; i < l; i++) {
+          x = paths[i];
+          params = pathMatch(x.path)(pathname)
+
+          if (params) {
+            nextApp.render(req, res, x.page, Object.assign(params, query))
+            return
+          }
+        }
+
+        nextRequestHandler(req, res);
+      });
     });
   })
   .catch(error => {

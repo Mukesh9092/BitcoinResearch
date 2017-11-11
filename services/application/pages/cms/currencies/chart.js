@@ -5,22 +5,30 @@ import { Row, Col, Table } from "reactstrap";
 
 import { fitWidth } from "react-stockcharts/lib/helper";
 
-import { Application } from "../../stores/application";
-import { Chart } from "../../stores/chart";
-import { Currencies } from "../../stores/currencies";
+import { Application } from "../../../stores/application";
+import { Chart } from "../../../stores/chart";
+import { Currencies } from "../../../stores/currencies";
 
-import ApplicationPage from "../../components/ApplicationPage";
-import { Container } from "../../components/common/container";
-import { Layout } from "../../components/pages/cms/layout";
+import ApplicationPage from "../../../components/ApplicationPage";
+import { Container } from "../../../components/common/container";
+import { Layout } from "../../../components/pages/cms/layout";
 import {
   MarketChart,
   MarketChartToolbar,
-} from "../../components/pages/cms/chart";
+} from "../../../components/pages/cms/chart";
 
 const FittedMarketChart = fitWidth(MarketChart);
 
 export default class CMSChartPage extends ApplicationPage {
   static async getInitialProps(ctx) {
+    console.log("CMSChartPage#getInitialProps");
+
+    const {
+      query: {
+        currencyPair,
+      },
+    } = ctx;
+
     const initialProps = await super.getInitialProps(ctx);
 
     this.ensureAuthenticated(ctx, initialProps.application);
@@ -31,11 +39,10 @@ export default class CMSChartPage extends ApplicationPage {
 
     const chart = new Chart();
 
-    const currencyA = 'BTC';
-    const currencyB = 'ETC';
+    const [ currencyA, currencyB ] = currencyPair.split('_');
     const period = 86400;
-    const start = 1483225200;
     const end = new Date().valueOf();
+    const start = end - (1000 * 60 * 60 * 24 * 365);
 
     await chart.load(currencyA, currencyB, period, start, end);
 
@@ -65,13 +72,6 @@ export default class CMSChartPage extends ApplicationPage {
       >
         <Layout {...this.props}>
           <Container>
-            <Row>
-              <Col>
-                <MarketChartToolbar
-                  currencies={currencies}
-                />
-              </Col>
-            </Row>
             <Row>
               <Col>
                 <FittedMarketChart candlesticks={candlesticks} />
