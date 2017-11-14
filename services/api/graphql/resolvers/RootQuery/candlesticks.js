@@ -1,61 +1,78 @@
 const fetch = require("isomorphic-fetch");
-const { sortBy } = require('lodash');
+const { sortBy } = require("lodash");
 
-const store = require('../../../lib/database/store')
+const store = require("../../../lib/database/store");
+const { ensureTable } = require("../../../lib/database/store");
 
-const fetchPoloniex = require('../fetchPoloniex');
+const fetchPoloniex = require("../fetchPoloniex");
 
-const sanitize = (a) => {
-  return sortBy(a, ['id'])
-};
+const rethinkDBAdapter = store.getAdapter("rethinkdb").r;
 
-const sanitizePoloniex = (a, currencyA, currencyB) => {
-  return sanitize(a.map(x => {
-    x.id = x.date * 1000
-    delete x.date
+function sanitize(a) {
+  return sortBy(a, ["id"]);
+}
 
-    x.currencyA = currencyA.id
-    x.currencyB = currencyB.id
+function sanitizePoloniex(a, currencyA, currencyB) {
+  return sanitize(
+    a.map(x => {
+      x.id = x.date * 1000;
+      delete x.date;
 
-    return x
-  }))
-};
+      x.currencyA = currencyA.id;
+      x.currencyB = currencyB.id;
 
-const getCurrencyByKey = async (key) => {
-  const currencyAResult = await store.findAll('currency', {
+      return x;
+    })
+  );
+}
+
+async function getCurrencyByKey(key) {
+  const currencyAResult = await store.findAll("currency", {
     where: {
-      key,
-    },
-  })
+      key
+    }
+  });
 
-  const currency = currencyAResult[0]
+  const [currency] = currencyAResult;
 
   if (!currency) {
-    throw new Error(`Invalid currency: ${currencyA}.`)
+    throw new Error(`Invalid currency: ${currencyA}.`);
   }
 
   return currency;
-};
+}
 
-module.exports = async (root, { currencyA: currencyAKey, currencyB: currencyBKey, period, start, end }) => {
+module.exports = async function candlesticks(
+  root,
+  { currencyA: currencyAKey, currencyB: currencyBKey, period, start, end }
+) {
   const currencyA = await getCurrencyByKey(currencyAKey);
   const currencyB = await getCurrencyByKey(currencyBKey);
 
-  const queryResult = await store.getAdapter("rethinkdb").r.table('candlesticks')
-    .between(start, end)
+  const currencyPair = `${currencyA.key}_${currencyB.key}`;
+  const tableName = `candlesticks_${currencyPair}_${period}`;
+
+  await ensureTable(rethinkDBAdapter, tableName);
+
+  const queryResult = await rethinkDBAdapter
+    .table(tableName)
+    .between(start, end);
 
   if (queryResult && queryResult.length) {
-    return sanitize(queryResult)
+    return sanitize(queryResult);
   }
 
-  const currencyPair = `${currencyA.key}_${currencyB.key}`;
+  const apiResultJSON = await fetchPoloniex(
+    `command=returnChartData&currencyPair=${currencyPair}&start=${start /
+      1000}&end=${end / 1000}&period=${period}`
+  );
 
-  const apiResultJSON = await fetchPoloniex(`command=returnChartData&currencyPair=${currencyPair}&start=${start / 1000}&end=${end / 1000}&period=${period}`);
+  const documents = sanitizePoloniex(apiResultJSON, currencyA, currencyB);
 
-  const documents = sanitizePoloniex(apiResultJSON, currencyA, currencyB)
+  await ensureTable(rethinkDBAdapter, tableName);
 
-  // Upsert.
-  await store.getAdapter("rethinkdb").r.table('candlesticks')
+  await rethinkDBAdapter
+    .table(tableName)
     .insert(documents, { conflict: "update" })
     .run();
 

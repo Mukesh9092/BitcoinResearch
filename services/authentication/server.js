@@ -13,9 +13,13 @@ expressServiceWith(app => {
   sessions(app);
   passport(app);
 
-  app.post("/api/authentication/local", Passport.authenticate("local"), (req, res) => {
-    res.send(req.session);
-  });
+  app.post(
+    "/api/authentication/local",
+    Passport.authenticate("local"),
+    (req, res) => {
+      res.send(req.session);
+    }
+  );
 
   app.get("/api/authentication/logout", (req, res) => {
     req.session.destroy();

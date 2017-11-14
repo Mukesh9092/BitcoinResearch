@@ -1,4 +1,4 @@
-const { isDate, isString, isNumber } = require('lodash');
+const { isDate, isString, isNumber } = require("lodash");
 
 module.exports = {
   __serialize: value => {
@@ -19,5 +19,5 @@ module.exports = {
 
   __parseLiteral: ast => {
     return ast.value;
-  },
-}
+  }
+};

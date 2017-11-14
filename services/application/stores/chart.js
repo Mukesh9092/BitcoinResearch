@@ -19,8 +19,20 @@ export class Chart {
 
     const query = {
       query: gql`
-        query candlesticks($currencyA: String!, $currencyB: String!, $period: Int!, $start: Date!, $end: Date!) {
-          candlesticks(currencyA: $currencyA, currencyB: $currencyB, period: $period, start: $start, end: $end) {
+        query candlesticks(
+          $currencyA: String!
+          $currencyB: String!
+          $period: Int!
+          $start: Date!
+          $end: Date!
+        ) {
+          candlesticks(
+            currencyA: $currencyA
+            currencyB: $currencyB
+            period: $period
+            start: $start
+            end: $end
+          ) {
             id
             currencyA {
               id
@@ -46,7 +58,7 @@ export class Chart {
         currencyB,
         period,
         start,
-        end,
+        end
       }
     };
 

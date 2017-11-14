@@ -26,7 +26,6 @@ export function Layout({ children, title = "CMS", url: { pathname } }) {
 
       <Header pathname={pathname} />
       {children}
-      <Footer />
     </main>
   );
 }

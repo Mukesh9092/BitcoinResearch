@@ -70,13 +70,7 @@ export class User {
     };
 
     const {
-      data: {
-        userById: {
-          id,
-          email,
-          username
-        }
-      }
+      data: { userById: { id, email, username } }
     } = await apolloClient.query(query);
 
     this.id = id;

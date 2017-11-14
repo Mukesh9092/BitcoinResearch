@@ -96,7 +96,7 @@ export class LoginForm extends React.Component {
     const isLoggingIn = get(this.props, "application.session.isLoggingIn");
 
     if (isLoggingIn) {
-      console.log("WAT")
+      console.log("WAT");
     }
 
     return (
@@ -148,10 +148,7 @@ export class LoginForm extends React.Component {
               offset: 2
             }}
           >
-            <Button
-              type="submit"
-              disabled={isLoggingIn}
-            >
+            <Button type="submit" disabled={isLoggingIn}>
               Login
             </Button>
           </Col>

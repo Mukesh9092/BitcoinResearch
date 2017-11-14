@@ -14,7 +14,10 @@
   "lint-staged": {
     "gitDir": "./",
     "linters": {
-      "*.js": ["prettier --write", "git add"]
+      "*.js": [
+        "prettier --write",
+        "git add"
+      ]
     }
   },
   "repository": {
@@ -28,6 +31,8 @@
   },
   "homepage": "https://github.com/Industrial/test-next.js#readme",
   "dependencies": {
+    "@ljharb/eslint-config": "^12.2.1",
+    "babel-eslint": "^8.0.2",
     "eslint": "^4.6.0",
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-prettier": "^2.2.0",

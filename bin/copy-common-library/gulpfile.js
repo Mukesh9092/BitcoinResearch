@@ -17,7 +17,7 @@ const services = [
   "redis",
   "redis-commander",
   "rethinkdb",
-  "rethinkdb-chateau",
+  "rethinkdb-chateau"
 ];
 
 gulp.task("copy", cb => {

@@ -3,6 +3,7 @@ import { chunk } from "lodash";
 import { Provider } from "mobx-react";
 import { Row, Col, Table } from "reactstrap";
 import * as cryptoCoins from "react-cryptocoins";
+import Link from "next/link";
 import ReactTable from "react-table";
 // import "react-table/react-table.css";
 
@@ -22,8 +23,6 @@ export default class CMSCurrenciesPage extends ApplicationPage {
 
     await currencies.load();
 
-    console.log('currencies', currencies)
-
     return {
       ...initialProps,
       currencies
@@ -31,9 +30,11 @@ export default class CMSCurrenciesPage extends ApplicationPage {
   }
 
   renderCurrencies() {
+    // console.log("CMSCurrenciesPage#renderCurrencies");
+
     const { currencies } = this.props;
 
-    return currencies.list.map(currency => {
+    return currencies.list.map((currency, i) => {
       const { key, name, minConf, txFee, depositAddress } = currency;
 
       const iconKey =
@@ -45,12 +46,20 @@ export default class CMSCurrenciesPage extends ApplicationPage {
         icon = <IconComponent />;
       }
 
+      const link = `/cms/currencies/chart?currencyPair=BTC_${key}`;
+
       return (
-        <tr>
+        <tr key={i}>
           <td>{icon}</td>
-          <td>{key}</td>
+
+          <td>
+            <Link href={link} prefetch>
+              <a href={link}>{key}</a>
+            </Link>
+          </td>
+
           <td>{name}</td>
-          <td>{txFee}</td>
+          <td>{+txFee}</td>
           <td>{minConf}</td>
         </tr>
       );
@@ -58,7 +67,7 @@ export default class CMSCurrenciesPage extends ApplicationPage {
   }
 
   render() {
-    console.log("CMSCurrenciesPage#render", this.props);
+    // console.log("CMSCurrenciesPage#render", this.props);
 
     return (
       <Provider
@@ -69,58 +78,22 @@ export default class CMSCurrenciesPage extends ApplicationPage {
           <Container>
             <Row>
               <Col>
-                <ReactTable
-                  data={this.props.currencies.list}
-                  columns={[
-                    {
-                      Header: "Name",
-                      columns: [
-                        {
-                          Header: "Icon",
-                          id: "icon",
-                          accessor: currency => {
-                            const iconKey =
-                              currency.key.substring(0, 1).toUpperCase() +
-                              currency.key.substring(1).toLowerCase();
-                            const IconComponent = cryptoCoins[iconKey];
-
-                            let icon = null;
-                            if (IconComponent) {
-                              icon = <IconComponent />;
-                            }
-
-                            return icon;
-                          }
-                        },
-                        {
-                          Header: "Key",
-                          accessor: "key"
-                        },
-                        {
-                          Header: "Name",
-                          accessor: "name"
-                        }
-                      ]
-                    },
-                    {
-                      Header: "Stats",
-                      columns: [
-                        {
-                          Header: "Fee",
-                          id: "txFee",
-                          accessor: x => +x.txFee
-                        },
-                        {
-                          Header: "Min Conf",
-                          id: "minConf",
-                          accessor: x => +x.minConf
-                        }
-                      ]
-                    }
-                  ]}
-                  defaultPageSize={50}
-                  className="-striped -highlight"
-                />
+                <Table
+                  style={{
+                    width: "100%"
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <td>Icon</td>
+                      <td>Name</td>
+                      <td>Key</td>
+                      <td>TXFEE</td>
+                      <td>MINCONF</td>
+                    </tr>
+                  </thead>
+                  <tbody>{this.renderCurrencies()}</tbody>
+                </Table>
               </Col>
             </Row>
           </Container>

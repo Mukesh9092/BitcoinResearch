@@ -1,9 +1,11 @@
 import React from "react";
 import { chunk } from "lodash";
 import { Provider } from "mobx-react";
-import { Row, Col, Table } from "reactstrap";
+import { Col, Row, ListGroup, ListGroupItem } from "reactstrap";
 
-import { fitWidth } from "react-stockcharts/lib/helper";
+import { fitWidth, fitDimensions } from "react-stockcharts/lib/helper";
+
+import { isBrowser } from "../../../lib/environment";
 
 import { Application } from "../../../stores/application";
 import { Chart } from "../../../stores/chart";
@@ -14,20 +16,16 @@ import { Container } from "../../../components/common/container";
 import { Layout } from "../../../components/pages/cms/layout";
 import {
   MarketChart,
-  MarketChartToolbar,
+  MarketChartNavbar
 } from "../../../components/pages/cms/chart";
 
-const FittedMarketChart = fitWidth(MarketChart);
+const FittedMarketChart = fitDimensions(MarketChart);
 
 export default class CMSChartPage extends ApplicationPage {
   static async getInitialProps(ctx) {
-    console.log("CMSChartPage#getInitialProps");
+    // console.log("CMSChartPage#getInitialProps");
 
-    const {
-      query: {
-        currencyPair,
-      },
-    } = ctx;
+    const { query: { currencyPair } } = ctx;
 
     const initialProps = await super.getInitialProps(ctx);
 
@@ -39,44 +37,43 @@ export default class CMSChartPage extends ApplicationPage {
 
     const chart = new Chart();
 
-    const [ currencyA, currencyB ] = currencyPair.split('_');
+    const [currencyA, currencyB] = currencyPair.split("_");
     const period = 86400;
     const end = new Date().valueOf();
-    const start = end - (1000 * 60 * 60 * 24 * 365);
+    const start = end - 1000 * 60 * 60 * 24 * 365;
 
     await chart.load(currencyA, currencyB, period, start, end);
 
     return {
       ...initialProps,
       chart,
-      currencies,
+      currencies
     };
   }
 
   render() {
-    console.log("CMSChartPage#render", this.props);
+    // console.log("CMSChartPage#render", this.props);
 
     const application = this.application || this.props.application;
 
     const {
       currencies,
-      chart: {
-        candlesticks,
-      },
+      chart: { candlesticks },
+      url: { query: { currencyPair } }
     } = this.props;
 
+    const [currencyA, currencyB] = currencyPair.split("_");
+
     return (
-      <Provider
-        application={application}
-        candlesticks={candlesticks}
-      >
+      <Provider application={application} candlesticks={candlesticks}>
         <Layout {...this.props}>
+          <MarketChartNavbar currencyPair={currencyPair} />
+
           <Container>
-            <Row>
-              <Col>
-                <FittedMarketChart candlesticks={candlesticks} />
-              </Col>
-            </Row>
+            <FittedMarketChart
+              currencyPair={currencyPair}
+              candlesticks={candlesticks}
+            />
           </Container>
         </Layout>
       </Provider>

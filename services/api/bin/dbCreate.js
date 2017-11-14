@@ -1,7 +1,7 @@
 const faker = require("faker");
 const { genRandomString, sha512 } = require("../lib/crypto");
 
-const store = require('../lib/database/store')
+const store = require("../lib/database/store");
 
 const start = async () => {
   const email = "admin@test.com";
@@ -17,8 +17,8 @@ const start = async () => {
       password_hash: passwordHash,
       disabled: false,
       frozen: false,
-      delisted: false,
-    },
+      delisted: false
+    }
   ];
 
   for (let i = 2, l = 20; i < l; i++) {
@@ -34,13 +34,13 @@ const start = async () => {
       password_hash: passwordHash,
       disabled: false,
       frozen: false,
-      delisted: false,
+      delisted: false
     });
   }
 
-  await store.createMany('user', documents)
+  await store.createMany("user", documents);
 
-  process.exit()
-}
+  process.exit();
+};
 
-start()
+start();
