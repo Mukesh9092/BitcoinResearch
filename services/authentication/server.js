@@ -7,24 +7,30 @@ const logger = require("./lib/middleware/logger");
 const passport = require("./lib/middleware/passport");
 const sessions = require("./lib/middleware/sessions");
 
-expressServiceWith(app => {
-  genericExpressService(app);
-  logger(app);
-  sessions(app);
-  passport(app);
+const { AUTHENTICATION_HOST, AUTHENTICATION_PORT } = process.env;
 
-  app.post(
-    "/api/authentication/local",
-    Passport.authenticate("local"),
-    (req, res) => {
-      res.send(req.session);
-    }
-  );
+expressServiceWith(
+  app => {
+    genericExpressService(app);
+    logger(app);
+    sessions(app);
+    passport(app);
 
-  app.get("/api/authentication/logout", (req, res) => {
-    req.session.destroy();
-    req.logout();
+    app.post(
+      "/api/authentication/local",
+      Passport.authenticate("local"),
+      (req, res) => {
+        res.send(req.session);
+      }
+    );
 
-    res.sendStatus(200);
-  });
-});
+    app.get("/api/authentication/logout", (req, res) => {
+      req.session.destroy();
+      req.logout();
+
+      res.sendStatus(200);
+    });
+  },
+  AUTHENTICATION_HOST,
+  AUTHENTICATION_PORT
+);

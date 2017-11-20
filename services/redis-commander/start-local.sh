@@ -2,9 +2,7 @@
 
 source ./lib/service-env-local.sh
 
-#exec redis-commander --redis-host 0.0.0.0 --redis-port 6379 --port 8201 --address 0.0.0.0
-
 # Hack.
 rm -rf ~/.redis-commander
 
-exec redis-commander
+exec redis-commander --redis-host REDIS_HOST --redis-port REDIS_PORT --port REDIS_COMMANDER_PORT --address REDIS_COMMANDER_HOST

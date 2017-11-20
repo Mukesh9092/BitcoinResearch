@@ -1,11 +1,16 @@
-const { RETHINKDB_HOST, RETHINKDB_PORT } = process.env;
+const {
+  RETHINKDB_HOST,
+  RETHINKDB_PORT,
+  RETHINKDB_CHATEAU_HOST,
+  RETHINKDB_CHATEAU_PORT
+} = process.env;
 
-// RethinkDB settings
-exports.host = RETHINKDB_HOST; // RethinkDB host
-exports.port = RETHINKDB_PORT; // RethinkDB driver port
-exports.authKey = ""; // Authentification key (leave an empty string if you did not set one)
+module.exports = {
+  host: RETHINKDB_HOST,
+  port: RETHINKDB_PORT,
+  authKey: "",
 
-// Express settings
-exports.expressPort = 8201; // Port used by express
-exports.debug = true; // Debug mode
-exports.network = "127.0.0.1"; // Network the node app will run on
+  expressPort: RETHINKDB_CHATEAU_PORT,
+  debug: true,
+  network: RETHINKDB_CHATEAU_HOST
+};

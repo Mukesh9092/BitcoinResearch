@@ -1,8 +1,8 @@
 # Use the latest Node.js base image.
-FROM node:8
+FROM node:9
 
 # Expose the application's ports.
-EXPOSE 8001
+EXPOSE 8000
 
 # Create app directory
 RUN mkdir -p /service

@@ -6,9 +6,7 @@
   "scripts": {
     "build": "next build",
     "dev": "nodemon -V --delay 2500ms --watch lib --watch server.js --ignore node_modules --ignore _next server.js",
-    "start": "node server.js",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -32,7 +30,6 @@
     "express-session": "^1.15.5",
     "faker": "^4.1.0",
     "husky": "^0.14.3",
-    "jest": "^21.1.0",
     "js-cookie": "^2.1.4",
     "js-data": "^3.0.1",
     "js-data-rethinkdb": "^3.0.0",
