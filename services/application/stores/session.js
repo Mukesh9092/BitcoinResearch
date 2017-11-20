@@ -16,7 +16,7 @@ export class Session {
   @observable loggingOut = false;
 
   constructor(initialData) {
-    console.log("Session#constructor", initialData);
+    // console.log("Session#constructor", initialData);
 
     if (initialData) {
       this.userId = initialData.userId;
@@ -28,7 +28,7 @@ export class Session {
   }
 
   static getBrowserInstance(initialData) {
-    console.log("Session#getBrowserInstance");
+    // console.log("Session#getBrowserInstance");
 
     const instance = new Session(initialData);
     const userId = window.localStorage.getItem("userId");
@@ -41,7 +41,7 @@ export class Session {
   }
 
   static async getServerInstance(ctx) {
-    console.log("Session#getServerInstance");
+    // console.log("Session#getServerInstance");
 
     const instance = new Session();
 
@@ -55,19 +55,19 @@ export class Session {
   }
 
   async setInLocalStorage() {
-    console.log("Session#setInLocalStorage", this.userId);
+    // console.log("Session#setInLocalStorage", this.userId);
 
     window.localStorage.setItem("userId", this.userId);
   }
 
   async removeFromLocalStorage() {
-    console.log("Session#removeFromLocalStorage");
+    // console.log("Session#removeFromLocalStorage");
 
     window.localStorage.removeItem("userId");
   }
 
   async loginWithEmailPassword(email, password) {
-    console.log("Session#loginWithEmailPassword", email, password);
+    // console.log("Session#loginWithEmailPassword", email, password);
 
     this.userId = null;
     this.successMessage = null;
@@ -89,7 +89,7 @@ export class Session {
 
     const { status } = response;
 
-    console.log("Session#loginWithEmailPassword response", status, response);
+    // console.log("Session#loginWithEmailPassword response", status, response);
 
     this.isLoggingIn = false;
 

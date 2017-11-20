@@ -6,6 +6,42 @@ version: '3'
 #   - Dashboards:           82xx
 
 services:
+  proxy:
+    depends_on:
+      - api
+      - application
+      - authentication
+    links:
+      - api
+      - application
+      - authentication
+    build: ./services/proxy
+    ports:
+      - 8000:8000
+    environment:
+      - "API_REMOTE=http://api:8002"
+      - "APPLICATION_REMOTE=http://application:8001"
+      - "AUTHENTICATION_REMOTE=http://authentication:8003"
+      - SERVICE_HOST=proxy
+      - SERVICE_PORT=8000
+
+  application:
+    build: ./services/application
+    ports:
+      - 8001:8001
+    volumes:
+      - ./services/application:/service
+    environment:
+      - SERVICE_HOST=application
+      - SERVICE_PORT=8001
+      - NODE_ENV=develop
+      - REDIS_HOST=redis
+      - REDIS_PORT=8100
+      - RETHINKDB_DB=tomwielandnl_develop
+      - RETHINKDB_HOST=rethinkdb
+      - RETHINKDB_PORT=8102
+      - SERVICE_SECRET=keyboardcat
+
   api:
     build: ./services/api
     ports:
@@ -40,15 +76,15 @@ services:
       - RETHINKDB_PORT=8102
       - SERVICE_SECRET=keyboardcat
 
-  application:
-    build: ./services/application
+  noflo:
+    build: ./services/noflo
     ports:
-      - 8001:8001
+      - 8004:8004
     volumes:
-      - ./services/application:/service
+      - ./services/noflo:/service
     environment:
-      - SERVICE_HOST=application
-      - SERVICE_PORT=8001
+      - SERVICE_HOST=noflo
+      - SERVICE_PORT=8004
       - NODE_ENV=develop
       - REDIS_HOST=redis
       - REDIS_PORT=8100
@@ -57,24 +93,6 @@ services:
       - RETHINKDB_PORT=8102
       - SERVICE_SECRET=keyboardcat
 
-  proxy:
-    depends_on:
-      - api
-      - application
-      - authentication
-    links:
-      - api
-      - application
-      - authentication
-    build: ./services/proxy
-    ports:
-      - 8000:8000
-    environment:
-      - "API_REMOTE=http://api:8002"
-      - "APPLICATION_REMOTE=http://application:8001"
-      - "AUTHENTICATION_REMOTE=http://authentication:8003"
-      - SERVICE_HOST=proxy
-      - SERVICE_PORT=8000
 
   redis:
     image: redis:latest

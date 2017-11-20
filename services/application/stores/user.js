@@ -13,7 +13,7 @@ export class User {
   @observable session;
 
   constructor(session, initialData) {
-    console.log("User#constructor", initialData);
+    // console.log("User#constructor", initialData);
 
     if (initialData) {
       this.id = initialData.id;
@@ -25,7 +25,7 @@ export class User {
   }
 
   static getBrowserInstance(session, initialData) {
-    console.log("User#getBrowserInstance", session, initialData);
+    // console.log("User#getBrowserInstance", session, initialData);
 
     const instance = new User(session, initialData);
 
@@ -33,26 +33,21 @@ export class User {
   }
 
   static async getServerInstance(ctx, session) {
-    console.log("User#getServerInstance", session);
+    // console.log("User#getServerInstance", session);
 
     const instance = new User(session);
 
     if (session.userId) {
       await instance.load(ctx.req);
 
-      console.log(
-        "User#getServerInstance instance loaded",
-        this.id,
-        this.email,
-        this.username
-      );
+      // console.log("User#getServerInstance instance loaded", this.id, this.email, this.username);
     }
 
     return instance;
   }
 
   async load(req) {
-    console.log("User#load");
+    // console.log("User#load");
 
     const query = {
       query: gql`

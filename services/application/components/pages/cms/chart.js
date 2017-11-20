@@ -4,6 +4,9 @@ import Link from "next/link";
 import React from "react";
 
 import {
+  Button,
+  ButtonGroup,
+  ButtonDropdown,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -30,13 +33,120 @@ import {
   MouseCoordinateY
 } from "react-stockcharts/lib/coordinates";
 import { ChartCanvas, Chart as StockChart } from "react-stockcharts";
+import { fitDimensions } from "react-stockcharts/lib/helper";
 
+import { Container } from "../../../components/common/container";
 import { Navigation } from "../../../components/common/navigation";
 
-export class MarketChart extends React.Component {
-  render() {
-    console.log("MarketChart#render", this.props);
+const periodOptions = [
+  {
+    label: "5m",
+    value: 300
+  },
 
+  {
+    label: "15m",
+    value: 900
+  },
+
+  {
+    label: "30m",
+    value: 1800
+  },
+
+  {
+    label: "2h",
+    value: 7200
+  },
+
+  {
+    label: "4h",
+    value: 14400
+  },
+
+  {
+    label: "24h",
+    value: 86400
+  }
+];
+
+export class MarketChart extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      height: 600,
+
+      showCandlesticks: true,
+      showVolume: true
+    };
+  }
+
+  renderCandlesticks() {
+    const { height } = this.state;
+
+    const candlesticksHeight = height / 100 * 80;
+
+    console.log("MarketChart#renderCandlesticks", candlesticksHeight);
+
+    return (
+      <StockChart id={1} height={height} yExtents={d => [d.high, d.low]}>
+        <XAxis axisAt="bottom" orient="bottom" ticks={6} />
+        <YAxis
+          axisAt="right"
+          orient="right"
+          ticks={6}
+          displayFormat={format(".3s")}
+        />
+        <MouseCoordinateY
+          at="right"
+          orient="right"
+          displayFormat={format(".3s")}
+        />
+        <CandlestickSeries />
+      </StockChart>
+    );
+  }
+
+  renderVolume() {
+    const { height } = this.state;
+
+    const volumeHeight = height / 100 * 20;
+
+    console.log("MarketChart#renderVolume", volumeHeight);
+
+    return (
+      <StockChart
+        id={2}
+        origin={(w, h) => [0, h - volumeHeight]}
+        height={volumeHeight}
+        yExtents={d => d.volume}
+      >
+        <YAxis
+          axisAt="left"
+          orient="left"
+          ticks={6}
+          displayFormat={format(".3s")}
+        />
+        <MouseCoordinateX
+          at="top"
+          orient="bottom"
+          displayFormat={timeFormat("%X")}
+        />
+        <MouseCoordinateY
+          at="left"
+          orient="left"
+          displayFormat={format(".3s")}
+        />
+        <BarSeries height={volumeHeight} yAccessor={d => d.volume} />
+      </StockChart>
+    );
+  }
+
+  render() {
+    // console.log("MarketChart#render", this.props);
+
+    const { showCandlesticks, showVolume } = this.state;
     const { currencyPair, candlesticks, width, height, ratio } = this.props;
 
     const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
@@ -50,12 +160,27 @@ export class MarketChart extends React.Component {
       xAccessor(data[data.length - 100])
     ];
 
+    let candlesticksComponent = null;
+    if (showCandlesticks) {
+      candlesticksComponent = this.renderCandlesticks();
+    }
+
+    let volumeComponent = null;
+    if (showVolume) {
+      volumeComponent = this.renderVolume();
+    }
+
     return (
       <ChartCanvas
         ratio={ratio}
-        width={width - 20}
-        height={height}
-        margin={{ left: 60, right: 100, top: 10, bottom: 30 }}
+        width={width - 15}
+        height={740}
+        margin={{
+          left: 100,
+          right: 100,
+          top: 10,
+          bottom: 30
+        }}
         type="svg"
         seriesName={currencyPair}
         data={data}
@@ -70,41 +195,8 @@ export class MarketChart extends React.Component {
           right: 50
         }}
       >
-        <StockChart id={1} yExtents={d => [d.high, d.low]}>
-          <XAxis axisAt="bottom" orient="bottom" ticks={6} />
-          <YAxis
-            axisAt="right"
-            orient="right"
-            ticks={6}
-            displayFormat={format(".3s")}
-          />
-          <MouseCoordinateX
-            at="bottom"
-            orient="bottom"
-            displayFormat={timeFormat("%Y-%m-%d")}
-          />
-          <MouseCoordinateY
-            at="right"
-            orient="right"
-            displayFormat={format(".3s")}
-          />
-          <CandlestickSeries />
-        </StockChart>
-
-        <StockChart id={2} yExtents={d => d.volume}>
-          <YAxis
-            axisAt="left"
-            orient="left"
-            ticks={5}
-            displayFormat={format(".3s")}
-          />
-          <MouseCoordinateY
-            at="left"
-            orient="left"
-            displayFormat={format(".3s")}
-          />
-          <BarSeries yAccessor={d => d.volume} />
-        </StockChart>
+        {candlesticksComponent}
+        {volumeComponent}
 
         <CrossHairCursor ratio={ratio} />
       </ChartCanvas>
@@ -112,19 +204,23 @@ export class MarketChart extends React.Component {
   }
 }
 
+const FittedMarketChart = fitDimensions(MarketChart);
+
 export class MarketChartNavbar extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      rangeDropdownOpen: false,
+      selectedPeriod: periodOptions.find(x => x.label === "5m"),
+
+      periodDropdownOpen: false,
       zoomDropdownOpen: false
     };
   }
 
-  handleRangeDropdownToggle = () => {
+  handlePeriodDropdownToggle = () => {
     this.setState({
-      rangeDropdownOpen: !this.state.rangeDropdownOpen
+      periodDropdownOpen: !this.state.periodDropdownOpen
     });
   };
 
@@ -134,7 +230,7 @@ export class MarketChartNavbar extends React.Component {
     });
   };
 
-  renderNavLink = (url, label) => {
+  renderNavLink(url, label) {
     const { pathname } = this.props;
 
     return (
@@ -146,43 +242,41 @@ export class MarketChartNavbar extends React.Component {
         </Link>
       </NavItem>
     );
-  };
+  }
 
-  renderLeftContent = () => [
-    <NavItem key="left">
-      <Link href="/cms/currencies" prefetch>
-        <NavLink href="/cms/currencies">
-          <FaList
-            style={{
-              marginRight: 10
-            }}
-          />
-        </NavLink>
-      </Link>
-    </NavItem>
-  ];
+  renderLeftContent() {
+    return [
+      <NavItem key="left">
+        <Link href="/cms/currencies" prefetch>
+          <NavLink href="/cms/currencies">
+            <FaList
+              style={{
+                marginRight: 10
+              }}
+            />
+          </NavLink>
+        </Link>
+      </NavItem>
+    ];
+  }
 
-  renderRangeDropdown = () => {
-    return (
-      <Dropdown
-        isOpen={this.state.rangeDropdownOpen}
-        toggle={this.handleRangeDropdownToggle}
-      >
-        <DropdownToggle nav caret>
-          Date
-        </DropdownToggle>
-        <DropdownMenu>
-          <DropdownItem header>Header</DropdownItem>
-          <DropdownItem disabled>Action</DropdownItem>
-          <DropdownItem>Another Action</DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem>Another Action</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
-    );
-  };
+  renderPeriodSelector() {
+    const { period, handlePeriodChange } = this.props;
 
-  renderZoomDropdown = () => {
+    const buttonGroupItems = periodOptions.map(x => {
+      const active = x.value === period;
+
+      return (
+        <Button active={active} onClick={handlePeriodChange}>
+          {x.label}
+        </Button>
+      );
+    });
+
+    return <ButtonGroup>{buttonGroupItems}</ButtonGroup>;
+  }
+
+  renderZoomDropdown() {
     return (
       <Dropdown
         isOpen={this.state.zoomDropdownOpen}
@@ -200,28 +294,26 @@ export class MarketChartNavbar extends React.Component {
         </DropdownMenu>
       </Dropdown>
     );
-  };
+  }
 
-  renderCollapseContent = () => [
-    <Nav className="mr-auto" navbar key="left">
-      {this.renderRangeDropdown()}
-      {this.renderZoomDropdown()}
-      {this.renderNavLink("/cms", "Some")}
-      {this.renderNavLink("/cms/users", "Links")}
-      {this.renderNavLink("/cms/currencies", "Go")}
-      {this.renderNavLink("/cms/currencies/erm", "Here")}
-    </Nav>,
+  renderCollapseContent() {
+    return [
+      <Nav className="mr-auto" navbar key="left">
+        {this.renderPeriodSelector()}
+        {this.renderZoomDropdown()}
+      </Nav>,
 
-    <Nav className="ml-auto" navbar key="right">
-      <NavItem key="left">
-        <Link href="/cms/currencies" prefetch>
-          <NavLink href="/cms/currencies">
-            <FaCog />
-          </NavLink>
-        </Link>
-      </NavItem>
-    </Nav>
-  ];
+      <Nav className="ml-auto" navbar key="right">
+        <NavItem key="left">
+          <Link href="/cms/currencies" prefetch>
+            <NavLink href="/cms/currencies">
+              <FaCog />
+            </NavLink>
+          </Link>
+        </NavItem>
+      </Nav>
+    ];
+  }
 
   render() {
     return (
@@ -230,6 +322,77 @@ export class MarketChartNavbar extends React.Component {
         leftContent={this.renderLeftContent()}
         collapseContent={this.renderCollapseContent()}
       />
+    );
+  }
+}
+
+export class ChartContainer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const {
+      store: { candlesticks },
+      currencyA,
+      currencyB,
+      currencyPair,
+      period,
+      start,
+      end
+    } = props;
+
+    this.state = {
+      currencyA,
+      currencyB,
+      currencyPair,
+      candlesticks,
+      period,
+      start,
+      end
+    };
+  }
+
+  handlePeriodChange = async newPeriod => {
+    console.log("ChartContainer#handlePeriodChange");
+
+    const { currencyA, currencyB, start, end, load } = this.props;
+
+    await load(currencyA, currencyB, newPeriod, start, end);
+
+    this.setState({
+      period: newPeriod
+    });
+  };
+
+  render() {
+    const {
+      currencyA,
+      currencyB,
+      currencyPair,
+      candlesticks,
+      period,
+      start,
+      end
+    } = this.state;
+
+    return (
+      <div>
+        <MarketChartNavbar
+          currencyA={currencyA}
+          currencyB={currencyB}
+          currencyPair={currencyPair}
+          period={period}
+          start={start}
+          end={end}
+          handlePeriodChange={this.handlePeriodChange}
+        />
+
+        <Container>
+          <FittedMarketChart
+            currencyPair={currencyPair}
+            candlesticks={candlesticks}
+          />
+        </Container>
+      </div>
     );
   }
 }

@@ -12,7 +12,7 @@ class CMSIndexPage extends ApplicationPage {
   static async getInitialProps(ctx) {
     const initialProps = await super.getInitialProps(ctx);
 
-    console.log("initialProps", initialProps);
+    // console.log("initialProps", initialProps);
 
     this.ensureAuthenticated(ctx, initialProps.application);
 

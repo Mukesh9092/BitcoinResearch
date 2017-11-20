@@ -27,7 +27,7 @@ export default class UserNavigationItem extends React.Component {
   render() {
     const { application } = this.props;
 
-    console.log("UserNavigationItem#render", this.props);
+    // console.log("UserNavigationItem#render", this.props);
 
     if (
       application &&

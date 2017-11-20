@@ -9,7 +9,7 @@ export class Application {
   @observable user;
 
   static getBrowserInstance(initialData) {
-    console.log("Application#getBrowserInstance", initialData);
+    // console.log("Application#getBrowserInstance", initialData);
 
     const instance = new Application();
 
@@ -20,7 +20,7 @@ export class Application {
   }
 
   static async getServerInstance(ctx) {
-    console.log("Application#getServerInstance");
+    // console.log("Application#getServerInstance");
 
     const instance = new Application();
 

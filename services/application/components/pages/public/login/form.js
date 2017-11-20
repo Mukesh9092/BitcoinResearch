@@ -11,11 +11,11 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 @observer
 class ErrorMessage extends React.Component {
   render() {
-    console.log("ErrorMessage#render", this.props);
+    // console.log("ErrorMessage#render", this.props);
 
     const errorMessage = get(this.props, "application.session.errorMessage");
 
-    console.log("ErrorMessage#render errorMessage", errorMessage);
+    // console.log("ErrorMessage#render errorMessage", errorMessage);
 
     if (!isString(errorMessage) || isEmpty(errorMessage)) {
       return null;
@@ -40,19 +40,14 @@ class ErrorMessage extends React.Component {
 @observer
 class SuccessMessage extends React.Component {
   render() {
-    console.log("SuccessMessage#render", this.props);
+    // console.log("SuccessMessage#render", this.props);
 
     const successMessage = get(
       this.props,
       "application.session.successMessage"
     );
 
-    console.log(
-      "SuccessMessage#render successMessage",
-      successMessage,
-      isString(successMessage),
-      isEmpty(successMessage)
-    );
+    // console.log("SuccessMessage#render successMessage", successMessage, isString(successMessage), isEmpty(successMessage));
 
     if (
       !successMessage ||
@@ -81,7 +76,7 @@ class SuccessMessage extends React.Component {
 @observer
 export class LoginForm extends React.Component {
   handleValidSubmit = async (event, { email, password }) => {
-    console.log("LoginForm#render", email, password, this.props);
+    // console.log("LoginForm#render", email, password, this.props);
 
     const session = get(this.props, "application.session");
 
@@ -91,13 +86,9 @@ export class LoginForm extends React.Component {
   };
 
   render() {
-    console.log("LoginForm#render", this.props);
+    // console.log("LoginForm#render", this.props);
 
     const isLoggingIn = get(this.props, "application.session.isLoggingIn");
-
-    if (isLoggingIn) {
-      console.log("WAT");
-    }
 
     return (
       <AvForm onValidSubmit={this.handleValidSubmit}>

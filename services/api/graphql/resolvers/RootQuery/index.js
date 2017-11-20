@@ -1,9 +1,9 @@
 const candlesticks = require("./candlesticks");
-const currencies = require("./currencies");
+const currencyPairs = require("./currencyPairs");
 const userById = require("./userById");
 
 module.exports = {
   candlesticks,
-  currencies,
+  currencyPairs,
   userById
 };

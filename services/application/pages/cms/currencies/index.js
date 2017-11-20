@@ -1,16 +1,18 @@
-import React from "react";
-import { chunk } from "lodash";
-import { Provider } from "mobx-react";
-import { Row, Col, Table } from "reactstrap";
 import * as cryptoCoins from "react-cryptocoins";
 import Link from "next/link";
+import React from "react";
 import ReactTable from "react-table";
+import Router from "next/router";
+import { Provider } from "mobx-react";
+import { Row, Col, Table } from "reactstrap";
+import { chunk } from "lodash";
 // import "react-table/react-table.css";
 
-import ApplicationPage from "../../../components/ApplicationPage";
 import { Application } from "../../../stores/application";
+import { CurrencyPairs } from "../../../stores/currencyPairs";
+
+import ApplicationPage from "../../../components/ApplicationPage";
 import { Container } from "../../../components/common/container";
-import { Currencies } from "../../../stores/currencies";
 import { Layout } from "../../../components/pages/cms/layout";
 
 export default class CMSCurrenciesPage extends ApplicationPage {
@@ -19,56 +21,64 @@ export default class CMSCurrenciesPage extends ApplicationPage {
 
     this.ensureAuthenticated(ctx, initialProps.application);
 
-    const currencies = new Currencies();
+    const currencyPairs = new CurrencyPairs();
 
-    await currencies.load();
+    await currencyPairs.load();
 
     return {
       ...initialProps,
-      currencies
+      currencyPairs
     };
   }
 
+  renderIcon(key) {
+    const iconKey = key.substring(0, 1).toUpperCase() + key.substring(1).toLowerCase();
+    const IconComponent = cryptoCoins[iconKey];
+
+    if (IconComponent) {
+      return <IconComponent />;
+    }
+
+    return null;
+  }
+
   renderCurrencies() {
-    // console.log("CMSCurrenciesPage#renderCurrencies");
+    const { currencyPairs } = this.props;
 
-    const { currencies } = this.props;
+    return currencyPairs.list.map((currency, i) => {
+      const {
+        id,
+        key,
+        currencyA,
+        currencyB,
+        volume24h: { currencyAVolume, currencyBVolume }
+      } = currency;
 
-    return currencies.list.map((currency, i) => {
-      const { key, name, minConf, txFee, depositAddress } = currency;
-
-      const iconKey =
-        key.substring(0, 1).toUpperCase() + key.substring(1).toLowerCase();
-      const IconComponent = cryptoCoins[iconKey];
-
-      let icon = null;
-      if (IconComponent) {
-        icon = <IconComponent />;
-      }
-
-      const link = `/cms/currencies/chart?currencyPair=BTC_${key}`;
+      const currencyAIcon = this.renderIcon(currencyA.key);
+      const currencyBIcon = this.renderIcon(currencyB.key);
 
       return (
-        <tr key={i}>
-          <td>{icon}</td>
+        <tr
+          key={i}
+          onClick={() => {
+            Router.push(
+              `/cms/currencies/chart?currencyPair=${currencyA.key}_${currencyB.key}`
+            );
+          }}
+        >
+          <td>{currencyAIcon}</td>
+          <td>{currencyA.key}</td>
+          <td>{currencyAVolume}</td>
 
-          <td>
-            <Link href={link} prefetch>
-              <a href={link}>{key}</a>
-            </Link>
-          </td>
-
-          <td>{name}</td>
-          <td>{+txFee}</td>
-          <td>{minConf}</td>
+          <td>{currencyBIcon}</td>
+          <td>{currencyB.key}</td>
+          <td>{currencyBVolume}</td>
         </tr>
       );
     });
   }
 
   render() {
-    // console.log("CMSCurrenciesPage#render", this.props);
-
     return (
       <Provider
         application={this.application || this.props.application}
@@ -85,11 +95,13 @@ export default class CMSCurrenciesPage extends ApplicationPage {
                 >
                   <thead>
                     <tr>
-                      <td>Icon</td>
-                      <td>Name</td>
-                      <td>Key</td>
-                      <td>TXFEE</td>
-                      <td>MINCONF</td>
+                      <td></td>
+                      <td>Currency A</td>
+                      <td>Volume</td>
+
+                      <td></td>
+                      <td>Currency B</td>
+                      <td>Volume</td>
                     </tr>
                   </thead>
                   <tbody>{this.renderCurrencies()}</tbody>

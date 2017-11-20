@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require("fs");
 const path = require("path");
 
 const gulp = require("gulp");
@@ -9,40 +10,59 @@ const async = require("async");
 const projectDirectoryPath = path.resolve(`${__dirname}/../..`);
 console.log("Project directory path:", projectDirectoryPath);
 
-const services = [
-  "api",
-  "application",
-  "authentication",
-  "proxy",
-  "redis",
-  "redis-commander",
-  "rethinkdb",
-  "rethinkdb-chateau"
-];
+function pathIsServiceDirectory(service, cb) {
+  fs.stat(`${projectDirectoryPath}/services/${service}`, (error, stat) => {
+    if (error) {
+      cb(error);
+      return;
+    }
+
+    cb(null, stat.isDirectory());
+  });
+}
+
+function getServicePaths(cb) {
+  fs.readdir(`${projectDirectoryPath}/services`, (error, inodes) => {
+    if (error) {
+      cb(error);
+      return;
+    }
+
+    async.filter(inodes, pathIsServiceDirectory, cb);
+  });
+}
+
+function copyFilesToServices(sourcePath, services, cb) {
+  async.each(
+    services,
+    (service, cb) => {
+      const destinationPath = `${projectDirectoryPath}/services/${service}/lib`;
+
+      console.log(`Copying from "${sourcePath}" to "${destinationPath}".`);
+
+      const options = {
+        deleteFirst: true,
+        overwrite: true,
+        confirm: true
+      };
+
+      cpr(sourcePath, destinationPath, options, cb);
+    },
+    cb
+  );
+}
 
 gulp.task("copy", cb => {
   const from = `${projectDirectoryPath}/lib`;
 
-  async.each(
-    services,
-    (service, cb) => {
-      const to = `${projectDirectoryPath}/services/${service}/lib`;
+  getServicePaths((error, paths) => {
+    if (error) {
+      cb(error);
+      return;
+    }
 
-      console.log(`Copying from "${from}" to "${to}".`);
-
-      cpr(
-        from,
-        to,
-        {
-          deleteFirst: true,
-          overwrite: true,
-          confirm: true
-        },
-        cb
-      );
-    },
-    cb
-  );
+    copyFilesToServices(from, paths, cb);
+  });
 });
 
 gulp.task("watch", () => {

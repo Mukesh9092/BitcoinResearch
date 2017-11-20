@@ -7,7 +7,7 @@ export class Chart {
   @observable candlesticks;
 
   constructor(initialData) {
-    console.log("Chart#constructor", initialData);
+    // console.log("Chart#constructor", initialData);
 
     if (initialData) {
       this.candlesticks = initialData.candlesticks;
@@ -15,7 +15,7 @@ export class Chart {
   }
 
   async load(currencyA, currencyB, period, start, end) {
-    console.log("Chart#load", currencyA, currencyB, period, start, end);
+    // console.log("Chart#load", currencyA, currencyB, period, start, end);
 
     const query = {
       query: gql`
@@ -34,16 +34,6 @@ export class Chart {
             end: $end
           ) {
             id
-            currencyA {
-              id
-              key
-              name
-            }
-            currencyB {
-              id
-              key
-              name
-            }
             high
             low
             open
@@ -67,3 +57,5 @@ export class Chart {
     this.candlesticks = candlesticks;
   }
 }
+
+export const instance = new Chart();

@@ -3,27 +3,30 @@ import { chunk } from "lodash";
 import { Provider } from "mobx-react";
 import { Col, Row, ListGroup, ListGroupItem } from "reactstrap";
 
-import { fitWidth, fitDimensions } from "react-stockcharts/lib/helper";
-
 import { isBrowser } from "../../../lib/environment";
 
-import { Application } from "../../../stores/application";
 import { Chart } from "../../../stores/chart";
-import { Currencies } from "../../../stores/currencies";
+import { CurrencyPairs } from "../../../stores/currencyPairs";
 
 import ApplicationPage from "../../../components/ApplicationPage";
-import { Container } from "../../../components/common/container";
 import { Layout } from "../../../components/pages/cms/layout";
-import {
-  MarketChart,
-  MarketChartNavbar
-} from "../../../components/pages/cms/chart";
-
-const FittedMarketChart = fitDimensions(MarketChart);
+import { ChartContainer } from "../../../components/pages/cms/chart";
 
 export default class CMSChartPage extends ApplicationPage {
+  constructor(props) {
+    console.log("CMSChartPage#constructor");
+
+    super(props);
+
+    if (process.browser) {
+      this.chart = Chart.getBrowserInstance(props.chart);
+    } else {
+      this.chart = props.chart;
+    }
+  }
+
   static async getInitialProps(ctx) {
-    // console.log("CMSChartPage#getInitialProps");
+    console.log("CMSChartPage#getInitialProps", this);
 
     const { query: { currencyPair } } = ctx;
 
@@ -31,50 +34,55 @@ export default class CMSChartPage extends ApplicationPage {
 
     this.ensureAuthenticated(ctx, initialProps.application);
 
-    const currencies = new Currencies();
-
-    await currencies.load();
-
-    const chart = new Chart();
-
     const [currencyA, currencyB] = currencyPair.split("_");
-    const period = 86400;
-    const end = new Date().valueOf();
-    const start = end - 1000 * 60 * 60 * 24 * 365;
 
-    await chart.load(currencyA, currencyB, period, start, end);
+    this.chart = new Chart();
+
+    const end = new Date().valueOf();
+    const start = end - 1000 * 60 * 60 * 24;
+    const period = 300;
+
+    await this.chart.load(currencyA, currencyB, period, start, end);
 
     return {
       ...initialProps,
-      chart,
-      currencies
+      currencyA,
+      currencyB,
+      period,
+      start,
+      end,
+      chart: this.chart
     };
   }
 
   render() {
-    // console.log("CMSChartPage#render", this.props);
+    console.log("CMSChartPage#render");
 
     const application = this.application || this.props.application;
 
     const {
-      currencies,
-      chart: { candlesticks },
+      chart,
+      currencyA,
+      currencyB,
+      period,
+      start,
+      end,
       url: { query: { currencyPair } }
     } = this.props;
 
-    const [currencyA, currencyB] = currencyPair.split("_");
-
     return (
-      <Provider application={application} candlesticks={candlesticks}>
+      <Provider application={application}>
         <Layout {...this.props}>
-          <MarketChartNavbar currencyPair={currencyPair} />
-
-          <Container>
-            <FittedMarketChart
-              currencyPair={currencyPair}
-              candlesticks={candlesticks}
-            />
-          </Container>
+          <ChartContainer
+            store={chart}
+            load={this.chart.load}
+            currencyA={currencyA}
+            currencyB={currencyB}
+            currencyPair={currencyPair}
+            period={period}
+            start={start}
+            end={end}
+          />
         </Layout>
       </Provider>
     );

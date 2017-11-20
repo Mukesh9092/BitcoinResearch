@@ -2,15 +2,23 @@ const schema = `
   scalar Date
 
   type Currency {
-    id: String!
     key: String!
     name: String!
     txFee:  String!
     minConf: Int!
-    depositAddress: String
-    disabled: Boolean!
-    delisted: Boolean!
-    frozen: Boolean!
+  }
+
+  type CurrencyPairVolume {
+    currencyAVolume: String!
+    currencyBVolume: String!
+  }
+
+  type CurrencyPair {
+    id: String!
+    key: String!
+    currencyA: Currency!
+    currencyB: Currency!
+    volume24h: CurrencyPairVolume!
   }
 
   type OrderBook {
@@ -67,7 +75,7 @@ const schema = `
     userById(id: String!): User
     userByEmail(email: String!): User
 
-    currencies: [Currency]
+    currencyPairs: [CurrencyPair]
     currencyById(id: Int!): Currency
 
     candlesticks(currencyA: String!, currencyB: String!, period: Int!, start: Date!, end: Date!): [Candlestick]

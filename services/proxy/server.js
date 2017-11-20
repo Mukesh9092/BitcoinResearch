@@ -26,24 +26,16 @@ expressServiceWith(app => {
   const proxy = httpProxy.createProxyServer();
 
   app.all("/api/authentication/*", (req, res) => {
-    console.log("PROXY HEADERS", req.headers);
-
     proxy.web(req, res, {
       target: `http://${AUTHENTICATION_HOST}:${AUTHENTICATION_PORT}`
     });
   });
 
   app.all("/api/*", (req, res) => {
-    console.log("PROXY HEADERS", req.headers);
-
     proxy.web(req, res, { target: `http://${API_HOST}:${API_PORT}` });
   });
 
   app.all("/*", (req, res) => {
-    if (!req.url.match(/_next/)) {
-      console.log("PROXY HEADERS", req.headers);
-    }
-
     proxy.web(req, res, {
       target: `http://${APPLICATION_HOST}:${APPLICATION_PORT}`
     });
