@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-source ./lib/service-env-local.sh
+#source ./lib/service-env-local.sh
+#export SERVICE_SECRET=keyboardcat
 
-export SERVICE_SECRET=keyboardcat
-
-npm install
+#npm install
 
 exec npm run dev

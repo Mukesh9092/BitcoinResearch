@@ -14,6 +14,20 @@ export class Chart {
     }
   }
 
+  static getBrowserInstance(initialData) {
+    console.log("Chart#getBrowserInstance", initialData);
+
+    const instance = new Chart(initialData);
+
+    return instance;
+  }
+
+  static getServerInstance(ctx) {
+    const instance = new Chart();
+
+    return instance;
+  }
+
   async load(currencyA, currencyB, period, start, end) {
     // console.log("Chart#load", currencyA, currencyB, period, start, end);
 

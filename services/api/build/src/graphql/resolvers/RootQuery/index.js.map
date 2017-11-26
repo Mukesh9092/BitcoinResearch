@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../src/graphql/resolvers/RootQuery/index.js"],"names":[],"mappings":";AAAA,IAAM,YAAY,GAAG,OAAO,CAAC,gBAAgB,CAAC,CAAC;AAC/C,IAAM,aAAa,GAAG,OAAO,CAAC,iBAAiB,CAAC,CAAC;AACjD,IAAM,QAAQ,GAAG,OAAO,CAAC,YAAY,CAAC,CAAC;AAEvC,MAAM,CAAC,OAAO,GAAG;IACf,YAAY,cAAA;IACZ,aAAa,eAAA;IACb,QAAQ,UAAA;CACT,CAAC"}

@@ -11,57 +11,57 @@ services:
       - api
       - application
       - authentication
-      - noflo
+      # - noflo
     links:
       - api
       - application
       - authentication
-      - noflo
+      # - noflo
     build: ./services/proxy
     ports:
-      - 8000:8000
-    env_file: ./lib/service-docker.env
+      - ${PROXY_PORT}:${PROXY_PORT}
+    env_file: .env
 
   application:
     build: ./services/application
     ports:
-      - 8001:8001
+      - ${APPLICATION_PORT}:${APPLICATION_PORT}
     volumes:
       - ./services/application:/service
-    env_file: ./lib/service-docker.env
+    env_file: .env
 
   api:
     build: ./services/api
     ports:
-      - 8002:8002
+      - ${API_PORT}:${API_PORT}
     volumes:
       - ./services/api:/service
-    env_file: ./lib/service-docker.env
+    env_file: .env
 
   authentication:
     build: ./services/authentication
     ports:
-      - 8003:8003
+      - ${AUTHENTICATION_PORT}:${AUTHENTICATION_PORT}
     volumes:
       - ./services/authentication:/service
-    env_file: ./lib/service-docker.env
+    env_file: .env
 
-  noflo:
-    build: ./services/noflo
-    ports:
-      - 8004:8004
-    volumes:
-      - ./services/noflo:/service
-    env_file: ./lib/service-docker.env
+  # noflo:
+  #   build: ./services/noflo
+  #   ports:
+  #     - ${NOFLO_PORT}:${NOFLO_PORT}
+  #   volumes:
+  #     - ./services/noflo:/service
+  #   env_file: .env
 
   redis:
     image: redis:latest
     ports:
-      - 8100:8100
+      - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
       - ./services/redis/data:/data
-    command: "redis-server --port 8100"
-    env_file: ./lib/service-docker.env
+    # command: "redis-server --port 8100"
+    env_file: .env
 
   redis-commander:
     build: ./services/redis-commander
@@ -70,19 +70,19 @@ services:
     links:
       - redis
     ports:
-      - 8202:8202
-    command: "redis-commander --redis-host redis --redis-port 8100 --port 8202 --address 0.0.0.0"
-    env_file: ./lib/service-docker.env
+      - ${REDIS_COMMANDER_PORT}:${REDIS_COMMANDER_PORT}
+    # command: "redis-commander --redis-host redis --redis-port 8100 --port 8202 --address 0.0.0.0"
+    env_file: .env
 
   rethinkdb:
     build: ./services/rethinkdb
     ports:
-      - 8102:8102 # 28015
-      - 8103:8103 # 29015
-      - 8200:8200 # 8080
+      - ${RETHINKDB_PORT}:${RETHINKDB_PORT}
+      - ${RETHINKDB_PORT_INTRACLUSTER}:${RETHINKDB_PORT_INTRACLUSTER}
+      - ${RETHINKDB_PORT_WEB}:${RETHINKDB_PORT_WEB}
     volumes:
       - ./services/rethinkdb/data:/data
-    env_file: ./lib/service-docker.env
+    env_file: .env
 
   rethinkdb-chateau:
     build: ./services/rethinkdb-chateau
@@ -91,5 +91,5 @@ services:
     links:
       - rethinkdb
     ports:
-      - 8201:8201
-    env_file: ./lib/service-docker.env
+      - ${RETHINKDB_CHATEAU_PORT}:${RETHINKDB_CHATEAU_PORT}
+    env_file: .env
