@@ -8,7 +8,7 @@
   "scripts": {
     "db-create": "node bin/dbCreate",
     "db-destroy": "node bin/dbDestroy",
-    "dev": "nodemon -V --delay 2500ms --watch ./build --ignore node_modules ./build/server.js",
+    "dev": "nodemon -V --delay 2500ms --watch . --ignore node_modules ./server.js",
     "start": "node server.js",
     "typescript-build": "tsc",
     "typescript-watch": "tsc -w"

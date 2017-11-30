@@ -20,6 +20,8 @@ services:
     build: ./services/proxy
     ports:
       - ${PROXY_PORT}:${PROXY_PORT}
+    volumes:
+      - ./services/proxy:/service
     env_file: .env
 
   application:
@@ -55,12 +57,11 @@ services:
   #   env_file: .env
 
   redis:
-    image: redis:latest
+    build: ./services/redis
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
-      - ./services/redis/data:/data
-    # command: "redis-server --port 8100"
+      - ./services/redis:/service
     env_file: .env
 
   redis-commander:
@@ -71,7 +72,8 @@ services:
       - redis
     ports:
       - ${REDIS_COMMANDER_PORT}:${REDIS_COMMANDER_PORT}
-    # command: "redis-commander --redis-host redis --redis-port 8100 --port 8202 --address 0.0.0.0"
+    volumes:
+      - ./services/redis-commander:/service
     env_file: .env
 
   rethinkdb:
@@ -92,4 +94,6 @@ services:
       - rethinkdb
     ports:
       - ${RETHINKDB_CHATEAU_PORT}:${RETHINKDB_CHATEAU_PORT}
+    volumes:
+      - ./services/rethinkdb-chateau:/service
     env_file: .env

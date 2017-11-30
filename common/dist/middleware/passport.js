@@ -35,71 +35,81 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var isomorphic_fetch_1 = require("isomorphic-fetch");
-var store_1 = require("../lib/database/store");
-var MILLISECOND_MULTIPLIER = 1000;
-var INTERVAL = 5;
-var INTERVAL_IN_SECONDS = INTERVAL * 60;
-var INTERVAL_IN_MILLISECONDS = INTERVAL_IN_SECONDS * MILLISECOND_MULTIPLIER;
-function requestMarket(currencyPair, period, start, end) {
+var passport_local_1 = require("passport-local");
+var passport_1 = require("passport");
+var store_1 = require("../database/store");
+var errors_1 = require("../errors");
+var crypto_1 = require("../crypto");
+passport_1.default.serializeUser(function (user, cb) {
+    cb(null, user.id);
+});
+function deserializeUser(id, cb) {
     return __awaiter(this, void 0, void 0, function () {
-        var queryURL, apiResult, apiResultJSON;
+        var result, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    queryURL = [
-                        "https://poloniex.com/public?",
-                        "command=returnChartData",
-                        "&currencyPair=" + currencyPair,
-                        "&start=" + start,
-                        "&end=" + end,
-                        "&period=" + period
-                    ].join("");
-                    return [4 /*yield*/, isomorphic_fetch_1.default(queryURL)];
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, store_1.default.find("user", id)];
                 case 1:
-                    apiResult = _a.sent();
-                    return [4 /*yield*/, apiResult.json()];
+                    result = _a.sent();
+                    if (result) {
+                        cb(null, result.toJSON());
+                        return [2 /*return*/];
+                    }
+                    cb();
+                    return [3 /*break*/, 3];
                 case 2:
-                    apiResultJSON = _a.sent();
-                    return [2 /*return*/, apiResultJSON];
+                    error_1 = _a.sent();
+                    console.log(errors_1.formatError(error_1));
+                    cb(error_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     });
 }
-function requestData() {
+passport_1.default.deserializeUser(deserializeUser);
+function localStrategy(email, password, cb) {
     return __awaiter(this, void 0, void 0, function () {
-        var currencies, currencyPairs, end, start, results;
+        var user, passwordHash, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("requestData");
-                    return [4 /*yield*/, store_1.default.findAll("currency", {
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, store_1.default.findAll("user", {
                             where: {
-                                delisted: false,
-                                disabled: false,
-                                frozen: false
+                                email: email
                             }
                         })];
                 case 1:
-                    currencies = _a.sent();
-                    currencyPairs = currencies
-                        .filter(function (x) { return x.key !== "BTC"; })
-                        .map(function (x) { return "BTC_" + x.key; });
-                    end = new Date().valueOf();
-                    start = end - INTERVAL_IN_MILLISECONDS * 2;
-                    return [4 /*yield*/, Promise.all(currencyPairs.map(function (currencyPair) {
-                            return requestMarket(currencyPair, INTERVAL_IN_SECONDS, start, end);
-                        }))];
+                    user = (_a.sent())[0];
+                    // console.log("Passport LocalStrategy user", user);
+                    if (!user) {
+                        return [2 /*return*/, cb(null, false, { message: "Incorrect email or password" })];
+                    }
+                    passwordHash = crypto_1.sha512(password, user.password_seed).passwordHash;
+                    if (user.password_hash !== passwordHash) {
+                        return [2 /*return*/, cb(null, false, { message: "Incorrect email or password" })];
+                    }
+                    cb(null, user);
+                    return [3 /*break*/, 3];
                 case 2:
-                    results = _a.sent();
-                    console.log("requestData results", results);
-                    setTimeout(requestData, INTERVAL_IN_MILLISECONDS);
-                    return [2 /*return*/];
+                    error_2 = _a.sent();
+                    console.log(errors_1.formatError(error_2));
+                    cb(error_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     });
 }
-// requestData();
-module.exports = function poloniex(app) {
-    // Create a timeout system to scrape poloniex of data.
-};
+passport_1.default.use(new passport_local_1.default({
+    usernameField: "email",
+    passwordField: "password",
+    session: true
+}, localStrategy));
+function passportMiddleware(app) {
+    app.use(passport_1.default.initialize()).use(passport_1.default.session());
+}
+exports.default = passportMiddleware;

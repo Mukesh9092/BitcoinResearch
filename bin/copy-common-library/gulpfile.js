@@ -8,6 +8,9 @@ const cpr = require("cpr");
 const async = require("async");
 
 const projectDirectoryPath = path.resolve(`${__dirname}/../..`);
+const sourceLibDirectoryPathFragment = "common/dist";
+const targetLibDirectoryPathFragment = "lib";
+
 console.log("Project directory path:", projectDirectoryPath);
 
 function pathIsServiceDirectory(service, cb) {
@@ -28,7 +31,16 @@ function getServicePaths(cb) {
       return;
     }
 
-    async.filter(inodes, pathIsServiceDirectory, cb);
+    async.filter(inodes, pathIsServiceDirectory, (error, serviceInodes) => {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      const pathsWithLibDir = serviceInodes.map(x => `${x}/${targetLibDirectoryPathFragment}`);
+
+      cb(null, pathsWithLibDir);
+    });
   });
 }
 
@@ -36,7 +48,7 @@ function copyFilesToServices(sourcePath, services, cb) {
   async.each(
     services,
     (service, cb) => {
-      const destinationPath = `${projectDirectoryPath}/services/${service}/lib`;
+      const destinationPath = `${projectDirectoryPath}/services/${service}/${sourceLibDirectoryPathFragment}`;
 
       console.log(`Copying from "${sourcePath}" to "${destinationPath}".`);
 
@@ -53,7 +65,7 @@ function copyFilesToServices(sourcePath, services, cb) {
 }
 
 gulp.task("copy", cb => {
-  const from = `${projectDirectoryPath}/lib`;
+  const from = `${projectDirectoryPath}/${sourceLibDirectoryPathFragment}`;
 
   getServicePaths((error, paths) => {
     if (error) {
@@ -66,7 +78,7 @@ gulp.task("copy", cb => {
 });
 
 gulp.task("watch", () => {
-  const watcher = gulp.watch(`${projectDirectoryPath}/lib/**/*`, ["copy"]);
+  const watcher = gulp.watch(`${projectDirectoryPath}/${sourceLibDirectoryPathFragment}/**/*`, ["copy"]);
 });
 
 gulp.task("default", ["copy", "watch"]);

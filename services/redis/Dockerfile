@@ -1,7 +1,7 @@
-FROM rethinkdb:latest
+FROM redis:latest
 
 # Expose the application's ports.
-EXPOSE 8102 8103 8200
+EXPOSE 8100
 
 # Create app directory
 RUN mkdir -p /service
