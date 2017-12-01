@@ -8,8 +8,8 @@ const cpr = require("cpr");
 const async = require("async");
 
 const projectDirectoryPath = path.resolve(`${__dirname}/../..`);
-const sourceLibDirectoryPathFragment = "common/dist";
-const targetLibDirectoryPathFragment = "lib";
+const sourceLibDirectoryPathFragment = "common";
+const targetLibDirectoryPathFragment = "src/common";
 
 console.log("Project directory path:", projectDirectoryPath);
 
@@ -37,31 +37,25 @@ function getServicePaths(cb) {
         return;
       }
 
-      const pathsWithLibDir = serviceInodes.map(x => `${x}/${targetLibDirectoryPathFragment}`);
-
-      cb(null, pathsWithLibDir);
+      cb(null, serviceInodes);
     });
   });
 }
 
 function copyFilesToServices(sourcePath, services, cb) {
-  async.each(
-    services,
-    (service, cb) => {
-      const destinationPath = `${projectDirectoryPath}/services/${service}/${sourceLibDirectoryPathFragment}`;
+  async.each(services, (service, cb) => {
+    const destinationPath = `${projectDirectoryPath}/services/${service}/${targetLibDirectoryPathFragment}`;
 
-      console.log(`Copying from "${sourcePath}" to "${destinationPath}".`);
+    console.log(`Copying from "${sourcePath}" to "${destinationPath}".`);
 
-      const options = {
-        deleteFirst: true,
-        overwrite: true,
-        confirm: true
-      };
+    const options = {
+      deleteFirst: true,
+      overwrite: true,
+      confirm: true
+    };
 
-      cpr(sourcePath, destinationPath, options, cb);
-    },
-    cb
-  );
+    cpr(sourcePath, destinationPath, options, cb);
+  }, cb);
 }
 
 gulp.task("copy", cb => {

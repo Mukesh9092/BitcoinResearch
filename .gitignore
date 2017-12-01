@@ -7,3 +7,4 @@ services/rethinkdb/data
 services/redis/*.rdb
 
 *.log
+dist/

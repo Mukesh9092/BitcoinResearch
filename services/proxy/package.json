@@ -6,10 +6,13 @@
   "license": "ISC",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon -V --delay 2500ms --watch . --ignore node_modules server.js",
-    "start": "node server.js"
+    "dev": "nodemon -V --delay 2500ms --watch . --ignore node_modules ./dist/server.js",
+    "start": "node ./dist/server.js",
+    "typescript-build": "tsc",
+    "typescript-watch": "tsc -w"
   },
   "dependencies": {
+    "@types/http-proxy": "^1.12.2",
     "body-parser": "^1.18.1",
     "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
@@ -27,6 +30,7 @@
     "react-stockcharts": "^0.6.1",
     "redis": "^2.8.0",
     "redis-streams": "^1.1.0",
-    "rethinkdb": "^2.3.3"
+    "rethinkdb": "^2.3.3",
+    "typescript": "^2.6.2"
   }
 }

@@ -1,6 +1,6 @@
 import fetch from "isomorphic-fetch";
 
-import store from "../lib/database/store";
+import store from "../common/database/store";
 
 const MILLISECOND_MULTIPLIER = 1000;
 const INTERVAL = 5;
@@ -56,6 +56,6 @@ async function requestData() {
 
 // requestData();
 
-module.exports = function poloniex(app) {
+export default function poloniex(app) {
   // Create a timeout system to scrape poloniex of data.
-};
+}
