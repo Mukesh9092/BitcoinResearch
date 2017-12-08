@@ -1,4 +1,6 @@
-export default function authenticationHeaderExtraction(app: Object) {
+import { Application } from "express";
+
+export default function authenticationHeaderExtraction(app: Application) {
   app.use((req, res, next) => {
     const user = req.headers["x-user"];
     const session = req.headers["x-session"];

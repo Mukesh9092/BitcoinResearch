@@ -1,11 +1,16 @@
-import LocalStrategy from "passport-local";
-import passport from "passport";
+import * as passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import { Application } from "express";
 
 import store from "../database/store";
 import { formatError } from "../errors";
 import { genRandomString, sha512 } from "../crypto";
 
-passport.serializeUser((user, cb) => {
+interface User {
+  id: string
+}
+
+passport.serializeUser((user: User, cb) => {
   cb(null, user.id);
 });
 
@@ -61,12 +66,12 @@ passport.use(
     {
       usernameField: "email",
       passwordField: "password",
-      session: true
+      // session: true
     },
     localStrategy
   )
 );
 
-export default function passportMiddleware(app: Object) {
+export default function passportMiddleware(app: Application) {
   app.use(passport.initialize()).use(passport.session());
 }

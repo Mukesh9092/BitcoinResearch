@@ -1,7 +1,7 @@
 import isBrowser from "./isBrowser";
 import isDevelopment from "./isDevelopment";
 
-export default {
+export {
   isBrowser,
   isDevelopment
 };

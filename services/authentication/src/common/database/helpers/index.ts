@@ -1,7 +1,7 @@
 import ensureTable from "./ensureTable";
 import tableExists from "./tableExists";
 
-export default {
+export {
   ensureTable,
   tableExists,
 };

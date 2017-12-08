@@ -1,4 +1,5 @@
 import fetch from "isomorphic-fetch";
+import { Application } from "express";
 
 import store from "../common/database/store";
 
@@ -7,7 +8,7 @@ const INTERVAL = 5;
 const INTERVAL_IN_SECONDS = INTERVAL * 60;
 const INTERVAL_IN_MILLISECONDS = INTERVAL_IN_SECONDS * MILLISECOND_MULTIPLIER;
 
-async function requestMarket(currencyPair, period, start, end) {
+async function requestMarket(currencyPair: string, period: number, start: number, end: number) {
   const queryURL = [
     "https://poloniex.com/public?",
     "command=returnChartData",
@@ -36,15 +37,15 @@ async function requestData() {
 
   const currencyPairs = currencies
     // .toJSON()
-    .filter(x => x.key !== "BTC")
-    .map(x => `BTC_${x.key}`);
+    .filter((x: { key: string }) => x.key !== "BTC")
+    .map((x: { key: string }) => `BTC_${x.key}`);
 
   const end = new Date().valueOf();
   // Use INTERVAL_IN_MILLISECONDS * 2 to get at least one interval back every time.
   const start = end - INTERVAL_IN_MILLISECONDS * 2;
 
   const results = await Promise.all(
-    currencyPairs.map(currencyPair =>
+    currencyPairs.map((currencyPair: string) =>
       requestMarket(currencyPair, INTERVAL_IN_SECONDS, start, end)
     )
   );
@@ -56,6 +57,6 @@ async function requestData() {
 
 // requestData();
 
-export default function poloniex(app) {
+export default function poloniex(app: Application) {
   // Create a timeout system to scrape poloniex of data.
 }

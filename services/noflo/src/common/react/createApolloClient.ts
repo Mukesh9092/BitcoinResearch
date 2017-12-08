@@ -1,5 +1,9 @@
-import { ApolloClient, createNetworkInterface } from "react-apollo";
-import fetch from "isomorphic-fetch";
+import { ApolloClient } from "apollo-client";
+import { HttpLink } from "apollo-link-http";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import fetch from "node-fetch";
+
+// createNetworkInterface
 
 import { isBrowser } from "../environment";
 
@@ -8,6 +12,7 @@ if (!isBrowser()) {
   global.fetch = fetch;
 }
 
+let link = null;
 let apolloClient = null;
 
 export default function createApolloClient(initialState) {
@@ -25,17 +30,17 @@ export default function createApolloClient(initialState) {
   }
 
   apolloClient = new ApolloClient({
-    initialState,
-    // Disables forceFetch on the server (so queries are only run once)
-    ssrMode: !isBrowser(),
-    networkInterface: createNetworkInterface({
-      // Server URL (must be absolute)
+    link: new HttpLink({
       uri,
+      fetch,
       opts: {
         // Additional fetch() options like `credentials` or `headers`
         credentials: "same-origin"
       }
-    })
+    }),
+    cache: new InMemoryCache(),
+    ssrMode: !isBrowser(),
+    initialState,
   });
 
   return apolloClient;

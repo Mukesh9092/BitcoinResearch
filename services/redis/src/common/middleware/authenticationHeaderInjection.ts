@@ -1,4 +1,6 @@
-export default function authenticationHeaderInjection(app: Object) {
+import { Application } from "express";
+
+export default function authenticationHeaderInjection(app: Application) {
   app.use((req, res, next) => {
     const { user, session } = req;
 

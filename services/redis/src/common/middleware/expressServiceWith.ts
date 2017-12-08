@@ -2,7 +2,7 @@ import * as express from "express";
 
 import { formatError } from "../errors";
 
-export default function expressServiceWith(middleware: Function, host: string, port: number): void {
+export default function expressServiceWith(middleware: Function, host: string | undefined, port: number | undefined): void {
   const app = express();
 
   middleware(app);

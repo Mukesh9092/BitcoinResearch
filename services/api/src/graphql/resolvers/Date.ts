@@ -1,15 +1,13 @@
-import { isDate, isString, isNumber } from "lodash";
-
 export function __serialize(value: any): any {
   return value;
 }
 
 export function __parseValue(value: any): number {
-  if (isNumber(value)) {
+  if (typeof value === "number") {
     return value;
   }
 
-  if (isDate(value)) {
+  if (value instanceof Date) {
     return value.valueOf();
   }
 

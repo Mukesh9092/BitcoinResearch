@@ -6,7 +6,7 @@ import logger from "./logger";
 import passport from "./passport";
 import sessions from "./sessions";
 
-export default {
+export {
   authenticationHeaderExtraction,
   authenticationHeaderInjection,
   expressServiceWith,

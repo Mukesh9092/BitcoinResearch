@@ -1,11 +1,12 @@
-import httpProxy from "http-proxy";
+import * as httpProxy from 'http-proxy';
+import { Application } from "express";
 
-import authenticationHeaderInjection from "../common/middleware/authenticationHeaderInjection";
-import expressServiceWith from "../common/middleware/expressServiceWith";
-import logger from "../common/middleware/logger";
-import passport from "../common/middleware/passport";
-import sessions from "../common/middleware/sessions";
-import { formatError } from "../common/errors";
+import authenticationHeaderInjection from "./common/middleware/authenticationHeaderInjection";
+import expressServiceWith from "./common/middleware/expressServiceWith";
+import logger from "./common/middleware/logger";
+import passport from "./common/middleware/passport";
+import sessions from "./common/middleware/sessions";
+import { formatError } from "./common/errors";
 
 const {
   API_HOST,
@@ -21,7 +22,7 @@ const {
 } = process.env;
 
 expressServiceWith(
-  app => {
+  (app: Application) => {
     logger(app);
     sessions(app);
     passport(app);
@@ -58,5 +59,5 @@ expressServiceWith(
     });
   },
   PROXY_HOST,
-  PROXY_PORT
+  Number(PROXY_PORT)
 );

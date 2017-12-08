@@ -1,5 +1,6 @@
-import connectRedis from "connect-redis";
-import expressSession from "express-session";
+import * as connectRedis from "connect-redis";
+import * as expressSession from "express-session";
+import { Application } from "express";
 
 const { REDIS_HOST, REDIS_PORT, SERVICE_SECRET } = process.env;
 
@@ -10,7 +11,7 @@ const redisStore = new RedisStore({
   port: REDIS_PORT
 });
 
-export default function sessions(app: Object) {
+export default function sessions(app: Application) {
   app.use(
     expressSession({
       secret: SERVICE_SECRET,

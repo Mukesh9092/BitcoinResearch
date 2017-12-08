@@ -7,8 +7,8 @@ export function genRandomString(length: number): string {
 }
 
 interface ISha12Result {
-  salt: string,
-  passwordHash: string,
+  salt: string;
+  passwordHash: string;
 }
 
 export function sha512(password: string, salt: string): ISha12Result {

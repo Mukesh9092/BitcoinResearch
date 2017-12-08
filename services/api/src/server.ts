@@ -1,3 +1,5 @@
+import { Application } from "express";
+
 import authenticationHeaderExtraction from "./common/middleware/authenticationHeaderExtraction";
 import expressServiceWith from "./common/middleware/expressServiceWith";
 import genericExpressService from "./common/middleware/genericExpressService";
@@ -8,14 +10,12 @@ import poloniex from "./middleware/poloniex";
 
 const { API_HOST, API_PORT } = process.env;
 
-expressServiceWith(
-  app => {
-    genericExpressService(app);
-    logger(app);
-    authenticationHeaderExtraction(app);
-    graphql(app);
-    poloniex(app);
-  },
-  API_HOST,
-  API_PORT
-);
+function configureApplication(app: Application) {
+  genericExpressService(app);
+  logger(app);
+  authenticationHeaderExtraction(app);
+  graphql(app);
+  poloniex(app);
+}
+
+expressServiceWith(configureApplication, API_HOST, Number(API_PORT));

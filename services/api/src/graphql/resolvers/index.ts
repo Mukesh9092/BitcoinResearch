@@ -3,7 +3,7 @@ import Candlestick from "./Candlestick";
 import RootQuery from "./RootQuery";
 import RootMutation from "./RootMutation";
 
-export default {
+export {
   Date,
   Candlestick,
   RootQuery,
