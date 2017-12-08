@@ -1,3 +1,4 @@
+import * as React from "react";
 import FaChevronLeft from "react-icons/lib/fa/chevron-left";
 import Link from "next/link";
 import { Component } from "react";
@@ -6,49 +7,57 @@ import { Nav, NavItem, NavLink, NavbarBrand } from "reactstrap";
 import { Navigation } from "../common/navigation";
 import UserNavigationItem from "../common/navigation/UserNavigationItem";
 
-export class Header extends Component {
-  renderNavLink = (url, label) => {
-    const { pathname } = this.props;
+interface INavLinkProps {
+  label: string;
+  url: string;
+  pathname: string;
+}
 
-    return (
-      <NavItem key={label}>
-        <Link href={url} prefetch>
-          <NavLink href={url} active={pathname === url}>
-            {label}
-          </NavLink>
-        </Link>
-      </NavItem>
-    );
-  };
+const HeaderNavLink = (props: INavLinkProps) => (
+  <NavItem key={props.label}>
+    <Link href={props.url} prefetch>
+      <NavLink href={props.url} active={props.pathname === props.url}>
+        {props.label}
+      </NavLink>
+    </Link>
+  </NavItem>
+);
 
-  renderLeftContent = () => [
-    <NavbarBrand key="1" href="/">
-      Code9
-    </NavbarBrand>
-  ];
+const LeftContent = () => (
+  <NavbarBrand key="1" href="/">
+    Code9
+  </NavbarBrand>
+);
 
-  renderCollapseContent = () => [
+interface ICollapseContentProps {
+  pathname: string;
+}
+
+const CollapseContent = (props: ICollapseContentProps) => (
+  <React.Fragment>
     <Nav className="mr-auto" navbar key="links">
-      {this.renderNavLink("/", "Home")}
-      {this.renderNavLink("/about", "About")}
-      {this.renderNavLink("/contact", "Contact")}
-    </Nav>,
+      <HeaderNavLink url="/" label="Home" pathname={props.pathname} />
+      <HeaderNavLink url="/about" label="About" pathname={props.pathname} />
+      <HeaderNavLink url="/contact" label="Contact" pathname={props.pathname} />
+    </Nav>
 
     <Nav className="ml-auto" navbar key="profile-dropdown">
       <UserNavigationItem />
     </Nav>
-  ];
+  </React.Fragment>
+);
 
-  render() {
-    return (
-      <header>
-        <Navigation
-          inverse
-          color="inverse"
-          leftContent={this.renderLeftContent()}
-          collapseContent={this.renderCollapseContent()}
-        />
-      </header>
-    );
-  }
+interface IHeaderProps {
+  pathname: string;
 }
+
+export const Header = (props: IHeaderProps) => (
+  <header>
+    <Navigation
+      leftContent={<LeftContent pathname={props.pathname} />}
+      collapseContent={<CollapseContent />}
+      color="inverse"
+      inverse
+    />
+  </header>
+);

@@ -3,7 +3,25 @@ import React from "react";
 
 import { Header } from "./header";
 
-export function Layout({ children, title = "CMS", url: { pathname } }) {
+interface ILayoutProps {
+  title: string;
+  url: {
+    pathname: string
+  }
+  children?: React.ReactElement<any>;
+}
+
+export function Layout(props: ILayoutProps) {
+  // { children, title = "CMS", url: { pathname } }) {
+
+  const {
+    children,
+    title,
+    url: {
+      pathname,
+    },
+  } = props;
+
   return (
     <main>
       <Head>

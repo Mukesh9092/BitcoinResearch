@@ -10,8 +10,11 @@ import { Layout } from "../components/pages/layout";
 export default class PublicIndexPage extends ApplicationPage {
   render() {
     return (
-      <Provider application={this.application || this.props.application}>
-        <Layout {...this.props}>
+      <Provider application={this.application}>
+        <Layout
+          title={this.props.title}
+          url={this.props.url}
+        >
           <Container>
             <Row>
               <Col>
