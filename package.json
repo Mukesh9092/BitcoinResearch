@@ -53,6 +53,7 @@
     "@types/rethinkdb": "^2.3.8",
     "babel-eslint": "^8.0.2",
     "connect-redis": "^3.3.2",
+    "cookie-parser": "^1.4.3",
     "eslint": "^4.6.0",
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-prettier": "^2.2.0",
@@ -61,10 +62,12 @@
     "js-data": "^3.0.1",
     "js-data-rethinkdb": "^3.0.0",
     "lint-staged": "^4.0.4",
+    "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "prettier": "^1.6.1",
     "rethinkdb": "^2.3.3",
+    "ts-node": "^3.3.0",
     "typescript": "^2.6.1"
   }
 }

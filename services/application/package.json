@@ -5,16 +5,18 @@
   "main": "index.js",
   "scripts": {
     "build": "next build",
-    "dev": "nodemon -V --delay 2500ms --watch ./dist/common --ignore node_modules --ignore .next ./dist/server.js",
-    "start": "node ./dist/server.js",
+    "dev": "ts-node ./src/server.ts",
+    "start": "ts-node ./src/server.ts",
     "typescript-build": "tsc",
     "typescript-watch": "tsc -w"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.0.39",
     "@types/lodash": "^4.14.88",
+    "@types/morgan": "^1.7.35",
     "@types/next": "^2.4.6",
     "@types/node-fetch": "^1.6.7",
     "@types/react": "^16.0.28",
@@ -51,7 +53,7 @@
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
     "morgan": "^1.9.0",
-    "next": "^4.2.0",
+    "next": "^4.2.0-canary.1",
     "node-fetch": "^1.7.3",
     "nodemon": "^1.12.5",
     "passport": "^0.4.0",
@@ -68,6 +70,7 @@
     "react-transition-group": "^2.2.1",
     "reactstrap": "^4.8.0",
     "rethinkdb": "^2.3.3",
+    "ts-node": "^3.3.0",
     "typescript": "^2.6.2"
   }
 }

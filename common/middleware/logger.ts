@@ -16,7 +16,7 @@ function requestMatches(req: Request): boolean {
 
 morgan.format('combined', ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"')
 
-function morganFormat(tokens, req: Request, res: Response): string {
+function morganFormat(tokens: morgan.TokenIndexer, req: Request, res: Response): string {
   return [
     tokens.method(req, res),
     tokens.url(req, res),
