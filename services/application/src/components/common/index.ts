@@ -1,5 +1,5 @@
 import container from "./container";
-import navigation from "./navigation/index";
+import navigation from "./navigation";
 
 export {
   container,

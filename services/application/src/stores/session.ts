@@ -7,15 +7,24 @@ const STATUS_INTERNAL_SERVER_ERROR = 500;
 const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
 
-export class Session {
-  @observable userId = null;
-  @observable successMessage = null;
-  @observable errorMessage = null;
-  @observable loading = false;
-  @observable loggingIn = false;
-  @observable loggingOut = false;
+export interface ISession {
+  userId: string;
+  successMessage: string;
+  errorMessage: string;
+  loading: boolean;
+  loggingIn: boolean;
+  loggingOut: boolean;
+}
 
-  constructor(initialData) {
+export class Session implements ISession {
+  @observable userId: string;
+  @observable successMessage: string;
+  @observable errorMessage: string;
+  @observable loading: boolean;
+  @observable loggingIn: boolean;
+  @observable loggingOut: boolean;
+
+  constructor(initialData: ISession | undefined) {
     // console.log("Session#constructor", initialData);
 
     if (initialData) {
@@ -23,11 +32,12 @@ export class Session {
       this.successMessage = initialData.successMessage;
       this.errorMessage = initialData.errorMessage;
       this.loading = initialData.loading;
-      this.isLoggingIn = initialData.isLoggingIn;
+      this.loggingIn = initialData.loggingIn;
+      this.loggingOut = initialData.loggingOut;
     }
   }
 
-  static getBrowserInstance(initialData) {
+  static getBrowserInstance(initialData: ISession): Session {
     // console.log("Session#getBrowserInstance");
 
     const instance = new Session(initialData);
@@ -40,8 +50,8 @@ export class Session {
     return instance;
   }
 
-  static async getServerInstance(ctx) {
-    // console.log("Session#getServerInstance");
+  static async getServerInstance(ctx): Promise<Session> {
+    console.log("Session#getServerInstance", ctx);
 
     const instance = new Session();
 
@@ -54,25 +64,27 @@ export class Session {
     return instance;
   }
 
-  async setInLocalStorage() {
+  setInLocalStorage(): void {
     // console.log("Session#setInLocalStorage", this.userId);
 
     window.localStorage.setItem("userId", this.userId);
   }
 
-  async removeFromLocalStorage() {
+  removeFromLocalStorage(): void {
     // console.log("Session#removeFromLocalStorage");
 
     window.localStorage.removeItem("userId");
   }
 
-  async loginWithEmailPassword(email, password) {
+  async loginWithEmailPassword(email: string, password: string): Promise<void> {
     // console.log("Session#loginWithEmailPassword", email, password);
 
-    this.userId = null;
-    this.successMessage = null;
-    this.errorMessage = null;
-    this.isLoggingIn = true;
+    this.userId = '';
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.loading = false;
+    this.loggingIn = true;
+    this.loggingOut = false;
 
     const response = await fetch("/api/authentication/local", {
       credentials: "include",
@@ -91,7 +103,7 @@ export class Session {
 
     // console.log("Session#loginWithEmailPassword response", status, response);
 
-    this.isLoggingIn = false;
+    this.loggingIn = false;
 
     if (status === STATUS_INTERNAL_SERVER_ERROR) {
       this.errorMessage = "Server Error";
@@ -118,14 +130,15 @@ export class Session {
 
     this.loggingOut = true;
 
-    await this.removeFromLocalStorage();
+    this.removeFromLocalStorage();
 
     await fetch("/api/authentication/logout", { credentials: "same-origin" });
 
-    this.userId = null;
-    this.successMessage = null;
-    this.errorMessage = null;
-
+    this.userId = '';
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.loading = false;
+    this.loggingIn = false;
     this.loggingOut = false;
 
     await Router.push("/");

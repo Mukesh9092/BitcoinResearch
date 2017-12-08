@@ -1,15 +1,13 @@
-import { get } from "lodash";
-import { observable } from "mobx";
-import { gql } from "react-apollo";
+import { Request } from 'express';
+import gql from 'graphql-tag';
+import { observable } from 'mobx';
 
-import apolloClient from "../graphql/client";
-
-import { Session } from "./session";
+import apolloClient from '../graphql/client';
 
 export class User {
-  @observable id;
-  @observable email;
-  @observable username;
+  @observable id: number;
+  @observable email: string;
+  @observable username: string;
   @observable session;
 
   constructor(session, initialData) {
@@ -46,7 +44,7 @@ export class User {
     return instance;
   }
 
-  async load(req) {
+  async load(req: Request) {
     // console.log("User#load");
 
     const query = {
@@ -64,9 +62,13 @@ export class User {
       }
     };
 
+    const result = await apolloClient.query(query);
+
     const {
-      data: { userById: { id, email, username } }
-    } = await apolloClient.query(query);
+      id,
+      email,
+      username
+    } = result.data.userById;
 
     this.id = id;
     this.email = email;

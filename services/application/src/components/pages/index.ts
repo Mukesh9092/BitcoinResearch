@@ -1,4 +1,4 @@
-import cms from "./cms/index";
+import cms from "./cms";
 import header from "./header";
 import layout from "./layout";
 import login from "./login";

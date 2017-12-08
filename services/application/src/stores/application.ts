@@ -5,10 +5,10 @@ import { Session } from "./session";
 import { User } from "./user";
 
 export class Application {
-  @observable session;
-  @observable user;
+  @observable session: Session;
+  @observable user: User;
 
-  static getBrowserInstance(initialData) {
+  static getBrowserInstance(initialData: any) {
     // console.log("Application#getBrowserInstance", initialData);
 
     const instance = new Application();

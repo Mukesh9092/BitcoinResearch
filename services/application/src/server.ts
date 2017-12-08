@@ -1,5 +1,5 @@
 import * as next from "next";
-import { Application } from "express";
+import { Application, Request, Response } from "express";
 import { resolve } from "path";
 
 import authenticationHeaderExtraction from "./common/middleware/authenticationHeaderExtraction";
@@ -18,19 +18,21 @@ async function main() {
       dir: resolve(__dirname)
     });
 
-    function configureApplication(app: Application) {
+    const configureApplication = (app: Application) => {
       genericExpressService(app);
       logger(app);
       authenticationHeaderExtraction(app);
 
       const nextRequestHandler = nextApp.getRequestHandler();
 
-      app.use(nextRequestHandler);
-    }
+      app.use((req: Request, res: Response) => {
+        nextRequestHandler(req, res);
+      })
+    };
 
     await nextApp.prepare();
 
-    expressServiceWith(configureApplication, APPLICATION_HOST, APPLICATION_PORT);
+    expressServiceWith(configureApplication, APPLICATION_HOST, Number(APPLICATION_PORT));
   } catch (error) {
     console.log(`! ${formatError(error)}`);
   }

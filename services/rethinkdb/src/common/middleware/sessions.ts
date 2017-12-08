@@ -8,7 +8,7 @@ const RedisStore = connectRedis(expressSession);
 
 const redisStore = new RedisStore({
   host: REDIS_HOST,
-  port: REDIS_PORT
+  port: Number(REDIS_PORT)
 });
 
 export default function sessions(app: Application) {

@@ -2,7 +2,7 @@ import Router from "next/router";
 import React from "react";
 import { inject, observer } from "mobx-react";
 
-import { isBrowser } from "../../environment/isBrowser";
+import { isBrowser } from "../../environment";
 
 export default function withAuthentication({
   redirectPath

@@ -1,21 +1,13 @@
 import { ApolloClient } from "apollo-client";
 import { HttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import fetch from "node-fetch";
-
-// createNetworkInterface
 
 import { isBrowser } from "../environment";
 
-// Polyfill fetch() on the server (used by apollo-client)
-if (!isBrowser()) {
-  global.fetch = fetch;
-}
+let link: HttpLink;
+let apolloClient: ApolloClient<any>;
 
-let link = null;
-let apolloClient = null;
-
-export default function createApolloClient(initialState) {
+export default function createApolloClient() {
   if (apolloClient) {
     return apolloClient;
   }
@@ -33,14 +25,9 @@ export default function createApolloClient(initialState) {
     link: new HttpLink({
       uri,
       fetch,
-      opts: {
-        // Additional fetch() options like `credentials` or `headers`
-        credentials: "same-origin"
-      }
     }),
     cache: new InMemoryCache(),
     ssrMode: !isBrowser(),
-    initialState,
   });
 
   return apolloClient;

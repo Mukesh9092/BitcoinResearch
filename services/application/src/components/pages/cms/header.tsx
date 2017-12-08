@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Component } from "react";
 import { Nav, NavItem, NavLink, NavbarBrand } from "reactstrap";
 
-import { Navigation } from "../../common/navigation/index";
+import { Navigation } from "../../common/navigation";
 import UserNavigationItem from "../../common/navigation/UserNavigationItem";
 
 export class Header extends Component {
