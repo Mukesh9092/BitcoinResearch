@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Container as ReactStrapContainer } from "reactstrap";
 
 export function Container({ children }) {

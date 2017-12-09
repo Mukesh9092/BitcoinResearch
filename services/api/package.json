@@ -6,8 +6,7 @@
   "license": "ISC",
   "main": "server.js",
   "scripts": {
-    "db-create": "node bin/dbCreate",
-    "db-destroy": "node bin/dbDestroy",
+    "db-create": "node dist/bin/dbCreate",
     "dev": "nodemon -V --delay 2500ms --watch . --ignore node_modules ./dist/server.js",
     "start": "node ./dist/server.js",
     "typescript-build": "tsc",

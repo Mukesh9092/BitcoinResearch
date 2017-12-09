@@ -1,25 +1,19 @@
 import Head from "next/head";
-import React from "react";
+import * as React from "react";
 
 import { Header } from "./header";
 
 interface ILayoutProps {
   title: string;
-  url: {
-    pathname: string
-  }
+  pathname: string;
   children?: React.ReactElement<any>;
 }
 
 export function Layout(props: ILayoutProps) {
-  // { children, title = "CMS", url: { pathname } }) {
-
   const {
     children,
     title,
-    url: {
-      pathname,
-    },
+    pathname,
   } = props;
 
   return (

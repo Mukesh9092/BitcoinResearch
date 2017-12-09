@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "next build",
-    "dev": "ts-node ./src/server.ts",
-    "start": "ts-node ./src/server.ts",
+    "build": "npm run copy-static; npm run typescript-build",
+    "copy-static": "cp -R ./src/static ./dist/static",
+    "dev": "npm run copy-static; nodemon -V --delay 2500ms --watch ./dist/common --ignore node_modules --ignore .next ./dist/server.js",
+    "start": "node ./dist/server.js",
     "typescript-build": "tsc",
     "typescript-watch": "tsc -w"
   },
@@ -15,6 +16,7 @@
   "dependencies": {
     "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.0.39",
+    "@types/faker": "^4.1.2",
     "@types/lodash": "^4.14.88",
     "@types/morgan": "^1.7.35",
     "@types/next": "^2.4.6",
@@ -47,6 +49,7 @@
     "graphql": "^0.11.7",
     "graphql-tag": "^2.6.0",
     "husky": "^0.14.3",
+    "isomorphic-unfetch": "^2.0.0",
     "js-cookie": "^2.2.0",
     "js-data": "^3.0.1",
     "js-data-rethinkdb": "^3.0.0",
@@ -54,7 +57,7 @@
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
     "morgan": "^1.9.0",
-    "next": "^4.2.0-canary.1",
+    "next": "^4.3.0-canary.1",
     "node-fetch": "^1.7.3",
     "nodemon": "^1.12.5",
     "passport": "^0.4.0",

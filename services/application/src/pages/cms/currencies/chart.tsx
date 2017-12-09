@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { chunk } from "lodash";
 import { Provider } from "mobx-react";
 import { Chart } from "../../../stores/chart";

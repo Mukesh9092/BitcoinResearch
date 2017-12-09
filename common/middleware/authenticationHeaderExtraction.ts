@@ -1,14 +1,8 @@
-import { Application, Request, Response } from "express";
-
-interface AuthenticatedRequest extends Request {
-  authentication?: {
-    user?: string;
-    session?: string;
-  }
-}
+import { Application, Response } from "express";
+import IAuthenticatedRequest from "../types/IAuthenticatedRequest";
 
 export default function authenticationHeaderExtraction(app: Application) {
-  app.use((req: AuthenticatedRequest, res: Response, next: Function) => {
+  app.use((req: IAuthenticatedRequest, res: Response, next: Function) => {
     const user = req.headers["x-user"];
     const session = req.headers["x-session"];
 

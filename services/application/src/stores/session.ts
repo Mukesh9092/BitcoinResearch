@@ -1,98 +1,80 @@
 import Cookies from "js-cookie";
 import Router from "next/router";
+import { IGetInitialPropsContext } from '../types/next';
 import { get } from "lodash";
-import { observable } from "mobx";
+import { observable, computed } from "mobx";
 
 const STATUS_INTERNAL_SERVER_ERROR = 500;
 const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
 
-export interface ISession {
-  userId: string;
-  successMessage: string;
-  errorMessage: string;
-  loading: boolean;
-  loggingIn: boolean;
-  loggingOut: boolean;
-}
+export class SessionStore {
+  @observable userId: string | null = null;
+  @observable successMessage: string | null = null;
+  @observable errorMessage: string | null = null;
+  @observable loading: boolean = false;
+  @observable loggingIn: boolean = false;
+  @observable loggingOut: boolean = false;
 
-export class Session implements ISession {
-  @observable userId: string;
-  @observable successMessage: string;
-  @observable errorMessage: string;
-  @observable loading: boolean;
-  @observable loggingIn: boolean;
-  @observable loggingOut: boolean;
+  @computed get isAuthenticated(): boolean {
+    return !!this.userId;
+  }
 
-  constructor(initialData: ISession | undefined) {
-    // console.log("Session#constructor", initialData);
+  loadFromContext(ctx: IGetInitialPropsContext): void {
+    console.log("SessionStore#loadFromContext");
 
-    if (initialData) {
-      this.userId = initialData.userId;
-      this.successMessage = initialData.successMessage;
-      this.errorMessage = initialData.errorMessage;
-      this.loading = initialData.loading;
-      this.loggingIn = initialData.loggingIn;
-      this.loggingOut = initialData.loggingOut;
+    if (!ctx.req) {
+      this.loadFromLocalStorage();
+    } else {
+      const passport = get(ctx, ["req", "authentication", "session", "passport"])
+
+      console.log("SessionStore#loadFromContext passport", passport);
+
+      if (passport) {
+        this.userId = passport.user;
+      }
     }
   }
 
-  static getBrowserInstance(initialData: ISession): Session {
-    // console.log("Session#getBrowserInstance");
+  loadFromLocalStorage(): void {
+    console.log("SessionStore#loadFromLocalStorage");
 
-    const instance = new Session(initialData);
     const userId = window.localStorage.getItem("userId");
-
+    
     if (userId) {
-      instance.userId = userId;
+      this.userId = userId;
     }
-
-    return instance;
-  }
-
-  static async getServerInstance(ctx): Promise<Session> {
-    console.log("Session#getServerInstance", ctx);
-
-    const instance = new Session();
-
-    const userId = get(ctx.req, "session.passport.user");
-
-    if (userId) {
-      instance.userId = userId;
-    }
-
-    return instance;
   }
 
   setInLocalStorage(): void {
-    // console.log("Session#setInLocalStorage", this.userId);
+    console.log("SessionStore#setInLocalStorage");
 
-    window.localStorage.setItem("userId", this.userId);
+    if (this.userId) {
+      window.localStorage.setItem("userId", this.userId);
+    }
   }
 
   removeFromLocalStorage(): void {
-    // console.log("Session#removeFromLocalStorage");
+    console.log("SessionStore#removeFromLocalStorage");
 
     window.localStorage.removeItem("userId");
   }
 
   async loginWithEmailPassword(email: string, password: string): Promise<void> {
-    // console.log("Session#loginWithEmailPassword", email, password);
+    console.log("SessionStore#loginWithEmailPassword", email, password);
 
-    this.userId = '';
-    this.successMessage = '';
-    this.errorMessage = '';
-    this.loading = false;
+    this.userId = null;
+    this.successMessage = null;
+    this.errorMessage = null;
     this.loggingIn = true;
-    this.loggingOut = false;
 
     const response = await fetch("/api/authentication/local", {
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
+      credentials: "same-origin",
       method: "POST",
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }),
       body: JSON.stringify({
         email,
         password
@@ -101,7 +83,7 @@ export class Session implements ISession {
 
     const { status } = response;
 
-    // console.log("Session#loginWithEmailPassword response", status, response);
+    console.log("SessionStore#loginWithEmailPassword response", status, response);
 
     this.loggingIn = false;
 
@@ -121,30 +103,26 @@ export class Session implements ISession {
     this.successMessage = "Login successful";
 
     await Router.push("/cms");
-
-    // Just skip these, immediately redirect.
   }
 
   async logout() {
-    console.log("Session#logout");
+    console.log("SessionStore#logout");
 
+    this.userId = null;
+    this.successMessage = null;
+    this.errorMessage = null;
     this.loggingOut = true;
 
     this.removeFromLocalStorage();
 
     await fetch("/api/authentication/logout", { credentials: "same-origin" });
 
-    this.userId = '';
-    this.successMessage = '';
-    this.errorMessage = '';
-    this.loading = false;
-    this.loggingIn = false;
+    this.successMessage = "Logout successful";
+
     this.loggingOut = false;
 
     await Router.push("/");
   }
-
-  isAuthenticated = () => {
-    return !!this.userId;
-  };
 }
+
+export default new SessionStore();

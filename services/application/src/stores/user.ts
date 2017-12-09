@@ -4,53 +4,20 @@ import { observable } from 'mobx';
 
 import apolloClient from '../graphql/client';
 
-export class User {
-  @observable id: number;
-  @observable email: string;
-  @observable username: string;
-  @observable session;
+import { SessionStore } from './session'
 
-  constructor(session, initialData) {
-    // console.log("User#constructor", initialData);
+export class UserStore {
+  @observable id: string | void;
+  @observable email: string | void;
+  @observable username: string | void;
 
-    if (initialData) {
-      this.id = initialData.id;
-      this.email = initialData.email;
-      this.username = initialData.username;
-    }
-
-    this.session = session;
-  }
-
-  static getBrowserInstance(session, initialData) {
-    // console.log("User#getBrowserInstance", session, initialData);
-
-    const instance = new User(session, initialData);
-
-    return instance;
-  }
-
-  static async getServerInstance(ctx, session) {
-    // console.log("User#getServerInstance", session);
-
-    const instance = new User(session);
-
-    if (session.userId) {
-      await instance.load(ctx.req);
-
-      // console.log("User#getServerInstance instance loaded", this.id, this.email, this.username);
-    }
-
-    return instance;
-  }
-
-  async load(req: Request) {
+  async load(userId: string): Promise<void> {
     // console.log("User#load");
 
     const query = {
       query: gql`
-        query userById($id: String!) {
-          userById(id: $id) {
+        query userById($userId: String!) {
+          userById(id: $userId) {
             id
             email
             username
@@ -58,8 +25,8 @@ export class User {
         }
       `,
       variables: {
-        id: this.session.userId
-      }
+        userId,
+      },
     };
 
     const result = await apolloClient.query(query);
@@ -75,3 +42,5 @@ export class User {
     this.username = username;
   }
 }
+
+export default new UserStore();

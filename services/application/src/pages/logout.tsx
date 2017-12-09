@@ -1,27 +1,48 @@
-import React from "react";
+import * as React from "react";
 import { Provider } from "mobx-react";
-import { Row, Col } from "reactstrap";
+import { Row, Col, Jumbotron, Button } from "reactstrap";
 
-import ApplicationPage from "../components/ApplicationPage";
+import sessionStore from '../stores/session';
+import userStore from '../stores/user';
 import { Container } from "../components/common/container";
+import { IApplicationPageProps } from "../types/application";
+import { IGetInitialPropsContext } from '../types/next';
 import { Layout } from "../components/pages/layout";
-import { LoginForm } from "../components/pages/login/form";
 
-export default class PublicLoginPage extends ApplicationPage {
-  static async getInitialProps(ctx) {
-    const initialProps = await super.getInitialProps(ctx);
+export default class PublicLogoutPage extends React.Component<IApplicationPageProps, any> {
+  // TODO: ensureUnauthenticated
+  static async getInitialProps(ctx: IGetInitialPropsContext) {
+    const { err, req, res, pathname, query, asPath } = ctx;
 
-    this.ensureAuthenticated(ctx, initialProps.application);
+    if (err) {
+      throw err;
+    }
 
-    await initialProps.application.session.logout();
+    sessionStore.loadFromContext(ctx);
 
-    return initialProps;
+    return {
+      sessionStore,
+      userStore,
+      pathname,
+      query,
+      asPath,
+    };
   }
 
   render() {
+    const {
+      pathname,
+    } = this.props;
+
     return (
-      <Provider application={this.application || this.props.application}>
-        <Layout {...this.props}>
+      <Provider
+        sessionStore={sessionStore}
+        userStore={userStore}
+      >
+        <Layout
+          title="Home"
+          pathname={pathname}
+        >
           <Container>
             <Row>
               <Col>

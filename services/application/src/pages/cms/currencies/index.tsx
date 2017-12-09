@@ -1,7 +1,7 @@
 import * as cryptoCoins from "react-cryptocoins";
 import Link from "next/link";
-import React from "react";
-import ReactTable from "react-table";
+import * as React from "react";
+import * as ReactTable from "react-table";
 import Router from "next/router";
 import { Provider } from "mobx-react";
 import { Row, Col, Table } from "reactstrap";

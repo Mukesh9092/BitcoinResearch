@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React from "react";
+import * as React from "react";
 
 import { Header } from "./header";
 import { Footer } from "./footer";

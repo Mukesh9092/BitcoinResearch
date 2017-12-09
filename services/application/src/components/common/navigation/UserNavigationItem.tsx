@@ -1,4 +1,4 @@
-import { Component } from "react";
+import * as React from "react";
 import {
   DropdownItem,
   DropdownMenu,
@@ -11,9 +11,19 @@ import { observer, inject } from "mobx-react";
 
 import Link from "next/link";
 
-@inject("application")
+import { SessionStore } from "../../../stores/session";
+
+interface IUserNavigationItemProps {
+  sessionStore: SessionStore
+}
+
+interface IUserNavigationItemState {
+  isOpen: boolean;
+}
+
+@inject("sessionStore")
 @observer
-export default class UserNavigationItem extends Component {
+export default class UserNavigationItem extends React.Component<IUserNavigationItemProps, IUserNavigationItemState> {
   state = {
     isOpen: false
   };
@@ -25,15 +35,11 @@ export default class UserNavigationItem extends Component {
   };
 
   render() {
-    const { application } = this.props;
+    const { sessionStore } = this.props;
 
     // console.log("UserNavigationItem#render", this.props);
 
-    if (
-      application &&
-      application.session &&
-      application.session.isAuthenticated()
-    ) {
+    if (sessionStore.isAuthenticated) {
       return (
         <NavDropdown isOpen={this.state.isOpen} toggle={this.toggle}>
           <DropdownToggle nav caret>
@@ -47,7 +53,7 @@ export default class UserNavigationItem extends Component {
             </DropdownItem>
             <DropdownItem
               onClick={() => {
-                application.session.logout();
+                sessionStore.logout();
               }}
             >
               Logout
