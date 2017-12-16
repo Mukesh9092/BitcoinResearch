@@ -4,7 +4,9 @@ import IAuthenticatedRequest from "../common/types/IAuthenticatedRequest"
 
 export interface IGetInitialPropsContext {
   pathname: string;
-  query: string;
+  query: {
+    [key: string]: any
+  };
   asPath: string;
 
   req?: IAuthenticatedRequest;

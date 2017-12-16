@@ -1,51 +1,82 @@
-import { gql } from "react-apollo";
+import currencyPairs from '../../../api/src/graphql/resolvers/RootQuery/currencyPairs';
+import gql from 'graphql-tag';
 import { observable } from "mobx";
 
 import apolloClient from "../graphql/client";
 
-export class CurrencyPairs {
-  @observable list;
+export interface ICurrency {
+  key: string;
+  name: string;
+  txFee: string;
+  minConf: string;
+}
 
-  constructor(initialData) {
-    // console.log("CurrencyPairs#constructor", initialData);
+export interface IVolume {
+  currencyAVolume: string;
+  currencyBVolume: string;
+}
 
-    if (initialData) {
-      this.list = initialData.list;
+export interface ICurrencyPair {
+  id: string;
+  key: string;
+  currencyA: ICurrency;
+  currencyB: ICurrency;
+  volume24h: IVolume;
+}
+
+export interface ICurrencyPairsStoreProps {
+  list: ICurrencyPair[];
+}
+
+export class CurrencyPairsStore {
+  @observable list: ICurrencyPair[] = [];
+
+  constructor(props: ICurrencyPairsStoreProps | void) {
+    console.log("CurrencyPairsStore#constructor", props);
+
+    if (props) {
+      this.list = props.list;
     }
   }
 
-  async load(req) {
-    // console.log("CurrencyPairs#load");
+  async load() {
+    console.log("CurrencyPairsStore#load");
 
-    const query = {
-      query: gql`
-        query {
-          currencyPairs {
-            id
-            key
-            currencyA {
+    try {
+      const query = {
+        query: gql`
+          query currencyPairs {
+            currencyPairs {
+              id
               key
-              name
-              txFee
-              minConf
-            }
-            currencyB {
-              key
-              name
-              txFee
-              minConf
-            }
-            volume24h {
-              currencyAVolume
-              currencyBVolume
+              currencyA {
+                key
+                name
+                txFee
+                minConf
+              }
+              currencyB {
+                key
+                name
+                txFee
+                minConf
+              }
+              volume24h {
+                currencyAVolume
+                currencyBVolume
+              }
             }
           }
-        }
-      `
-    };
+        `
+      };
 
-    const { data: { currencyPairs } } = await apolloClient.query(query);
+      const result = await apolloClient.query(query);
 
-    this.list = currencyPairs;
+      this.list = result.data.currencyPairs;
+    } catch (error) {
+      throw error;
+    }
   }
 }
+
+export default new CurrencyPairsStore(undefined);

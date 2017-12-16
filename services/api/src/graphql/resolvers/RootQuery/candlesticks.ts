@@ -28,7 +28,7 @@ function sanitizePoloniex(a) {
     x.id = x.date * MILLISECOND_MULTIPLIER;
     delete x.date;
 
-    console.log("X", x);
+    // console.log("X", x);
 
     return x;
   });
@@ -67,32 +67,45 @@ async function getCurrencyPair(currencyPairKey) {
 }
 
 export default async function candlesticks(root, { currencyA, currencyB, period, start, end }) {
+  console.log("graphql candlesticks", currencyA, currencyB, period, start, end);
+
   const currencyPairKey = `${currencyA}_${currencyB}`;
+
+  console.log("graphql candlesticks currencyPairKey", currencyPairKey);
 
   const currencyPair = await getCurrencyPair(currencyPairKey);
 
+  console.log("graphql candlesticks currencyPair", currencyPair);
+
   const tableName = `candlesticks_${currencyPairKey}_${period}`;
+
+  console.log("graphql candlesticks tableName", tableName);
 
   await ensureTable(rethinkDBAdapter, tableName);
 
   const queryResult = await rethinkDBAdapter
     .table(tableName)
-    .between(start, end);
+    .between(start * 1000, end * 1000);
 
-  const expectedDataSetSize = (end - start) / MILLISECOND_MULTIPLIER / period;
+  const expectedDataSetSize = (end - start) / period;
   const actualDataSetSize = queryResult.length;
 
-  console.log("expectedDataSetSize", expectedDataSetSize);
-  console.log("actualDataSetSize", actualDataSetSize);
+  console.log("graphql candlesticks expectedDataSetSize", expectedDataSetSize);
+  console.log("graphql candlesticks actualDataSetSize", actualDataSetSize);
 
-  if (actualDataSetSize >= expectedDataSetSize) {
+  if (queryResult.length) {
     return sanitize(queryResult);
   }
 
   const dataPointsToQuery = expectedDataSetSize - actualDataSetSize;
 
-  const apiEnd = end / MILLISECOND_MULTIPLIER;
+  console.log("graphql candlesticks dataPointsToQuery", dataPointsToQuery);
+
+  const apiEnd = end;
   const apiStart = apiEnd - period * dataPointsToQuery;
+
+  console.log("graphql candlesticks apiStart", apiStart);
+  console.log("graphql candlesticks apiEnd", apiEnd);
 
   const uri = [
     "command=returnChartData",

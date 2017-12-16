@@ -1,28 +1,58 @@
 import * as React from "react";
 import { Provider } from "mobx-react";
-import { Row, Col } from "reactstrap";
+import { Row, Col, Jumbotron, Button } from "reactstrap";
 
-import ApplicationPage from "../../components/ApplicationPage";
-import { Application } from "../../stores/application";
+import sessionStore from '../../stores/session';
+import userStore from '../../stores/user';
 import { Container } from "../../components/common/container";
+import { IApplicationPageProps } from "../../types/application";
+import { IGetInitialPropsContext } from '../../types/next';
 import { Layout } from "../../components/pages/cms/layout";
 
-class CMSUsersPage extends ApplicationPage {
-  static async getInitialProps(ctx) {
-    const initialProps = await super.getInitialProps(ctx);
+export default class CMSUsersPage extends React.Component<IApplicationPageProps, any> {
+  // TODO: ensureAuthenticated
+  static async getInitialProps(ctx: IGetInitialPropsContext) {
+    const { err, req, res, pathname, query, asPath } = ctx;
 
-    this.ensureAuthenticated(ctx, initialProps.application);
+    if (err) {
+      throw err;
+    }
 
-    return initialProps;
+    sessionStore.loadFromContext(ctx);
+
+    return {
+      sessionStore,
+      userStore,
+      pathname,
+      query,
+      asPath,
+    };
   }
 
   render() {
+    const {
+      pathname,
+    } = this.props;
+
     return (
-      <Provider application={this.application || this.props.application}>
-        <Layout {...this.props}>
+      <Provider
+        sessionStore={sessionStore}
+        userStore={userStore}
+      >
+        <Layout
+          title="CMS / Dashboard"
+          pathname={pathname}
+        >
           <Container>
             <Row>
-              <Col>Users</Col>
+              <Col>
+                <h1>Users</h1>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                List?
+              </Col>
             </Row>
           </Container>
         </Layout>
@@ -30,5 +60,3 @@ class CMSUsersPage extends ApplicationPage {
     );
   }
 }
-
-export default CMSUsersPage;

@@ -2,8 +2,34 @@ import { makeExecutableSchema } from "graphql-tools";
 import { graphqlExpress, graphiqlExpress } from "graphql-server-express";
 import { Application } from "express";
 
-import resolvers from "../graphql/resolvers";
 import schema from "../graphql/schema";
+import store from "../common/database/store";
+
+import * as Date from "../graphql/resolvers/Date"
+import * as Candlestick from "../graphql/resolvers/Candlestick"
+
+import {
+  userById,
+  candlesticks,
+  currencyPairs,
+} from "../graphql/resolvers/RootQuery"
+
+const resolversObject = {
+  Date,
+
+  Candlestick,
+
+  RootQuery: {
+    userById,
+    candlesticks,
+    currencyPairs,
+  },
+
+  RootMutation: {
+  },
+};
+
+console.log('RESOLVERS', resolversObject);
 
 export default function graphql(app: Application): void {
   app.all("/api/graphql", (req, res, next) => {
@@ -16,7 +42,7 @@ export default function graphql(app: Application): void {
     graphqlExpress({
       schema: makeExecutableSchema({
         typeDefs: schema,
-        resolvers
+        resolvers: resolversObject,
       })
     })(req, res, next);
   });

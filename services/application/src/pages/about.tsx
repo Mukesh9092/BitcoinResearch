@@ -39,7 +39,7 @@ export default class PublicAboutPage extends React.Component<IApplicationPagePro
         userStore={userStore}
       >
         <Layout
-          title="Home"
+          title="About"
           pathname={pathname}
         >
           <Container>

@@ -2,9 +2,20 @@ import Head from "next/head";
 import * as React from "react";
 
 import { Header } from "./header";
-import { Footer } from "./footer";
 
-export function Layout({ children, title = "CMS", url: { pathname } }) {
+interface ILayoutProps {
+  title: string;
+  pathname: string;
+  children?: React.ReactElement<any>;
+}
+
+export function Layout(props: ILayoutProps) {
+  const {
+    children,
+    title,
+    pathname,
+  } = props;
+
   return (
     <main>
       <Head>
@@ -14,7 +25,7 @@ export function Layout({ children, title = "CMS", url: { pathname } }) {
         <link
           rel="stylesheet"
           type="text/css"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          href="/static/bootstrap.min.css"
         />
         <link
           rel="stylesheet"

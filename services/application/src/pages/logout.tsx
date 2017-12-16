@@ -40,7 +40,7 @@ export default class PublicLogoutPage extends React.Component<IApplicationPagePr
         userStore={userStore}
       >
         <Layout
-          title="Home"
+          title="Logout"
           pathname={pathname}
         >
           <Container>

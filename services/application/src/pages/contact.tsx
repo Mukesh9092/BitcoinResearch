@@ -39,7 +39,7 @@ export default class PublicContactPage extends React.Component<IApplicationPageP
         userStore={userStore}
       >
         <Layout
-          title="Home"
+          title="Contact"
           pathname={pathname}
         >
           <Container>

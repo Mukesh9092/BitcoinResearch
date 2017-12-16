@@ -8,6 +8,15 @@ const STATUS_INTERNAL_SERVER_ERROR = 500;
 const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
 
+export interface ISessionStoreProps {
+  userId: string | null;
+  successMessage: string | null;
+  errorMessage: string | null;
+  loading: boolean;
+  loggingIn: boolean;
+  loggingOut: boolean;
+}
+
 export class SessionStore {
   @observable userId: string | null = null;
   @observable successMessage: string | null = null;
@@ -18,6 +27,19 @@ export class SessionStore {
 
   @computed get isAuthenticated(): boolean {
     return !!this.userId;
+  }
+
+  constructor(props: ISessionStoreProps | void) {
+    // console.log("SessionStore#constructor", props);
+
+    if (props) {
+      this.userId = props.userId;
+      this.successMessage = props.successMessage;
+      this.errorMessage = props.errorMessage;
+      this.loading = props.loading;
+      this.loggingIn = props.loggingIn;
+      this.loggingOut = props.loggingOut;
+    }
   }
 
   loadFromContext(ctx: IGetInitialPropsContext): void {
@@ -125,4 +147,4 @@ export class SessionStore {
   }
 }
 
-export default new SessionStore();
+export default new SessionStore(undefined);

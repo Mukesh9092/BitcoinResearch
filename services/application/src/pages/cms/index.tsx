@@ -1,31 +1,58 @@
 import * as React from "react";
 import { Provider } from "mobx-react";
-import { Row, Col } from "reactstrap";
-import { observer } from "mobx-react";
+import { Row, Col, Jumbotron, Button } from "reactstrap";
 
-import ApplicationPage from "../../components/ApplicationPage";
-import { Application } from "../../stores/application";
+import sessionStore from '../../stores/session';
+import userStore from '../../stores/user';
 import { Container } from "../../components/common/container";
+import { IApplicationPageProps } from "../../types/application";
+import { IGetInitialPropsContext } from '../../types/next';
 import { Layout } from "../../components/pages/cms/layout";
 
-class CMSIndexPage extends ApplicationPage {
-  static async getInitialProps(ctx) {
-    const initialProps = await super.getInitialProps(ctx);
+export default class CMSIndexPage extends React.Component<IApplicationPageProps, any> {
+  // TODO: ensureAuthenticated
+  static async getInitialProps(ctx: IGetInitialPropsContext) {
+    const { err, req, res, pathname, query, asPath } = ctx;
 
-    // console.log("initialProps", initialProps);
+    if (err) {
+      throw err;
+    }
 
-    this.ensureAuthenticated(ctx, initialProps.application);
+    sessionStore.loadFromContext(ctx);
 
-    return initialProps;
+    return {
+      sessionStore,
+      userStore,
+      pathname,
+      query,
+      asPath,
+    };
   }
 
   render() {
+    const {
+      pathname,
+    } = this.props;
+
     return (
-      <Provider application={this.application || this.props.application}>
-        <Layout {...this.props}>
+      <Provider
+        sessionStore={sessionStore}
+        userStore={userStore}
+      >
+        <Layout
+          title="CMS / Dashboard"
+          pathname={pathname}
+        >
           <Container>
             <Row>
-              <Col>CMS INDEX 123</Col>
+              <Col>
+                <h1>Dashboard</h1>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                Si!
+              </Col>
             </Row>
           </Container>
         </Layout>
@@ -33,5 +60,3 @@ class CMSIndexPage extends ApplicationPage {
     );
   }
 }
-
-export default CMSIndexPage;

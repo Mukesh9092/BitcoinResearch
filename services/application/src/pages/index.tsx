@@ -1,14 +1,13 @@
+import { Provider } from 'mobx-react';
 import * as React from 'react';
 import { Col, Jumbotron, Row } from 'reactstrap';
-import { Provider } from 'mobx-react';
-import { get } from "lodash";
 
+import { Container } from '../components/common/container';
+import { Layout } from '../components/pages/layout';
 import sessionStore from '../stores/session';
 import userStore from '../stores/user';
-import { Container } from '../components/common/container';
+import { IApplicationPageProps } from '../types/application';
 import { IGetInitialPropsContext } from '../types/next';
-import { IApplicationPageProps } from "../types/application";
-import { Layout } from '../components/pages/layout';
 
 export default class PublicIndexPage extends React.Component<IApplicationPageProps, any> {
   static async getInitialProps(ctx: IGetInitialPropsContext) {

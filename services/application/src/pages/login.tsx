@@ -41,7 +41,7 @@ export default class PublicLoginPage extends React.Component<IApplicationPagePro
         userStore={userStore}
       >
         <Layout
-          title="Home"
+          title="Login"
           pathname={pathname}
         >
           <Container>

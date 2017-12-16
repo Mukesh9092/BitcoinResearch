@@ -1,34 +1,26 @@
-import { gql } from "react-apollo";
+import gql from 'graphql-tag';
 import { observable } from "mobx";
+
+import Candlestick from "../common/types/Candlestick";
 
 import apolloClient from "../graphql/client";
 
-export class Chart {
-  @observable candlesticks;
+interface IChartProps {
+  candlesticks: Candlestick[];
+}
 
-  constructor(initialData) {
+export class ChartStore {
+  @observable candlesticks: Candlestick[];
+
+  constructor(props: IChartProps | void) {
     // console.log("Chart#constructor", initialData);
 
-    if (initialData) {
-      this.candlesticks = initialData.candlesticks;
+    if (props) {
+      this.candlesticks = props.candlesticks;
     }
   }
 
-  static getBrowserInstance(initialData) {
-    console.log("Chart#getBrowserInstance", initialData);
-
-    const instance = new Chart(initialData);
-
-    return instance;
-  }
-
-  static getServerInstance(ctx) {
-    const instance = new Chart();
-
-    return instance;
-  }
-
-  async load(currencyA, currencyB, period, start, end) {
+  async load(currencyA: string, currencyB: string, period: number, start: number, end: number) {
     // console.log("Chart#load", currencyA, currencyB, period, start, end);
 
     const query = {
@@ -66,10 +58,10 @@ export class Chart {
       }
     };
 
-    const { data: { candlesticks } } = await apolloClient.query(query);
+    const result = await apolloClient.query(query);
 
-    this.candlesticks = candlesticks;
+    this.candlesticks = result.data.candlesticks;
   }
 }
 
-export const instance = new Chart();
+export default new ChartStore(undefined);

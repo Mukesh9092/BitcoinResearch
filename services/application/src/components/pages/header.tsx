@@ -1,7 +1,6 @@
 import * as React from "react";
 import FaChevronLeft from "react-icons/lib/fa/chevron-left";
 import Link from "next/link";
-import { Component } from "react";
 import { Nav, NavItem, NavLink, NavbarBrand } from "reactstrap";
 
 import { Navigation } from "../common/navigation";
@@ -17,7 +16,7 @@ const HeaderNavLink = (props: INavLinkProps) => {
   console.log('HeaderNavLink');
 
   return (
-    <NavItem key={props.label}>
+    <NavItem key={props.url}>
       <Link href={props.url} prefetch>
         <NavLink href={props.url} active={props.pathname === props.url}>
           {props.label}
