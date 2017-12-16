@@ -32,7 +32,7 @@ async function main() {
 
     await nextApp.prepare();
 
-    expressServiceWith(configureApplication, APPLICATION_HOST, Number(APPLICATION_PORT));
+    expressServiceWith(configureApplication, String(APPLICATION_HOST), Number(APPLICATION_PORT));
   } catch (error) {
     console.log(`! ${formatError(error)}`);
   }

@@ -58,6 +58,6 @@ expressServiceWith(
       console.log(formatError(error));
     });
   },
-  PROXY_HOST,
+  String(PROXY_HOST),
   Number(PROXY_PORT)
 );

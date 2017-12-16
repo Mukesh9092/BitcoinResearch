@@ -11,11 +11,15 @@ services:
       - api
       - application
       - authentication
+      - rethinkdb
+      - redis
       # - noflo
     links:
       - api
       - application
       - authentication
+      - rethinkdb
+      - redis
       # - noflo
     build: ./services/proxy
     ports:
@@ -26,6 +30,10 @@ services:
 
   application:
     build: ./services/application
+    depends_on:
+      - rethinkdb
+    links:
+      - rethinkdb
     ports:
       - ${APPLICATION_PORT}:${APPLICATION_PORT}
     volumes:
@@ -34,6 +42,10 @@ services:
 
   api:
     build: ./services/api
+    depends_on:
+      - rethinkdb
+    links:
+      - rethinkdb
     ports:
       - ${API_PORT}:${API_PORT}
     volumes:
@@ -42,6 +54,12 @@ services:
 
   authentication:
     build: ./services/authentication
+    depends_on:
+      - redis
+      - rethinkdb
+    links:
+      - redis
+      - rethinkdb
     ports:
       - ${AUTHENTICATION_PORT}:${AUTHENTICATION_PORT}
     volumes:

@@ -1,3 +1,4 @@
+# Use the latest Redis base image.
 FROM redis:latest
 
 # Expose the application's ports.

@@ -18,4 +18,4 @@ function configureApplication(app: Application) {
   poloniex(app);
 }
 
-expressServiceWith(configureApplication, API_HOST, Number(API_PORT));
+expressServiceWith(configureApplication, String(API_HOST), Number(API_PORT));

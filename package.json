@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "copy-common-dir": "cpx common/**/* services/*/src/common",
+    "copy-common-dir-watch": "cpx common/**/* services/*/src/common --watch",
     "eslint": "eslint",
     "lint": "npm run eslint .",
     "lint:fix": "npm run eslint --fix .",
@@ -59,6 +61,7 @@
     "babel-eslint": "^8.0.2",
     "connect-redis": "^3.3.2",
     "cookie-parser": "^1.4.3",
+    "cpx": "^1.5.0",
     "eslint": "^4.6.0",
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-prettier": "^2.2.0",

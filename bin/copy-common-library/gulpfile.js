@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 
+const cmd = require("node-cmd");
 const gulp = require("gulp");
 const cpr = require("cpr");
 const async = require("async");
@@ -43,19 +44,25 @@ function getServicePaths(cb) {
 }
 
 function copyFilesToServices(sourcePath, services, cb) {
-  async.each(services, (service, cb) => {
-    const destinationPath = `${projectDirectoryPath}/services/${service}/${targetLibDirectoryPathFragment}`;
+  async.each(
+    services,
+    (service, cb) => {
+      const destinationPath = `${projectDirectoryPath}/services/${service}/${targetLibDirectoryPathFragment}`;
 
-    console.log(`Copying from "${sourcePath}" to "${destinationPath}".`);
+      console.log(`Copying from "${sourcePath}" to "${destinationPath}".`);
 
-    const options = {
-      deleteFirst: true,
-      overwrite: true,
-      confirm: true
-    };
+      // const options = {
+      //   deleteFirst: true,
+      //   overwrite: true,
+      //   confirm: true
+      // };
 
-    cpr(sourcePath, destinationPath, options, cb);
-  }, cb);
+      // cpr(sourcePath, destinationPath, options, cb);
+
+      cmd.get(`rsync -a ${sourcePath}/* ${destinationPath}`, cb);
+    },
+    cb
+  );
 }
 
 gulp.task("copy", cb => {
