@@ -1,8 +1,8 @@
-// import fetch from "isomorphic-unfetch";
+import * as fetch from "isomorphic-unfetch";
 
 // TODO: proper output type
 export default async function fetchPoloniex(queryString: string): Promise<string> {
-  const queryURL = `https://poloniex.com/public?${queryString}`;
+  const queryURL = `https://api2.poloniex.com/public?${queryString}`;
 
   console.log('fetchPoloniex', queryURL);
 

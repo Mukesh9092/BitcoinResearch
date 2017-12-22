@@ -36,7 +36,6 @@
   "homepage": "https://github.com/Industrial/test-next.js#readme",
   "dependencies": {
     "@ljharb/eslint-config": "^12.2.1",
-    "@types/autobahn": "^0.9.38",
     "@types/body-parser": "^1.16.8",
     "@types/connect-redis": "0.0.7",
     "@types/cookie-parser": "^1.4.1",

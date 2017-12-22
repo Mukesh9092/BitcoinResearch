@@ -29,7 +29,7 @@ const resolversObject = {
   },
 };
 
-console.log('RESOLVERS', resolversObject);
+// console.log('RESOLVERS', resolversObject);
 
 export default function graphql(app: Application): void {
   app.all("/api/graphql", (req, res, next) => {

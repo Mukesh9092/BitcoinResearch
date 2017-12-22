@@ -10,6 +10,9 @@ function sanitize(a) {
 }
 
 function sanitizePoloniex(volumes, currencies) {
+  console.log("sanitizePoloniex volumes", volumes);
+  console.log("sanitizePoloniex currencies", currencies);
+
   return sanitize(
     Object.keys(volumes)
       .filter(x => !x.match(/^total/))
