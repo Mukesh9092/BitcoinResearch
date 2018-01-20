@@ -1,7 +1,6 @@
 import * as React from "react";
 
-import FaList from "react-icons/lib/fa/list";
-import FaCog from "react-icons/lib/fa/cog";
+import { FaCog, FaList } from "react-icons/lib/fa";
 import Link from "next/link";
 
 import {
@@ -113,22 +112,6 @@ export default class Toolbar extends React.Component<IToolbarProps, IToolbarStat
     });
   };
 
-  renderLeftContent() {
-    return [
-      <NavItem key="left">
-        <Link href="/cms/currencies" prefetch>
-          <NavLink href="/cms/currencies">
-            <FaList
-              style={{
-                marginRight: 10
-              }}
-            />
-          </NavLink>
-        </Link>
-      </NavItem>
-    ];
-  }
-
   renderPeriodSelector() {
     const { period, handlePeriodChange } = this.props;
 
@@ -145,7 +128,13 @@ export default class Toolbar extends React.Component<IToolbarProps, IToolbarStat
       );
     });
 
-    return <ButtonGroup>{buttonGroupItems}</ButtonGroup>;
+    return (
+      <ButtonGroup
+        size="sm"
+      >
+        {buttonGroupItems}
+      </ButtonGroup>
+    );
   }
 
   renderZoomDropdown() {
@@ -166,6 +155,22 @@ export default class Toolbar extends React.Component<IToolbarProps, IToolbarStat
         </DropdownMenu>
       </Dropdown>
     );
+  }
+
+  renderLeftContent() {
+    return [
+      <NavItem key="left">
+        <Link href="/cms/currencies" prefetch>
+          <NavLink href="/cms/currencies">
+            <FaList
+              style={{
+                marginRight: 10
+              }}
+            />
+          </NavLink>
+        </Link>
+      </NavItem>
+    ];
   }
 
   renderCollapseContent() {

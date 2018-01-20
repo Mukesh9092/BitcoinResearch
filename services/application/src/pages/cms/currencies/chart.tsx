@@ -1,3 +1,5 @@
+import * as querystring from "querystring";
+
 import Router from "next/router";
 import * as React from 'react';
 // import * as cryptoCoins from 'react-cryptocoins';
@@ -43,13 +45,18 @@ export interface ICMSChartPageProps extends IApplicationPageProps {
 
 export default class CMSChartPage extends React.Component<ICMSChartPageProps, any> {
   handlePeriodChange = (event: React.MouseEvent<any>): void => {
-    // console.log('handlePeriodChange', event);
+    console.log('handlePeriodChange', event);
   };
 
   static async getInitialProps(ctx: IGetInitialPropsContext) {
-    const { err, req, res, pathname, query, asPath } = ctx;
+    console.log('##########');
+    console.log('##########');
+    console.log('##########');
+    console.log('##########');
+    console.log('##########');
+    console.log('##########');
 
-    // console.log('CMSCurrenciesPage#getInitialProps');
+    const { err, req, res, pathname, query, asPath } = ctx;
 
     if (err) {
       throw err;
@@ -59,20 +66,48 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
 
     // ensureAuthenticatedContext(ctx, sessionStore);
 
-    // await currencyPairsStore.load();
+    let {
+      currencyPair,
+      period,
+      start,
+      end,
+    } = ctx.query;
 
-    const currencyPair = ctx.query.currencyPair;
-    const [currencyA, currencyB] = currencyPair.split("_");
-    const end = Math.floor(new Date().valueOf() / 1000);
-    const start = end - 60 * 60 * 24;
-    const period = 300;
-    await chartStore.load(currencyA, currencyB, period, start * 1000, end * 1000);
+    if (!start || !end || !period) {
+      period = 300;
+      end = Math.floor(new Date().valueOf() / 1000);
+      start = end - 60 * 60 * 24;
+
+      const newQuery = {
+        ...query,
+        period,
+        start,
+        end,
+      }
+
+      const newURL = `${pathname}?${querystring.stringify(newQuery)}`;
+
+      if (req && res) {
+        res.writeHead(302, {
+          Location: newURL,
+        })
+        res.end()
+        res.finished = true
+      } else {
+        Router.replace(newURL);
+      }
+
+      return {};
+    }
+
+    const [ currencyAKey, currencyBKey ] = currencyPair.split("_");
+    await chartStore.load(currencyAKey, currencyBKey, period, start * 1000, end * 1000);
 
     return {
       asPath,
       chartStore,
-      currencyA,
-      currencyB,
+      currencyA: currencyAKey,
+      currencyB: currencyBKey,
       currencyPair,
       end,
       pathname,
@@ -87,7 +122,6 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
   renderChart() {
     return (
       <React.Fragment>
-        {/*
         <Toolbar
           currencyA={this.props.currencyA}
           currencyB={this.props.currencyB}
@@ -96,7 +130,7 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
           start={this.props.start}
           end={this.props.end}
           handlePeriodChange={this.handlePeriodChange}
-        />*/}
+        />
 
         <Container>
           <Chart

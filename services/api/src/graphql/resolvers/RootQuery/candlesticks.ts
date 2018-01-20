@@ -46,8 +46,6 @@ export default async function candlesticks(root, { currencyAKey, currencyBKey, p
   if (candlesticksFindResult && candlesticksFindResult.length) {
     const output = convertToGraphQLFormat(candlesticksFindResult)
 
-    console.log('OUTPUT0', output);
-
     return output;
   }
 
@@ -68,8 +66,6 @@ export default async function candlesticks(root, { currencyAKey, currencyBKey, p
   );
 
   const output = convertToGraphQLFormat(candlesticksFindResult)
-  
-  console.log('OUTPUT1', output);
 
   return output;
 };

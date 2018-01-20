@@ -49,16 +49,27 @@ const Currencies = (props: ICurrenciesProps) => {
   }
 
   const currencyElements = currencyPairsStore.list
+    .filter((x: ICurrencyPair): boolean => {
+      return x.currencyAKey === "BTC";
+    })
     .sort((a: ICurrencyPair, b: ICurrencyPair): number => {
-      if (a.currencyA24HVolume > b.currencyA24HVolume) {
+      const ax = Number(a.currencyA24HVolume);
+      const bx = Number(b.currencyA24HVolume);
+
+      if (ax < bx) {
         return 1;
       }
 
-      if (a.currencyA24HVolume === b.currencyA24HVolume) {
+      if (ax === bx) {
         return 0;
       }
 
       return -1;
+    })
+    .map((x: ICurrencyPair): ICurrencyPair => {
+      x.currencyA24HVolume = String(Math.ceil(Number(x.currencyA24HVolume)));
+      x.currencyB24HVolume = String(Math.ceil(Number(x.currencyB24HVolume)));
+      return x;
     })
     .map((currencyPair: ICurrencyPair, i: number): React.ReactElement<any> => {
       const {
@@ -81,11 +92,11 @@ const Currencies = (props: ICurrenciesProps) => {
           key={i}
           onClick={handleRowClick(currencyAKey, currencyBKey)}
         >
-          <td><Icon currency={currencyAKey} /></td>
+          {/* <td><Icon currency={currencyAKey} /></td> */}
           <td>{currencyAKey}</td>
           <td>{currencyA24HVolume}</td>
 
-          <td><Icon currency={currencyBKey} /></td>
+          {/* <td><Icon currency={currencyBKey} /></td> */}
           <td>{currencyBKey}</td>
           <td>{currencyB24HVolume}</td>
         </tr>
@@ -141,21 +152,24 @@ export default class CMSCurrenciesPage extends React.Component<ICMSCurrenciesPag
           pathname={this.props.pathname}
         >
           <Container>
-            <Row>
+            {/* <Row>
               <Col>
                 <h1>Currencies</h1>
               </Col>
-            </Row>
+            </Row> */}
             <Row>
               <Col>
-                <Table>
+                <Table
+                  hover={true}
+                  responsive={true}
+                >
                   <thead>
                     <tr>
-                      <td></td>
+                      {/* <td></td> */}
                       <td>Currency A</td>
                       <td>Volume</td>
 
-                      <td></td>
+                      {/* <td></td> */}
                       <td>Currency B</td>
                       <td>Volume</td>
                     </tr>

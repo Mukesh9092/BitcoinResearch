@@ -41,7 +41,7 @@ export default class Chart extends React.Component<IChartProps, IChartState> {
   }
 
   render() {
-    console.log("Chart#render", this.props);
+    // console.log("Chart#render", this.props);
 
     const {
       currencyPair,
@@ -53,7 +53,7 @@ export default class Chart extends React.Component<IChartProps, IChartState> {
 
     const candlesticksJS = toJS(candlesticks);
 
-    console.log("Chart#render candlesticksJS", candlesticksJS, candlesticksJS.length);
+    // console.log("Chart#render candlesticksJS", candlesticksJS, candlesticksJS.length);
 
     let initialData = candlesticksJS
       .map(x => {
@@ -71,7 +71,7 @@ export default class Chart extends React.Component<IChartProps, IChartState> {
       displayXAccessor
     } = xScaleProvider(initialData);
 
-    console.log('data', data);
+    // console.log('data', data);
 
     const xExtents = [
       xAccessor(last(data)),
