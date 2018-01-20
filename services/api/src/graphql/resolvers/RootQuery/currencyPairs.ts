@@ -3,19 +3,13 @@ import getDatabaseClient from "../../../common/database/client";
 
 export default async function currencyPairs() {
   try {
-    // console.log("currencyPairs");
-
     const connection = await getDatabaseClient();
-
-    // console.log("currencyPairs connection", connection);
 
     const currencyPairRepository = connection.getCustomRepository(CurrencyPairRepository);
 
-    const importResult = await currencyPairRepository.import();
+    const result = await currencyPairRepository.find();
 
-    // console.log("currencyPairs importResult", importResult);
-
-    return importResult;
+    return result;
   } catch (error) {
     throw error;
   }

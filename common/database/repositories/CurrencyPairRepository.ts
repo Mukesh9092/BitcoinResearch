@@ -46,34 +46,24 @@ export default class CurrencyPairRepository extends Repository<CurrencyPair> {
   async import() {
     console.log("CurrencyPairRespository#import")
 
-    await this.deleteAllRows();
+    console.log("CurrencyPairRespository#import requesting data");
 
     const volumes = await return24Volume();
     const currencies = await returnCurrencies();
 
+    console.log("CurrencyPairRespository#import sanitizing data");
+
     const currencyPairDocuments = sanitize(volumes, currencies);
 
+    console.log("CurrencyPairRespository#import saving data");
+
+    await this.deleteAllRows();
 
     const result = await this.save(currencyPairDocuments);
 
-    console.log('RESULT', result);
+    console.log("CurrencyPairRespository#import saved data");
 
     return result
-
-    /*
-    return Promise.all(currencyPairDocuments.map(async (x) => {
-      try {
-        return await this.save(x);
-      } catch (error) {
-        if (error.message.match('duplicate key value violates unique constraint')) {
-          const result = await this.updateRow(x);
-
-
-          return result;
-        }
-      }
-    }));
-    */
   }
 
   deleteAllRows() {

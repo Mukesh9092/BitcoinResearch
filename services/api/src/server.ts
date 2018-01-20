@@ -7,7 +7,7 @@ import logger from "./common/middleware/logger";
 
 import graphql from "./middleware/graphql";
 import poloniex from "./middleware/poloniex";
-// import dataSynchronizer from "./middleware/data-synchronizer";
+import dataSynchronizer from "./middleware/data-synchronizer";
 
 const {
   API_HOST,
@@ -20,7 +20,7 @@ function configureApplication(app: Application) {
   authenticationHeaderExtraction(app);
   graphql(app);
   poloniex(app);
-  // dataSynchronizer(app);
+  dataSynchronizer(app);
 }
 
 expressServiceWith(configureApplication, String(API_HOST), Number(API_PORT));
