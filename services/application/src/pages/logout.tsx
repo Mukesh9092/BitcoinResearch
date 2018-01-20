@@ -31,6 +31,8 @@ export default class PublicLogoutPage extends React.Component<IApplicationPagePr
 
   render() {
     const {
+      sessionStore,
+      userStore,
       pathname,
     } = this.props;
 

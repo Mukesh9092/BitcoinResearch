@@ -18,12 +18,13 @@ import currencyPairsStore from '../../../stores/currencyPairs';
 import sessionStore from '../../../stores/session';
 import userStore from '../../../stores/user';
 import { ChartStore } from "../../../stores/chart";
-import { UserStore } from "../../../stores/user";
-import { SessionStore } from "../../../stores/session";
 import { Container } from "../../../components/common/container";
 import { IApplicationPageProps } from "../../../types/application";
 import { IGetInitialPropsContext } from '../../../types/next';
 import { Layout } from "../../../components/pages/cms/layout";
+import { SessionStore } from "../../../stores/session";
+import { UserStore } from "../../../stores/user";
+import { ensureAuthenticatedContext } from "../../../helpers";
 
 export interface ICMSChartPageProps extends IApplicationPageProps {
   asPath: string;
@@ -42,20 +43,21 @@ export interface ICMSChartPageProps extends IApplicationPageProps {
 
 export default class CMSChartPage extends React.Component<ICMSChartPageProps, any> {
   handlePeriodChange = (event: React.MouseEvent<any>): void => {
-    console.log('handlePeriodChange', event);
+    // console.log('handlePeriodChange', event);
   };
 
-  // TODO: ensureAuthenticated
   static async getInitialProps(ctx: IGetInitialPropsContext) {
     const { err, req, res, pathname, query, asPath } = ctx;
 
-    console.log('CMSCurrenciesPage#getInitialProps');
+    // console.log('CMSCurrenciesPage#getInitialProps');
 
     if (err) {
       throw err;
     }
 
     sessionStore.loadFromContext(ctx);
+
+    // ensureAuthenticatedContext(ctx, sessionStore);
 
     // await currencyPairsStore.load();
 
@@ -64,7 +66,7 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
     const end = Math.floor(new Date().valueOf() / 1000);
     const start = end - 60 * 60 * 24;
     const period = 300;
-    await chartStore.load(currencyA, currencyB, period, start, end);
+    await chartStore.load(currencyA, currencyB, period, start * 1000, end * 1000);
 
     return {
       asPath,
@@ -82,8 +84,58 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
     };
   }
 
+  renderChart() {
+    return (
+      <React.Fragment>
+        {/*
+        <Toolbar
+          currencyA={this.props.currencyA}
+          currencyB={this.props.currencyB}
+          currencyPair={this.props.currencyPair}
+          period={this.props.period}
+          start={this.props.start}
+          end={this.props.end}
+          handlePeriodChange={this.handlePeriodChange}
+        />*/}
+
+        <Container>
+          <Chart
+            currencyA={this.props.currencyA}
+            currencyB={this.props.currencyB}
+            currencyPair={this.props.currencyPair}
+            period={this.props.period}
+            start={this.props.start}
+            end={this.props.end}
+            width={800}
+            height={600}
+            ratio={1}
+
+            candlesticks={this.props.chartStore.candlesticks}
+          />
+        </Container>
+      </React.Fragment>
+    );
+  }
+
+  renderNoData() {
+    return (
+      <div>
+        <h1>No Data :(</h1>
+      </div>
+    );
+  }
+
   render() {
-    console.log("CMSChartPage#render", this.props);
+    // console.log("CMSChartPage#render", this.props);
+
+    const { candlesticks } = this.props.chartStore;
+
+    let content;
+    if (candlesticks && candlesticks.length) {
+      content = this.renderChart();
+    } else {
+      content = this.renderNoData();
+    }
 
     return (
       <Provider
@@ -95,34 +147,7 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
           title="CMS / Chart"
           pathname={this.props.pathname}
         >
-          <React.Fragment>
-            {/* <Toolbar
-              currencyA={this.props.currencyA}
-              currencyB={this.props.currencyB}
-              currencyPair={this.props.currencyPair}
-              period={this.props.period}
-              start={this.props.start}
-              end={this.props.end}
-              handlePeriodChange={this.handlePeriodChange}
-            /> */}
-
-            <Container>
-              <Chart
-                currencyA={this.props.currencyA}
-                currencyB={this.props.currencyB}
-                currencyPair={this.props.currencyPair}
-                period={this.props.period}
-                start={this.props.start}
-                end={this.props.end}
-
-                width={800}
-                height={600}
-                ratio={1}
-
-                candlesticks={this.props.chartStore.candlesticks}
-              />
-            </Container>
-          </React.Fragment>
+          {content}
         </Layout>
       </Provider>
     );

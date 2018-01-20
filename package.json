@@ -77,12 +77,17 @@
     "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pg": "^7.4.0",
+    "poloniex-api-node": "^1.7.0",
     "prettier": "^1.9.2",
     "prop-types": "^15.6.0",
     "react-apollo": "^2.0.4",
     "redis-streams": "^1.1.0",
+    "reflect-metadata": "^0.1.10",
     "rethinkdb": "^2.3.3",
     "ts-node": "^4.0.2",
-    "typescript": "^2.6.2"
+    "typeorm": "^0.1.11",
+    "typescript": "^2.6.2",
+    "uuid": "^3.1.0"
   }
 }

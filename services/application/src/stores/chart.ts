@@ -1,16 +1,16 @@
 import gql from 'graphql-tag';
 import { observable } from "mobx";
 
-import Candlestick from "../common/types/Candlestick";
+import ICandlestick from "../common/types/ICandlestick";
 
 import apolloClient from "../graphql/client";
 
 interface IChartProps {
-  candlesticks: Candlestick[];
+  candlesticks: ICandlestick[];
 }
 
 export class ChartStore {
-  @observable candlesticks: Candlestick[];
+  @observable candlesticks: ICandlestick[];
 
   constructor(props: IChartProps | void) {
     // console.log("Chart#constructor", initialData);
@@ -20,26 +20,27 @@ export class ChartStore {
     }
   }
 
-  async load(currencyA: string, currencyB: string, period: number, start: number, end: number) {
-    // console.log("Chart#load", currencyA, currencyB, period, start, end);
+  async load(currencyAKey: string, currencyBKey: string, period: number, start: number, end: number) {
+    // console.log("Chart#load", currencyAKey, currencyBKey, period, start, end);
 
     const query = {
       query: gql`
         query candlesticks(
-          $currencyA: String!
-          $currencyB: String!
+          $currencyAKey: String!
+          $currencyBKey: String!
           $period: Int!
           $start: Date!
           $end: Date!
         ) {
           candlesticks(
-            currencyA: $currencyA
-            currencyB: $currencyB
+            currencyAKey: $currencyAKey
+            currencyBKey: $currencyBKey
             period: $period
             start: $start
             end: $end
           ) {
             id
+            time
             high
             low
             open
@@ -50,13 +51,15 @@ export class ChartStore {
         }
       `,
       variables: {
-        currencyA,
-        currencyB,
+        currencyAKey,
+        currencyBKey,
         period,
         start,
         end
       }
     };
+
+    // console.log("Chart#load query");
 
     const result = await apolloClient.query(query);
 

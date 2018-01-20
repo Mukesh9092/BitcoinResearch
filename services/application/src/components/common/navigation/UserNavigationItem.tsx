@@ -12,6 +12,7 @@ import { observer, inject } from "mobx-react";
 import Link from "next/link";
 
 import { SessionStore } from "../../../stores/session";
+import sessionStore from "../../../stores/session";
 
 interface IUserNavigationItemProps {
   sessionStore: SessionStore
@@ -35,10 +36,6 @@ export default class UserNavigationItem extends React.Component<IUserNavigationI
   };
 
   render() {
-    const { sessionStore } = this.props;
-
-    // console.log("UserNavigationItem#render", this.props);
-
     if (sessionStore.isAuthenticated) {
       return (
         <NavDropdown isOpen={this.state.isOpen} toggle={this.toggle}>

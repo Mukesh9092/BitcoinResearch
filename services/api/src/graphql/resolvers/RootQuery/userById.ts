@@ -1,7 +1,14 @@
-import store from "../../../common/database/store";
+import client from "../../../common/database/client";
 
-export default function userById(obj: Object, options: { id: string }) {
-  return store
-    .getMapper("user")
-    .find(options.id);
-}
+export default async (obj: Object, options: { id: string }) => {
+  try {
+    const connection = await client();
+    const userRepository = connection.getRepository('User');
+
+    const result = await userRepository.findOneById(options.id);
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -2,23 +2,23 @@ import Router from 'next/router';
 
 import { isBrowser } from "../common/environment";
 
-export default (ctx, application) => {
-  console.log("ApplicationPage#ensureUnauthenticated");
+export default (ctx, sessionStore) => {
+  // console.log("ensureUnauthenticatedContext");
 
   if (isBrowser()) {
-    // console.log("ApplicationPage#ensureAuthenticated browser isAuthenticated", application.session.isAuthenticated());
+    // console.log("ensureUnauthenticated browser isAuthenticated", sessionStore.isAuthenticated);
 
-    if (application.session.isAuthenticated()) {
+    if (sessionStore.isAuthenticated) {
       Router.push("/cms");
     }
   } else {
-    // console.log("ApplicationPage#ensureUnauthenticated server", ctx.req.user);
+    // console.log("ensureUnauthenticated server isAuthenticated", sessionStore.isAuthenticated);
 
-    if (!!ctx.req.user) {
-    ctx.res.writeHead(302, {
-      Location: "/cms"
-    });
-    ctx.res.end();
+    if (sessionStore.isAuthenticated) {
+      ctx.res.writeHead(302, {
+        Location: "/cms"
+      });
+      ctx.res.end();
     }
   }
 };

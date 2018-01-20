@@ -7,20 +7,6 @@ version: '3'
 
 services:
   proxy:
-    depends_on:
-      - api
-      - application
-      - authentication
-      - rethinkdb
-      - redis
-      # - noflo
-    links:
-      - api
-      - application
-      - authentication
-      - rethinkdb
-      - redis
-      # - noflo
     build: ./services/proxy
     ports:
       - ${PROXY_PORT}:${PROXY_PORT}
@@ -30,10 +16,6 @@ services:
 
   application:
     build: ./services/application
-    depends_on:
-      - rethinkdb
-    links:
-      - rethinkdb
     ports:
       - ${APPLICATION_PORT}:${APPLICATION_PORT}
     volumes:
@@ -42,10 +24,6 @@ services:
 
   api:
     build: ./services/api
-    depends_on:
-      - rethinkdb
-    links:
-      - rethinkdb
     ports:
       - ${API_PORT}:${API_PORT}
     volumes:
@@ -54,17 +32,60 @@ services:
 
   authentication:
     build: ./services/authentication
-    depends_on:
-      - redis
-      - rethinkdb
-    links:
-      - redis
-      - rethinkdb
     ports:
       - ${AUTHENTICATION_PORT}:${AUTHENTICATION_PORT}
     volumes:
       - ./services/authentication:/service
     env_file: .env
+
+  redis:
+    build: ./services/redis
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    volumes:
+      - ./services/redis:/service
+      - ./services/redis/data:/data
+    env_file: .env
+
+  redis-commander:
+    build: ./services/redis-commander
+    ports:
+      - ${REDIS_COMMANDER_PORT}:${REDIS_COMMANDER_PORT}
+    volumes:
+      - ./services/redis-commander:/service
+    env_file: .env
+
+  postgresql:
+    image: postgres:latest
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - ./services/postgresql/data:/var/lib/postgresql/data
+    env_file: .env
+
+  influxdb:
+    image: influxdb:latest
+    ports:
+      - ${INFLUXDB_PORT}:${INFLUXDB_PORT_IN}
+      - ${INFLUXDB_ADMIN_PORT}:${INFLUXDB_ADMIN_PORT_IN}
+      - ${INFLUXDB_GRAPHITE_PORT}:${INFLUXDB_GRAPHITE_PORT_IN}
+    volumes:
+      - ./services/influxdb/data:/var/lib/influxdb
+    env_file: .env
+
+  # adminer:
+  #   image: adminer
+  #   ports:
+  #     - ${POSTGRES_ADMIN_PORT}:${POSTGRES_ADMIN_PORT}
+
+  # eventstore:
+  #   image: eventstore/eventstore
+  #   ports:
+  #     - ${EVENTSTORE_PORT}:${EVENTSTORE_PORT}
+  #     - ${EVENTSTORE_HTTP_PORT}:${EVENTSTORE_HTTP_PORT}
+  #   volumes:
+  #     - ./services/eventstore/data:/var/lib/eventstore
+  #     - ./services/eventstore/logs:/var/log/eventstore
 
   # noflo:
   #   build: ./services/noflo
@@ -74,44 +95,20 @@ services:
   #     - ./services/noflo:/service
   #   env_file: .env
 
-  redis:
-    build: ./services/redis
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
-    volumes:
-      - ./services/redis:/service
-    env_file: .env
+  # rethinkdb:
+  #   build: ./services/rethinkdb
+  #   ports:
+  #     - ${RETHINKDB_PORT}:${RETHINKDB_PORT}
+  #     - ${RETHINKDB_PORT_INTRACLUSTER}:${RETHINKDB_PORT_INTRACLUSTER}
+  #     - ${RETHINKDB_PORT_WEB}:${RETHINKDB_PORT_WEB}
+  #   volumes:
+  #     - ./services/rethinkdb/data:/data
+  #   env_file: .env
 
-  redis-commander:
-    build: ./services/redis-commander
-    depends_on:
-      - redis
-    links:
-      - redis
-    ports:
-      - ${REDIS_COMMANDER_PORT}:${REDIS_COMMANDER_PORT}
-    volumes:
-      - ./services/redis-commander:/service
-    env_file: .env
-
-  rethinkdb:
-    build: ./services/rethinkdb
-    ports:
-      - ${RETHINKDB_PORT}:${RETHINKDB_PORT}
-      - ${RETHINKDB_PORT_INTRACLUSTER}:${RETHINKDB_PORT_INTRACLUSTER}
-      - ${RETHINKDB_PORT_WEB}:${RETHINKDB_PORT_WEB}
-    volumes:
-      - ./services/rethinkdb/data:/data
-    env_file: .env
-
-  rethinkdb-chateau:
-    build: ./services/rethinkdb-chateau
-    depends_on:
-      - rethinkdb
-    links:
-      - rethinkdb
-    ports:
-      - ${RETHINKDB_CHATEAU_PORT}:${RETHINKDB_CHATEAU_PORT}
-    volumes:
-      - ./services/rethinkdb-chateau:/service
-    env_file: .env
+  # rethinkdb-chateau:
+  #   build: ./services/rethinkdb-chateau
+  #   ports:
+  #     - ${RETHINKDB_CHATEAU_PORT}:${RETHINKDB_CHATEAU_PORT}
+  #   volumes:
+  #     - ./services/rethinkdb-chateau:/service
+  #   env_file: .env

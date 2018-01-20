@@ -13,7 +13,7 @@ interface INavLinkProps {
 }
 
 const HeaderNavLink = (props: INavLinkProps) => {
-  console.log('HeaderNavLink');
+  // console.log('HeaderNavLink');
 
   return (
     <NavItem key={props.url}>
@@ -31,7 +31,7 @@ interface ILeftContentProps {
 }
 
 const LeftContent = (props: ILeftContentProps) => {
-  console.log('LeftContent');
+  // console.log('LeftContent');
 
   return (
     <NavbarBrand key="1" href="/">
@@ -45,7 +45,7 @@ interface ICollapseContentProps {
 }
 
 const CollapseContent = (props: ICollapseContentProps) => {
-  console.log('CollapseContent', props);
+  // console.log('CollapseContent', props);
 
   return (
     <React.Fragment>
@@ -67,7 +67,7 @@ interface IHeaderProps {
 }
 
 export const Header = (props: IHeaderProps) => {
-  console.log('Header', props);
+  // console.log('Header', props);
 
   return (
     <header>

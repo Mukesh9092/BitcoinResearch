@@ -29,18 +29,14 @@ export default class PublicAboutPage extends React.Component<IApplicationPagePro
   }
 
   render() {
-    const {
-      pathname,
-    } = this.props;
-
     return (
       <Provider
-        sessionStore={sessionStore}
-        userStore={userStore}
+        sessionStore={this.props.sessionStore}
+        userStore={this.props.userStore}
       >
         <Layout
           title="About"
-          pathname={pathname}
+          pathname={this.props.pathname}
         >
           <Container>
             <Row>

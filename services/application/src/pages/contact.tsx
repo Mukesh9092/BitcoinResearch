@@ -29,18 +29,14 @@ export default class PublicContactPage extends React.Component<IApplicationPageP
   }
 
   render() {
-    const {
-      pathname,
-    } = this.props;
-
     return (
       <Provider
-        sessionStore={sessionStore}
-        userStore={userStore}
+        sessionStore={this.props.sessionStore}
+        userStore={this.props.userStore}
       >
         <Layout
           title="Contact"
-          pathname={pathname}
+          pathname={this.props.pathname}
         >
           <Container>
             <Row>

@@ -1,47 +1,50 @@
 import * as faker from "faker";
 import { genRandomString, sha512 } from "../common/crypto";
+import { promisify } from "util";
 
-import store from "../common/database/store";
+import User from "../common/database/entities/User";
+import client from "../common/database/client";
 
 const start = async () => {
   try {
-    const email = "admin@test.com";
-    const username = "admin";
-    const passwordSeed = genRandomString(64);
-    const { passwordHash } = sha512("test", passwordSeed);
 
-    const documents = [
-      {
-        email: email,
-        username: username,
-        password_seed: passwordSeed,
-        password_hash: passwordHash,
-        disabled: false,
-        frozen: false,
-        delisted: false
-      }
-    ];
+    const connection = await client();
+    const userRepository = connection.getRepository('User');
 
-    for (let i = 2, l = 20; i < l; i++) {
+    console.log(`Removing Documents.`);
+    await userRepository.remove(await userRepository.find());
+
+    console.log(`Creating Documents.`);
+
+    let user = new User();
+    user.email = "admin@test.com";
+    user.password_seed = genRandomString(64);
+    user.password_hash = sha512("test", user.password_seed).passwordHash;
+    user.disabled = false;
+    user.frozen = false;
+    user.delisted = false;
+
+    await userRepository.save(user);
+
+    for (let i = 1, l = 20; i <= l; i++) {
       const email = faker.internet.email();
-      const username = faker.internet.userName();
       const passwordSeed = genRandomString(64);
       const { passwordHash } = sha512("test", passwordSeed);
 
-      documents.push({
-        email: email,
-        username: username,
-        password_seed: passwordSeed,
-        password_hash: passwordHash,
-        disabled: false,
-        frozen: false,
-        delisted: false
-      });
+      user = new User();
+      user.email = `dummy${i}@test.com`;
+      user.password_seed = genRandomString(64);
+      user.password_hash = sha512("test", user.password_seed).passwordHash;
+      user.disabled = false;
+      user.frozen = false;
+      user.delisted = false;
+
+      await userRepository.save(user);
     }
 
-    await store.createMany("user", documents);
+    console.log(`Done.`);
 
-    process.exit();
+    process.exit(0);
   } catch (error) {
     throw error;
   }

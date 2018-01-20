@@ -8,9 +8,9 @@ import { Container } from "../../components/common/container";
 import { IApplicationPageProps } from "../../types/application";
 import { IGetInitialPropsContext } from '../../types/next';
 import { Layout } from "../../components/pages/cms/layout";
+import { ensureAuthenticatedContext } from "../../helpers";
 
 export default class CMSIndexPage extends React.Component<IApplicationPageProps, any> {
-  // TODO: ensureAuthenticated
   static async getInitialProps(ctx: IGetInitialPropsContext) {
     const { err, req, res, pathname, query, asPath } = ctx;
 
@@ -19,6 +19,8 @@ export default class CMSIndexPage extends React.Component<IApplicationPageProps,
     }
 
     sessionStore.loadFromContext(ctx);
+
+    // ensureAuthenticatedContext(ctx, sessionStore);
 
     return {
       sessionStore,
@@ -30,18 +32,16 @@ export default class CMSIndexPage extends React.Component<IApplicationPageProps,
   }
 
   render() {
-    const {
-      pathname,
-    } = this.props;
+    // console.log("CMSIndexPage#render sessionStore", sessionStore.isAuthenticated);
 
     return (
       <Provider
-        sessionStore={sessionStore}
-        userStore={userStore}
+        sessionStore={this.props.sessionStore}
+        userStore={this.props.userStore}
       >
         <Layout
           title="CMS / Dashboard"
-          pathname={pathname}
+          pathname={this.props.pathname}
         >
           <Container>
             <Row>

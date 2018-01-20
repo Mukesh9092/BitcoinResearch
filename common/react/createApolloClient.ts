@@ -9,7 +9,7 @@ let link: HttpLink;
 let apolloClient: ApolloClient<any>;
 
 export default function createApolloClient() {
-  console.log('createApolloClient')
+  // console.log('createApolloClient')
 
   if (apolloClient) {
     return apolloClient;
@@ -24,7 +24,7 @@ export default function createApolloClient() {
     uri = `http://${API_HOST}:${API_PORT}/api/graphql`;
   }
 
-  console.log('createApolloClient uri', uri);
+  // console.log('createApolloClient uri', uri);
 
   apolloClient = new ApolloClient({
     link: new HttpLink({
@@ -35,7 +35,7 @@ export default function createApolloClient() {
     ssrMode: !isBrowser(),
   });
 
-  console.log('createApolloClient apolloClient', apolloClient)
+  // console.log('createApolloClient apolloClient', apolloClient)
 
   return apolloClient;
 }

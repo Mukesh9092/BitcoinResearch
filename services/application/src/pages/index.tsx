@@ -30,6 +30,8 @@ export default class PublicIndexPage extends React.Component<IApplicationPagePro
 
   render() {
     const {
+      sessionStore,
+      userStore,
       pathname,
     } = this.props;
 

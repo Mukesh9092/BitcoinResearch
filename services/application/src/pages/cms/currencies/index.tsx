@@ -13,6 +13,7 @@ import { CurrencyPairsStore, ICurrencyPair } from '../../../stores/currencyPairs
 import { IApplicationPageProps } from "../../../types/application";
 import { IGetInitialPropsContext } from '../../../types/next';
 import { Layout } from "../../../components/pages/cms/layout";
+import { ensureAuthenticatedContext } from "../../../helpers";
 
 interface IIconProps {
   currency: string;
@@ -47,30 +48,49 @@ const Currencies = (props: ICurrenciesProps) => {
     return null;
   }
 
-  const currencyElements = currencyPairsStore.list.map((currencyPair: ICurrencyPair, i: number): React.ReactElement<any> => {
-    const {
-      id,
-      key,
-      currencyA,
-      currencyB,
-      volume24h: { currencyAVolume, currencyBVolume }
-    } = currencyPair;
+  const currencyElements = currencyPairsStore.list
+    .sort((a: ICurrencyPair, b: ICurrencyPair): number => {
+      if (a.currencyA24HVolume > b.currencyA24HVolume) {
+        return 1;
+      }
 
-    return (
-      <tr
-        key={i}
-        onClick={handleRowClick(currencyA.key, currencyB.key)}
-      >
-        <td><Icon currency={currencyA.key} /></td>
-        <td>{currencyA.key}</td>
-        <td>{currencyAVolume}</td>
+      if (a.currencyA24HVolume === b.currencyA24HVolume) {
+        return 0;
+      }
 
-        <td><Icon currency={currencyB.key} /></td>
-        <td>{currencyB.key}</td>
-        <td>{currencyBVolume}</td>
-      </tr>
-    );
-  });
+      return -1;
+    })
+    .map((currencyPair: ICurrencyPair, i: number): React.ReactElement<any> => {
+      const {
+        id,
+        key,
+        currencyAKey,
+        currencyAName,
+        currencyATxFee,
+        currencyAMinConf,
+        currencyBKey,
+        currencyBName,
+        currencyBTxFee,
+        currencyBMinConf,
+        currencyA24HVolume,
+        currencyB24HVolume,
+      } = currencyPair;
+
+      return (
+        <tr
+          key={i}
+          onClick={handleRowClick(currencyAKey, currencyBKey)}
+        >
+          <td><Icon currency={currencyAKey} /></td>
+          <td>{currencyAKey}</td>
+          <td>{currencyA24HVolume}</td>
+
+          <td><Icon currency={currencyBKey} /></td>
+          <td>{currencyBKey}</td>
+          <td>{currencyB24HVolume}</td>
+        </tr>
+      );
+    });
 
   return (
     <React.Fragment>
@@ -84,7 +104,6 @@ export interface ICMSCurrenciesPageProps extends IApplicationPageProps {
 }
 
 export default class CMSCurrenciesPage extends React.Component<ICMSCurrenciesPageProps, any> {
-  // TODO: ensureAuthenticated
   static async getInitialProps(ctx: IGetInitialPropsContext) {
     const { err, req, res, pathname, query, asPath } = ctx;
 
@@ -95,6 +114,8 @@ export default class CMSCurrenciesPage extends React.Component<ICMSCurrenciesPag
     }
 
     sessionStore.loadFromContext(ctx);
+
+    // ensureAuthenticatedContext(ctx, sessionStore);
 
     await currencyPairsStore.load();
 
@@ -109,22 +130,15 @@ export default class CMSCurrenciesPage extends React.Component<ICMSCurrenciesPag
   }
 
   render() {
-    const {
-      pathname,
-      sessionStore,
-      userStore,
-      currencyPairsStore,
-    } = this.props;
-
     return (
       <Provider
-        sessionStore={sessionStore}
-        userStore={userStore}
-        currencyPairsStore={currencyPairsStore}
+        sessionStore={this.props.sessionStore}
+        userStore={this.props.userStore}
+        currencyPairsStore={this.props.currencyPairsStore}
       >
         <Layout
           title="CMS / Currencies"
-          pathname={pathname}
+          pathname={this.props.pathname}
         >
           <Container>
             <Row>

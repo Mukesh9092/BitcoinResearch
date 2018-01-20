@@ -1,29 +1,23 @@
 const schema = `
   scalar Date
 
-  type Currency {
-    key: String!
-    name: String!
-    txFee:  String!
-    minConf: Int!
-  }
-
-  type CurrencyPairVolume {
-    currencyAVolume: String!
-    currencyBVolume: String!
-  }
-
   type CurrencyPair {
     id: String!
     key: String!
-    currencyA: Currency!
-    currencyB: Currency!
-    volume24h: CurrencyPairVolume!
+    currencyAKey: String!
+    currencyAName: String!
+    currencyATxFee:  String!
+    currencyAMinConf: String!
+    currencyBKey: String!
+    currencyBName: String!
+    currencyBTxFee:  String!
+    currencyBMinConf: String!
+    currencyA24HVolume: String!
+    currencyB24HVolume: String!
   }
 
   type OrderBook {
-    currencyA: Currency!
-    currencyB: Currency!
+    currencyPair: CurrencyPair
     asks: [OrderBookEntry]
     bids: [OrderBookEntry]
   }
@@ -35,8 +29,10 @@ const schema = `
 
   type Candlestick {
     id: Date!
-    currencyA: Currency!
-    currencyB: Currency!
+    currencyAKey: String!
+    currencyBKey: String!
+    time: Date!
+    period: Int!
     high: Float!
     low: Float!
     open: Float!
@@ -76,9 +72,8 @@ const schema = `
     userByEmail(email: String!): User
 
     currencyPairs: [CurrencyPair]
-    currencyById(id: Int!): Currency
 
-    candlesticks(currencyA: String!, currencyB: String!, period: Int!, start: Date!, end: Date!): [Candlestick]
+    candlesticks(currencyAKey: String!, currencyBKey: String!, period: Int!, start: Date!, end: Date!): [Candlestick]
   }
 
   type RootMutation {

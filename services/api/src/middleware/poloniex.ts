@@ -5,20 +5,20 @@ const connection = new autobahn.Connection({
   url: "wss://api.poloniex.com",
   realm: "realm1"
 });
- 
+
 connection.onopen = function (session) {
-  console.log("onopen");
+  // console.log("onopen");
 
   function marketEvent(args: any, kwargs: any) {
-    console.log(args);
+    // console.log(args);
   }
 
   function tickerEvent(args: any, kwargs: any) {
-    console.log(args);
+    // console.log(args);
   }
 
   function trollboxEvent(args: any, kwargs: any) {
-    console.log(args);
+    // console.log(args);
   }
 
   session.subscribe("BTC_ETH", marketEvent);
@@ -27,13 +27,13 @@ connection.onopen = function (session) {
 }
 
 connection.onclose = function () {
-  console.log("Websocket connection closed");
+  // console.log("Websocket connection closed");
 
   return true;
 }
 
-console.log("Connecting to Poloniex API ...");
-connection.open();
+// console.log("Connecting to Poloniex API ...");
+// connection.open();
                        
 export default function poloniex(app: Application) {
 }

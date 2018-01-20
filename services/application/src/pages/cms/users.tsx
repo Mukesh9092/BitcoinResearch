@@ -8,6 +8,7 @@ import { Container } from "../../components/common/container";
 import { IApplicationPageProps } from "../../types/application";
 import { IGetInitialPropsContext } from '../../types/next';
 import { Layout } from "../../components/pages/cms/layout";
+import { ensureAuthenticatedContext } from "../../helpers";
 
 export default class CMSUsersPage extends React.Component<IApplicationPageProps, any> {
   // TODO: ensureAuthenticated
@@ -20,6 +21,8 @@ export default class CMSUsersPage extends React.Component<IApplicationPageProps,
 
     sessionStore.loadFromContext(ctx);
 
+    // ensureAuthenticatedContext(ctx, sessionStore);
+
     return {
       sessionStore,
       userStore,
@@ -30,18 +33,14 @@ export default class CMSUsersPage extends React.Component<IApplicationPageProps,
   }
 
   render() {
-    const {
-      pathname,
-    } = this.props;
-
     return (
       <Provider
-        sessionStore={sessionStore}
-        userStore={userStore}
+        sessionStore={this.props.sessionStore}
+        userStore={this.props.userStore}
       >
         <Layout
           title="CMS / Dashboard"
-          pathname={pathname}
+          pathname={this.props.pathname}
         >
           <Container>
             <Row>

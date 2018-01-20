@@ -12,7 +12,7 @@ export default class Navigation extends React.Component<any, INavigationState> {
   };
 
   toggle = () => {
-    console.log('Navigation#toggle')
+    // console.log('Navigation#toggle')
 
     this.setState({
       isOpen: !this.state.isOpen
@@ -20,7 +20,7 @@ export default class Navigation extends React.Component<any, INavigationState> {
   };
 
   render() {
-    console.log('Navigation#render')
+    // console.log('Navigation#render')
 
     const { leftContent, collapseContent, ...navbarProps } = this.props;
 

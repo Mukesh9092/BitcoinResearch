@@ -12,7 +12,7 @@ export default class ApplicationPage extends React.Component {
   application: Application
 
   constructor(props: ApplicationProperties) {
-    console.log("ApplicationPage#constructor");
+    // console.log("ApplicationPage#constructor");
 
     super(props);
 
@@ -24,7 +24,7 @@ export default class ApplicationPage extends React.Component {
   }
 
   static async getInitialProps(ctx) {
-    console.log("ApplicationPage#getInitialProps");
+    // console.log("ApplicationPage#getInitialProps");
 
     let application: Application;
 

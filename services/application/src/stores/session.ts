@@ -10,6 +10,7 @@ const STATUS_UNAUTHORIZED = 401;
 
 export interface ISessionStoreProps {
   userId: string | null;
+  isAuthenticated: boolean;
   successMessage: string | null;
   errorMessage: string | null;
   loading: boolean;
@@ -19,21 +20,19 @@ export interface ISessionStoreProps {
 
 export class SessionStore {
   @observable userId: string | null = null;
-  @observable successMessage: string | null = null;
-  @observable errorMessage: string | null = null;
+  @observable isAuthenticated: boolean = false;
   @observable loading: boolean = false;
   @observable loggingIn: boolean = false;
   @observable loggingOut: boolean = false;
-
-  @computed get isAuthenticated(): boolean {
-    return !!this.userId;
-  }
+  @observable successMessage: string | null = null;
+  @observable errorMessage: string | null = null;
 
   constructor(props: ISessionStoreProps | void) {
     // console.log("SessionStore#constructor", props);
 
     if (props) {
       this.userId = props.userId;
+      this.isAuthenticated = props.isAuthenticated;
       this.successMessage = props.successMessage;
       this.errorMessage = props.errorMessage;
       this.loading = props.loading;
@@ -43,33 +42,35 @@ export class SessionStore {
   }
 
   loadFromContext(ctx: IGetInitialPropsContext): void {
-    console.log("SessionStore#loadFromContext");
+    // console.log("SessionStore#loadFromContext");
 
     if (!ctx.req) {
       this.loadFromLocalStorage();
     } else {
       const passport = get(ctx, ["req", "authentication", "session", "passport"])
 
-      console.log("SessionStore#loadFromContext passport", passport);
+      // console.log("SessionStore#loadFromContext passport", passport);
 
       if (passport) {
         this.userId = passport.user;
+        this.isAuthenticated = true;
       }
     }
   }
 
   loadFromLocalStorage(): void {
-    console.log("SessionStore#loadFromLocalStorage");
+    // console.log("SessionStore#loadFromLocalStorage");
 
     const userId = window.localStorage.getItem("userId");
     
     if (userId) {
       this.userId = userId;
+      this.isAuthenticated = true;
     }
   }
 
   setInLocalStorage(): void {
-    console.log("SessionStore#setInLocalStorage");
+    // console.log("SessionStore#setInLocalStorage");
 
     if (this.userId) {
       window.localStorage.setItem("userId", this.userId);
@@ -77,15 +78,16 @@ export class SessionStore {
   }
 
   removeFromLocalStorage(): void {
-    console.log("SessionStore#removeFromLocalStorage");
+    // console.log("SessionStore#removeFromLocalStorage");
 
     window.localStorage.removeItem("userId");
   }
 
   async loginWithEmailPassword(email: string, password: string): Promise<void> {
-    console.log("SessionStore#loginWithEmailPassword", email, password);
+    // console.log("SessionStore#loginWithEmailPassword", email, password);
 
     this.userId = null;
+    this.isAuthenticated = false;
     this.successMessage = null;
     this.errorMessage = null;
     this.loggingIn = true;
@@ -105,7 +107,7 @@ export class SessionStore {
 
     const { status } = response;
 
-    console.log("SessionStore#loginWithEmailPassword response", status, response);
+    // console.log("SessionStore#loginWithEmailPassword response", status, response);
 
     this.loggingIn = false;
 
@@ -122,15 +124,18 @@ export class SessionStore {
     const json = await response.json();
     this.userId = json.passport.user;
     this.setInLocalStorage();
-    this.successMessage = "Login successful";
 
     await Router.push("/cms");
+
+    this.isAuthenticated = true;
+    this.successMessage = "Login successful";
   }
 
   async logout() {
-    console.log("SessionStore#logout");
+    // console.log("SessionStore#logout");
 
     this.userId = null;
+    this.isAuthenticated = false;
     this.successMessage = null;
     this.errorMessage = null;
     this.loggingOut = true;

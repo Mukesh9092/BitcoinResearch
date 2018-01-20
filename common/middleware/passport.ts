@@ -1,14 +1,12 @@
 import * as passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Application } from "express";
+import { promisify } from "util";
 
-import store from "../database/store";
+import User from "../database/entities/User";
+import client from "../database/client";
 import { formatError } from "../errors";
 import { genRandomString, sha512 } from "../crypto";
-
-interface User {
-  id: string
-}
 
 passport.serializeUser((user: User, cb) => {
   cb(null, user.id);
@@ -16,14 +14,16 @@ passport.serializeUser((user: User, cb) => {
 
 async function deserializeUser(id: string, cb: Function) {
   try {
-    const result = await store.find("user", id);
+    // console.log("Passport deserializeUser id", id);
 
-    if (result) {
-      cb(null, result.toJSON());
-      return;
-    }
+    const connection = await client();
+    const userRepository = connection.getRepository('User');
 
-    cb();
+    const result = await userRepository.findOneById(id);
+
+    // console.log("Passport deserializeUser result", result);
+
+    cb(null, result);
   } catch (error) {
     console.log(formatError(error));
     cb(error);
@@ -36,11 +36,10 @@ async function localStrategy(email: string, password: string, cb: Function) {
   // console.log("Passport LocalStrategy", email, password);
 
   try {
-    const [user] = await store.findAll("user", {
-      where: {
-        email
-      }
-    });
+    const connection = await client();
+    const userRepository = connection.getRepository('User');
+
+    const user = await userRepository.findOne({ email });
 
     // console.log("Passport LocalStrategy user", user);
 
@@ -73,5 +72,7 @@ passport.use(
 );
 
 export default function passportMiddleware(app: Application) {
-  app.use(passport.initialize()).use(passport.session());
+  app
+    .use(passport.initialize())
+    .use(passport.session());
 }

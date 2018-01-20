@@ -9,9 +9,9 @@ import { IApplicationPageProps } from "../types/application";
 import { IGetInitialPropsContext } from '../types/next';
 import { Layout } from "../components/pages/layout";
 import { LoginForm } from "../components/pages/login/form";
+import { ensureUnauthenticatedContext } from "../helpers";
 
 export default class PublicLoginPage extends React.Component<IApplicationPageProps, any> {
-  // TODO: ensureUnauthenticated
   static async getInitialProps(ctx: IGetInitialPropsContext) {
     const { err, req, res, pathname, query, asPath } = ctx;
 
@@ -20,6 +20,8 @@ export default class PublicLoginPage extends React.Component<IApplicationPagePro
     }
 
     sessionStore.loadFromContext(ctx);
+
+    ensureUnauthenticatedContext(ctx, sessionStore);
 
     return {
       sessionStore,
@@ -37,8 +39,8 @@ export default class PublicLoginPage extends React.Component<IApplicationPagePro
 
     return (
       <Provider
-        sessionStore={sessionStore}
-        userStore={userStore}
+        sessionStore={this.props.sessionStore}
+        userStore={this.props.userStore}
       >
         <Layout
           title="Login"

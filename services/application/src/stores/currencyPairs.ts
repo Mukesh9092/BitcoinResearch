@@ -4,24 +4,19 @@ import { observable } from "mobx";
 
 import apolloClient from "../graphql/client";
 
-export interface ICurrency {
-  key: string;
-  name: string;
-  txFee: string;
-  minConf: string;
-}
-
-export interface IVolume {
-  currencyAVolume: string;
-  currencyBVolume: string;
-}
-
 export interface ICurrencyPair {
   id: string;
   key: string;
-  currencyA: ICurrency;
-  currencyB: ICurrency;
-  volume24h: IVolume;
+  currencyAKey: string;
+  currencyAName: string;
+  currencyATxFee: string;
+  currencyAMinConf: string;
+  currencyBKey: string;
+  currencyBName: string;
+  currencyBTxFee: string;
+  currencyBMinConf: string;
+  currencyA24HVolume: string;
+  currencyB24HVolume: string;
 }
 
 export interface ICurrencyPairsStoreProps {
@@ -32,7 +27,7 @@ export class CurrencyPairsStore {
   @observable list: ICurrencyPair[] = [];
 
   constructor(props: ICurrencyPairsStoreProps | void) {
-    console.log("CurrencyPairsStore#constructor", props);
+    // console.log("CurrencyPairsStore#constructor", props);
 
     if (props) {
       this.list = props.list;
@@ -40,7 +35,7 @@ export class CurrencyPairsStore {
   }
 
   async load() {
-    console.log("CurrencyPairsStore#load");
+    // console.log("CurrencyPairsStore#load");
 
     try {
       const query = {
@@ -49,28 +44,24 @@ export class CurrencyPairsStore {
             currencyPairs {
               id
               key
-              currencyA {
-                key
-                name
-                txFee
-                minConf
-              }
-              currencyB {
-                key
-                name
-                txFee
-                minConf
-              }
-              volume24h {
-                currencyAVolume
-                currencyBVolume
-              }
+              currencyAKey
+              currencyAName
+              currencyATxFee
+              currencyAMinConf
+              currencyBKey
+              currencyBName
+              currencyBTxFee
+              currencyBMinConf
+              currencyA24HVolume
+              currencyB24HVolume
             }
           }
         `
       };
 
       const result = await apolloClient.query(query);
+
+      // console.log("CurrencyPairsStore#load result", result);
 
       this.list = result.data.currencyPairs;
     } catch (error) {
