@@ -7,7 +7,7 @@ import { ChartCanvas, Chart as StockChart } from "react-stockcharts";
 import { CandlestickSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { last, timeIntervalBarWidth } from "react-stockcharts/lib/utils";
+import { last, first, timeIntervalBarWidth } from "react-stockcharts/lib/utils";
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 
 import Candlestick from "../../../../common/types/Candlestick"
@@ -75,7 +75,7 @@ export default class Chart extends React.Component<IChartProps, IChartState> {
 
     const xExtents = [
       xAccessor(last(data)),
-      xAccessor(data[data.length - 100]),
+      xAccessor(first(data)),
     ];
 
     const yExtents = (d: { high: number, low: number }): number[] => [ d.high, d.low ]

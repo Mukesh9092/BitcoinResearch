@@ -4,6 +4,7 @@ import Router from "next/router";
 import * as React from 'react';
 // import * as cryptoCoins from 'react-cryptocoins';
 import { Provider } from "mobx-react";
+import { toJS } from "mobx";
 
 import {
   Row,
@@ -44,18 +45,26 @@ export interface ICMSChartPageProps extends IApplicationPageProps {
 }
 
 export default class CMSChartPage extends React.Component<ICMSChartPageProps, any> {
-  handlePeriodChange = (event: React.MouseEvent<any>): void => {
-    console.log('handlePeriodChange', event);
+  handlePeriodChange = (period: number): void => {
+    const {
+      currencyPair,
+      start,
+      end,
+    } = (Router.query as any);
+
+    const newQuery = {
+      currencyPair,
+      start: end - period * 100,
+      end,
+      period,
+    }
+
+    const newURL = `${Router.pathname}?${querystring.stringify(newQuery)}`;
+
+    Router.replace(newURL);
   };
 
   static async getInitialProps(ctx: IGetInitialPropsContext) {
-    console.log('##########');
-    console.log('##########');
-    console.log('##########');
-    console.log('##########');
-    console.log('##########');
-    console.log('##########');
-
     const { err, req, res, pathname, query, asPath } = ctx;
 
     if (err) {
@@ -76,7 +85,7 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
     if (!start || !end || !period) {
       period = 300;
       end = Math.floor(new Date().valueOf() / 1000);
-      start = end - 60 * 60 * 24;
+      start = end - period * 100;
 
       const newQuery = {
         ...query,
@@ -160,16 +169,21 @@ export default class CMSChartPage extends React.Component<ICMSChartPageProps, an
   }
 
   render() {
-    // console.log("CMSChartPage#render", this.props);
+    // console.log("CMSChartPage#render");
 
-    const { candlesticks } = this.props.chartStore;
+    let { candlesticks } = this.props.chartStore;
 
     let content;
-    if (candlesticks && candlesticks.length) {
-      content = this.renderChart();
-    } else {
+    if (!candlesticks) {
       content = this.renderNoData();
+    } else {
+      candlesticks = toJS(candlesticks);
+
+      if (candlesticks.length) {
+        content = this.renderChart();
+      }
     }
+
 
     return (
       <Provider

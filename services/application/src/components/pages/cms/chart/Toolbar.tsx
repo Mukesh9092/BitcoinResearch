@@ -82,7 +82,7 @@ interface IToolbarProps {
   start: number;
   end: number;
 
-  handlePeriodChange: (event: React.MouseEvent<any>) => void;
+  handlePeriodChange: (period: number) => void;
 }
 
 interface IToolbarState {
@@ -121,7 +121,9 @@ export default class Toolbar extends React.Component<IToolbarProps, IToolbarStat
       return (
         <Button
           active={active}
-          onClick={handlePeriodChange}
+          onClick={() => {
+            handlePeriodChange(x.value);
+          }}
         >
           {x.label}
         </Button>
