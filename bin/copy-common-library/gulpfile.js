@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const cmd = require("node-cmd");
-const gulp = require("gulp");
-const cpr = require("cpr");
-const async = require("async");
+const cmd = require('node-cmd');
+const gulp = require('gulp');
+const cpr = require('cpr');
+const async = require('async');
 
 const projectDirectoryPath = path.resolve(`${__dirname}/../..`);
-const sourceLibDirectoryPathFragment = "common";
-const targetLibDirectoryPathFragment = "src/common";
+const sourceLibDirectoryPathFragment = 'common';
+const targetLibDirectoryPathFragment = 'common';
 
-console.log("Project directory path:", projectDirectoryPath);
+console.log('Project directory path:', projectDirectoryPath);
 
 function pathIsServiceDirectory(service, cb) {
   fs.stat(`${projectDirectoryPath}/services/${service}`, (error, stat) => {
@@ -61,11 +61,11 @@ function copyFilesToServices(sourcePath, services, cb) {
 
       cmd.get(`rsync -a ${sourcePath}/* ${destinationPath}`, cb);
     },
-    cb
+    cb,
   );
 }
 
-gulp.task("copy", cb => {
+gulp.task('copy', cb => {
   const from = `${projectDirectoryPath}/${sourceLibDirectoryPathFragment}`;
 
   getServicePaths((error, paths) => {
@@ -78,8 +78,10 @@ gulp.task("copy", cb => {
   });
 });
 
-gulp.task("watch", () => {
-  const watcher = gulp.watch(`${projectDirectoryPath}/${sourceLibDirectoryPathFragment}/**/*`, ["copy"]);
+gulp.task('watch', () => {
+  const watchPath = `${projectDirectoryPath}/${sourceLibDirectoryPathFragment}/**/*`;
+
+  const watcher = gulp.watch(watchPath, ['copy']);
 });
 
-gulp.task("default", ["copy", "watch"]);
+gulp.task('default', ['copy', 'watch']);

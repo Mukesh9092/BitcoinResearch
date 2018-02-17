@@ -12,14 +12,16 @@ services:
       - ${PROXY_PORT}:${PROXY_PORT}
     volumes:
       - ./services/proxy:/service
+      #- ./common:/service/common
     env_file: .env
 
-  application:
-    build: ./services/application
+  web:
+    build: ./services/web
     ports:
-      - ${APPLICATION_PORT}:${APPLICATION_PORT}
+      - ${WEB_PORT}:${WEB_PORT}
     volumes:
-      - ./services/application:/service
+      - ./services/web:/service
+      #- ./common:/service/common
     env_file: .env
 
   api:
@@ -28,6 +30,7 @@ services:
       - ${API_PORT}:${API_PORT}
     volumes:
       - ./services/api:/service
+      #- ./common:/service/common
     env_file: .env
 
   authentication:
@@ -36,6 +39,7 @@ services:
       - ${AUTHENTICATION_PORT}:${AUTHENTICATION_PORT}
     volumes:
       - ./services/authentication:/service
+      #- ./common:/service/common
     env_file: .env
 
   redis:
@@ -45,6 +49,7 @@ services:
     volumes:
       - ./services/redis:/service
       - ./services/redis/data:/data
+      #- ./common:/service/common
     env_file: .env
 
   redis-commander:
@@ -53,6 +58,7 @@ services:
       - ${REDIS_COMMANDER_PORT}:${REDIS_COMMANDER_PORT}
     volumes:
       - ./services/redis-commander:/service
+      #- ./common:/service/common
     env_file: .env
 
   postgresql:
@@ -61,6 +67,7 @@ services:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - ./services/postgresql/data:/var/lib/postgresql/data
+      #- ./common:/service/common
     env_file: .env
 
   influxdb:
@@ -71,7 +78,9 @@ services:
       - ${INFLUXDB_GRAPHITE_PORT}:${INFLUXDB_GRAPHITE_PORT_IN}
     volumes:
       - ./services/influxdb/data:/var/lib/influxdb
+      #- ./common:/service/common
     env_file: .env
+
 
   # adminer:
   #   image: adminer
@@ -93,6 +102,7 @@ services:
   #     - ${NOFLO_PORT}:${NOFLO_PORT}
   #   volumes:
   #     - ./services/noflo:/service
+  #     - ./common:/service/common
   #   env_file: .env
 
   # rethinkdb:

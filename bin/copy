@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+echo "Removing common directory from services..."
+rm -rf ./services/*/src/common;
+
 pushd ./bin/copy-common-library;
+
+echo "Copying common directory to services and watching for changes..."
 npm run start;
 popd;
