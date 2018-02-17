@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import unhandledError from 'unhandled-error';
 
+import webpackDevMiddleware from '../../common/middleware/webpackDevMiddleware';
 import authenticationHeaderExtractionMiddleware from '../../common/middleware/authenticationHeaderExtraction';
 import expressServiceWithMiddleware from '../../common/middleware/expressServiceWith';
 import genericExpressService from '../../common/middleware/genericExpressService';
@@ -12,6 +13,8 @@ function configureApplication(app: Application) {
   genericExpressService(app);
   loggerMiddleware(app);
   authenticationHeaderExtractionMiddleware(app);
+
+  webpackDevMiddleware(app);
 }
 
 expressServiceWithMiddleware(
