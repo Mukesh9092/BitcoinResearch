@@ -1,21 +1,13 @@
-import { createHmac, randomBytes } from 'crypto';
+import scrypt from 'scrypt';
 
-export function genRandomString(length: number): string {
-  return randomBytes(Math.ceil(length / 2))
-    .toString('hex')
-    .slice(0, length);
+export async function generateHash(password: string): string {
+  const result = await scrypt.hash(password);
+
+  return result;
 }
 
-interface Sha12Result {
-  salt: string;
-  passwordHash: string;
-}
+export async function verifyPassword(password: string, hash: string) {
+  const result = await scrypt.verifyHash(password, hash);
 
-export function sha512(password: string, salt: string): Sha12Result {
-  return {
-    salt,
-    passwordHash: createHmac('sha512', salt)
-      .update(password)
-      .digest('hex')
-  };
+  return result;
 }

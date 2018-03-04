@@ -90,6 +90,7 @@
     "redis": "^2.8.0",
     "reflect-metadata": "^0.1.10",
     "rethinkdb": "^2.3.3",
+    "scrypt-for-humans": "^2.0.5",
     "tslint": "^5.9.1",
     "tslint-react": "^3.4.0",
     "typeorm": "^0.1.9",

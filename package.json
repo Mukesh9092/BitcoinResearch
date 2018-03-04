@@ -76,6 +76,7 @@
     "redis-streams": "^1.1.0",
     "reflect-metadata": "^0.1.10",
     "rethinkdb": "^2.3.3",
+    "scrypt-for-humans": "^2.0.5",
     "ts-node": "^4.0.2",
     "tslint": "^5.9.1",
     "tslint-react": "^3.4.0",

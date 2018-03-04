@@ -1,5 +1,5 @@
 import * as faker from 'faker';
-import { genRandomString, sha512 } from '../common/crypto';
+import { generateHash, verifyPassword } from '../common/crypto';
 import { promisify } from 'util';
 
 import { getKnexClient } from '../common/database/knex-client';
@@ -19,41 +19,30 @@ const start = async () => {
     console.log();
     console.log(`Creating documents...`);
 
-    let passwordSeed = genRandomString(64);
-    let passwordHash = sha512('test', passwordSeed).passwordHash;
-
-    let user = await knexClient
+    let user = await knexClient('user')
       .insert({
         email: 'admin@test.com',
-        passwordSeed,
-        passwordHash,
+        passwordHash: generateHash('test'),
         disabled: false,
         frozen: false,
         delisted: false,
       })
-      .returning('*')
-      .toString();
+      .returning('*');
 
     console.log(`Created: `, user);
     console.log();
 
     // for (let i = 1, l = 20; i <= l; i++) {
-    //   passwordSeed = genRandomString(64);
-    //   passwordHash = sha512('test', passwordSeed).passwordHash;
+    //   await knexClient.insert({
+    //     email: `dummy${i}@test.com`,
+    //     passwordHash: generateHash('test'),
+    //     disabled: false,
+    //     frozen: false,
+    //     delisted: false,
+    //   });
 
-    //   user = await knexClient
-    //     .insert({
-    //       email: `dummy${i}@test.com`,
-    //       passwordSeed,
-    //       passwordHash,
-    //       disabled: false,
-    //       frozen: false,
-    //       delisted: false,
-    //     })
-    //     .returning('*');
-
-    //   console.log(`Created: `, user);
-    //   console.log();
+    //   // console.log(`Created: `, user);
+    //   // console.log();
     // }
 
     console.log(`Documents created.`);

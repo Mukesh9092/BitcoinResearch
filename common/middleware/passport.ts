@@ -6,7 +6,7 @@ import { promisify } from 'util';
 import User from '../database/entities/User';
 import client from '../database/client';
 import { formatError } from '../errors';
-import { genRandomString, sha512 } from '../crypto';
+import { verifyPassword } from '../crypto';
 
 passport.serializeUser((user: User, cb) => {
   cb(null, user.id);
@@ -47,9 +47,11 @@ async function localStrategy(email: string, password: string, cb: Function) {
       return cb(null, false, { message: 'Incorrect email or password' });
     }
 
-    const { passwordHash } = sha512(password, user.passwordSeed);
+    const verified = verifyPassword(password, user.passwordHash);
 
-    if (user.passwordHash !== passwordHash) {
+    // console.log('Passport LocalStrategy verified', verified);
+
+    if (!verified) {
       return cb(null, false, { message: 'Incorrect email or password' });
     }
 
