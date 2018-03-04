@@ -3,12 +3,11 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Application } from 'express';
 import { promisify } from 'util';
 
-import User from '../database/entities/User';
-import client from '../database/client';
+import { getKnexClient } from '../database/knex-client';
 import { formatError } from '../errors';
 import { verifyPassword } from '../crypto';
 
-passport.serializeUser((user: User, cb) => {
+passport.serializeUser((user: any, cb) => {
   cb(null, user.id);
 });
 
@@ -16,10 +15,9 @@ async function deserializeUser(id: string, cb: Function) {
   try {
     // console.log('Passport deserializeUser id', id);
 
-    const connection = await client();
-    const userRepository = connection.getRepository('User');
+    const knexClient = getKnexClient();
 
-    const result = await userRepository.findOneById(id);
+    const result = await knexClient.select('*').where({ id });
 
     // console.log('Passport deserializeUser result', result);
 
@@ -33,13 +31,12 @@ async function deserializeUser(id: string, cb: Function) {
 passport.deserializeUser(deserializeUser);
 
 async function localStrategy(email: string, password: string, cb: Function) {
-  // console.log('Passport LocalStrategy', email, password);
-
   try {
-    const connection = await client();
-    const userRepository = connection.getRepository('User');
+    // console.log('Passport LocalStrategy', email, password);
 
-    const user = await userRepository.findOne({ email });
+    const knexClient = getKnexClient();
+
+    const user = await knexClient.select('*').where({ email });
 
     // console.log('Passport LocalStrategy user', user);
 

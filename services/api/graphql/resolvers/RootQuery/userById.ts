@@ -1,11 +1,12 @@
-import client from '../../../common/database/client';
+import { getKnexClient } from '../../../common/database/knex-client';
 
 export default async (obj: Object, options: { id: string }) => {
   try {
-    const connection = await client();
-    const userRepository = connection.getRepository('User');
+    const knexClient = getKnexClient();
 
-    const result = await userRepository.findOneById(options.id);
+    let result = await knexClient('user')
+      .select('*')
+      .where({ id: options.id });
 
     return result;
   } catch (error) {

@@ -1,8 +1,4 @@
-import CurrencyPairRepository from '../../../common/database/repositories/CurrencyPairRepository';
-import getDatabaseClient from '../../../common/database/client';
-import getPoloniexClient from '../../../common/poloniex/client';
 import getInfluxDBClient from '../../../common/influxdb/client';
-import ensureTable from '../../../common/database/helpers/ensureTable';
 import {
   findByCurrencyPairAndPeriodBetweenStartAndEnd,
   importForCurrencyPairAndPeriodBetweenStartAndEnd,
@@ -12,7 +8,7 @@ import fetchPoloniex from '../fetchPoloniex';
 
 const MILLISECOND_MULTIPLIER = 1000;
 
-interface ICandlesticksOptions {
+interface CandlesticksOptions {
   currencyAKey: string;
   currencyBKey: string;
   period: number;
@@ -28,8 +24,18 @@ const convertToGraphQLFormat = (data: any) => {
   });
 };
 
-export default async function candlesticks(root, { currencyAKey, currencyBKey, period, start, end }: ICandlesticksOptions) {
-  console.log('graphql resolvers RootQuery candlesticks', currencyAKey, currencyBKey, period, start, end);
+export default async function candlesticks(
+  root: any,
+  { currencyAKey, currencyBKey, period, start, end }: CandlesticksOptions,
+) {
+  console.log(
+    'graphql resolvers RootQuery candlesticks',
+    currencyAKey,
+    currencyBKey,
+    period,
+    start,
+    end,
+  );
 
   const currencyPairKey = `${currencyAKey}_${currencyBKey}`;
 
@@ -43,8 +49,10 @@ export default async function candlesticks(root, { currencyAKey, currencyBKey, p
     end * 1000 * 1000,
   );
 
+  let output: any[];
+
   if (candlesticksFindResult && candlesticksFindResult.length) {
-    const output = convertToGraphQLFormat(candlesticksFindResult);
+    output = convertToGraphQLFormat(candlesticksFindResult);
 
     return output;
   }
@@ -65,7 +73,7 @@ export default async function candlesticks(root, { currencyAKey, currencyBKey, p
     end * 1000 * 1000,
   );
 
-  const output = convertToGraphQLFormat(candlesticksFindResult);
+  output = convertToGraphQLFormat(candlesticksFindResult);
 
   return output;
 }

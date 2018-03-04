@@ -1,13 +1,12 @@
-import CurrencyPairRepository from '../../../common/database/repositories/CurrencyPairRepository';
-import getDatabaseClient from '../../../common/database/client';
+import { getKnexClient } from '../../../common/database/knex-client';
 
 export default async function currencyPairs() {
   try {
-    const connection = await getDatabaseClient();
+    const knexClient = getKnexClient();
 
-    const currencyPairRepository = connection.getCustomRepository(CurrencyPairRepository);
-
-    const result = await currencyPairRepository.find();
+    let result = await knexClient('user')
+      .select()
+      .where({});
 
     return result;
   } catch (error) {

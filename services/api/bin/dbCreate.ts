@@ -8,47 +8,52 @@ const start = async () => {
   try {
     const knexClient = getKnexClient();
 
-    console.log();
-    console.log(`Removing documents...`);
+    console.log(`Dropping tables.`);
 
-    await knexClient('user')
-      .where({})
-      .del();
+    await knexClient.schema.dropTableIfExists('currency_pair');
+    await knexClient.schema.dropTableIfExists('user');
 
-    console.log(`Documents removed.`);
-    console.log();
-    console.log(`Creating documents...`);
+    console.log(`Creating tables.`);
+
+    await knexClient.schema.createTable('user', table => {
+      table.increments();
+      table.string('email');
+      table.string('passwordHash');
+      table.boolean('disabled');
+      table.boolean('frozen');
+      table.boolean('delisted');
+      table.timestamps();
+    });
+
+    console.log(`Inserting rows.`);
 
     let user = await knexClient('user')
       .insert({
         email: 'admin@test.com',
-        passwordHash: generateHash('test'),
+        passwordHash: await generateHash('test'),
         disabled: false,
         frozen: false,
         delisted: false,
       })
       .returning('*');
 
-    console.log(`Created: `, user);
-    console.log();
+    // console.log(`Created: `, user);
 
     for (let i = 1, l = 20; i <= l; i++) {
-      await knexClient
+      user = await knexClient('user')
         .insert({
           email: `dummy${i}@test.com`,
-          passwordHash: generateHash('test'),
+          passwordHash: await generateHash('test'),
           disabled: false,
           frozen: false,
           delisted: false,
         })
         .returning('*');
 
-      console.log(`Created: `, user);
-      console.log();
+      // console.log(`Created: `, user);
     }
 
-    console.log(`Documents created.`);
-    console.log();
+    console.log(`Done.`);
 
     process.exit(0);
   } catch (error) {
