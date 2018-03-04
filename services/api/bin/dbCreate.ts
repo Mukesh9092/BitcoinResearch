@@ -32,18 +32,20 @@ const start = async () => {
     console.log(`Created: `, user);
     console.log();
 
-    // for (let i = 1, l = 20; i <= l; i++) {
-    //   await knexClient.insert({
-    //     email: `dummy${i}@test.com`,
-    //     passwordHash: generateHash('test'),
-    //     disabled: false,
-    //     frozen: false,
-    //     delisted: false,
-    //   });
+    for (let i = 1, l = 20; i <= l; i++) {
+      await knexClient
+        .insert({
+          email: `dummy${i}@test.com`,
+          passwordHash: generateHash('test'),
+          disabled: false,
+          frozen: false,
+          delisted: false,
+        })
+        .returning('*');
 
-    //   // console.log(`Created: `, user);
-    //   // console.log();
-    // }
+      console.log(`Created: `, user);
+      console.log();
+    }
 
     console.log(`Documents created.`);
     console.log();
