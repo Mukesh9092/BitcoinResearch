@@ -11,8 +11,7 @@
     "fix": "tslint --project . --fix",
     "prettier": "prettier --write ./**/*.tsx ./**/*.ts",
     "db-create": "node dist/bin/dbCreate",
-    "dev":
-      "nodemon -e js,jsx,ts,tsx,json -V --delay 2500ms --watch . --ignore node_modules --ignore .next --exec 'npm run start'",
+    "dev": "nodemon -e js,jsx,ts,tsx,json -V --delay 2500ms --watch . --ignore node_modules --ignore .next --exec 'npm run start'",
     "start": "babel-node --extensions '.ts,.tsx' index.ts"
   },
   "dependencies": {

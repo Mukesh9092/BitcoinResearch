@@ -2,47 +2,62 @@ import * as faker from 'faker';
 import { genRandomString, sha512 } from '../common/crypto';
 import { promisify } from 'util';
 
-import User from '../common/database/entities/User';
-import client from '../common/database/client';
+import { getKnexClient } from '../common/database/knex-client';
 
 const start = async () => {
   try {
+    const knexClient = getKnexClient();
 
-    const connection = await client();
-    const userRepository = connection.getRepository('User');
+    console.log();
+    console.log(`Removing documents...`);
 
-    console.log(`Removing Documents.`);
-    await userRepository.remove(await userRepository.find());
+    await knexClient('user')
+      .where({})
+      .del();
 
-    console.log(`Creating Documents.`);
+    console.log(`Documents removed.`);
+    console.log();
+    console.log(`Creating documents...`);
 
-    let user = new User();
-    user.email = 'admin@test.com';
-    user.passwordSeed = genRandomString(64);
-    user.passwordHash = sha512('test', user.passwordSeed).passwordHash;
-    user.disabled = false;
-    user.frozen = false;
-    user.delisted = false;
+    let passwordSeed = genRandomString(64);
+    let passwordHash = sha512('test', passwordSeed).passwordHash;
 
-    await userRepository.save(user);
+    let user = await knexClient
+      .insert({
+        email: 'admin@test.com',
+        passwordSeed,
+        passwordHash,
+        disabled: false,
+        frozen: false,
+        delisted: false,
+      })
+      .returning('*')
+      .toString();
 
-    for (let i = 1, l = 20; i <= l; i++) {
-      const email = faker.internet.email();
-      const passwordSeed = genRandomString(64);
-      const { passwordHash } = sha512('test', passwordSeed);
+    console.log(`Created: `, user);
+    console.log();
 
-      user = new User();
-      user.email = `dummy${i}@test.com`;
-      user.passwordSeed = genRandomString(64);
-      user.passwordHash = sha512('test', user.passwordSeed).passwordHash;
-      user.disabled = false;
-      user.frozen = false;
-      user.delisted = false;
+    // for (let i = 1, l = 20; i <= l; i++) {
+    //   passwordSeed = genRandomString(64);
+    //   passwordHash = sha512('test', passwordSeed).passwordHash;
 
-      await userRepository.save(user);
-    }
+    //   user = await knexClient
+    //     .insert({
+    //       email: `dummy${i}@test.com`,
+    //       passwordSeed,
+    //       passwordHash,
+    //       disabled: false,
+    //       frozen: false,
+    //       delisted: false,
+    //     })
+    //     .returning('*');
 
-    console.log(`Done.`);
+    //   console.log(`Created: `, user);
+    //   console.log();
+    // }
+
+    console.log(`Documents created.`);
+    console.log();
 
     process.exit(0);
   } catch (error) {
