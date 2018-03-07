@@ -21,6 +21,7 @@ provider:
 
 plugins:
   - serverless-kubeless
+  - serverless-plugin-typescript
 
 functions:
   capitalize:

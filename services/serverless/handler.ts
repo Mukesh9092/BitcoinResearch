@@ -1,14 +1,12 @@
-const _ = require('lodash');
+import { ServerRequest, ServerResponse } from 'http';
 
 import _ from 'lodash';
-
-import { ServerRequest, ServerResponse } from 'http';
 
 function capitalize(req: ServerRequest, res: ServerResponse) {
   let body: Buffer[] = [];
 
   req
-    .on('error', (err) => {
+    .on('error', err => {
       console.error(err);
     })
     .on('data', (chunk: Buffer) => {
