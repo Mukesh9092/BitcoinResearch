@@ -1,6 +1,5 @@
-const path = require('path');
-
-const noflo = require('noflo');
+import path from 'path';
+import noflo from 'noflo';
 
 const wrappedGraph = noflo.asCallback('Main', {
   baseDir: path.resolve(__dirname),
@@ -10,7 +9,7 @@ wrappedGraph(
   {
     in: 'foo',
   },
-  (error, result) => {
+  (error: Error, result: any) => {
     if (error) {
       console.log(error);
       return;
