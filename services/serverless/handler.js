@@ -1,1 +1,2 @@
-module.exports = require('./functions').default;
+require('@babel/register');
+module.exports = require('./functions/index.ts').default;

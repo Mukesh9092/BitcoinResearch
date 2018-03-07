@@ -22,21 +22,21 @@
     ]
   },
   "dependencies": {
-    "@babel/cli": "^7.0.0-beta.39",
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/node": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-decorators": "^7.0.0-beta.39",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "@babel/preset-react": "^7.0.0-beta.39",
-    "@babel/preset-stage-3": "^7.0.0-beta.39",
-    "@babel/preset-typescript": "^7.0.0-beta.39",
-    "lint-staged": "^6.0.0",
-    "lodash": "^4.1.0",
-    "prettier": "^1.10.2",
-    "serverless-kubeless": "^0.3.1",
+    "@babel/cli": "^7.0.0-beta.40",
+    "@babel/core": "^7.0.0-beta.40",
+    "@babel/node": "^7.0.0-beta.40",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.40",
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.40",
+    "@babel/preset-env": "^7.0.0-beta.40",
+    "@babel/preset-stage-3": "^7.0.0-beta.40",
+    "@babel/preset-react": "^7.0.0-beta.40",
+    "@babel/preset-typescript": "^7.0.0-beta.40",
+    "lint-staged": "^7.0.0",
+    "lodash": "^4.17.5",
+    "prettier": "^1.11.1",
+    "serverless-kubeless": "^0.3.2",
     "tslint": "^5.9.1",
-    "tslint-react": "^3.4.0"
+    "tslint-react": "^3.5.1"
   },
   "devDependencies": {}
 }
