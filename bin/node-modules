@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+sudo ls
+for dir in services/*/; do { cd "$dir" && rm -rf node_modules && npm install; } & done; wait
