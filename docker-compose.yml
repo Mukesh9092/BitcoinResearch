@@ -38,6 +38,14 @@ services:
       - ./services/authentication:/service
     env_file: .env
 
+  noflo:
+    build: ./services/noflo
+    ports:
+      - ${NOFLO_PORT}:${NOFLO_PORT}
+    volumes:
+      - ./services/noflo:/service
+    env_file: .env
+
   redis:
     build: ./services/redis
     ports:
@@ -101,13 +109,6 @@ services:
   #     - ./services/eventstore/data:/var/lib/eventstore
   #     - ./services/eventstore/logs:/var/log/eventstore
 
-  # noflo:
-  #   build: ./services/noflo
-  #   ports:
-  #     - ${NOFLO_PORT}:${NOFLO_PORT}
-  #   volumes:
-  #     - ./services/noflo:/service
-  #   env_file: .env
 
   # rethinkdb:
   #   build: ./services/rethinkdb
