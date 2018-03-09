@@ -15,7 +15,9 @@ export default function authenticationHeaderExtraction(app: Application) {
         throw new Error('No session header found');
       }
 
-      req.authentication = {
+      const authenticatedRequest: AuthenticatedRequest = req as AuthenticatedRequest;
+
+      authenticatedRequest.authentication = {
         user: JSON.parse(String(user)),
         session: JSON.parse(String(session)),
       };

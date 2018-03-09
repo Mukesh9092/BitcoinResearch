@@ -59,6 +59,8 @@ export async function importCurrencyPairs() {
       .where({})
       .delete();
 
+    console.log('documents', currencyPairDocuments);
+
     const result = await knexClient('currency_pair')
       .insert(currencyPairDocuments)
       .returning('*');

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "precommit": "lerna run --concurrency 1 --stream precommit"
+    "precommit": "lerna run --concurrency 1 --stream precommit",
+    "build-common": "tsc -p ."
   },
   "repository": {
     "type": "git",

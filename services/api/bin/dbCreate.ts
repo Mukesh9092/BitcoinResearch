@@ -25,6 +25,22 @@ const start = async () => {
       table.timestamps();
     });
 
+    await knexClient.schema.createTable('currency_pair', table => {
+      table.increments();
+      table.string('key');
+      table.string('currencyA24HVolume');
+      table.string('currencyAKey');
+      table.string('currencyAMinConf');
+      table.string('currencyAName');
+      table.string('currencyATxFee');
+      table.string('currencyB24HVolume');
+      table.string('currencyBKey');
+      table.string('currencyBMinConf');
+      table.string('currencyBName');
+      table.string('currencyBTxFee');
+      table.timestamps();
+    });
+
     console.log(`Inserting rows.`);
 
     let user = await knexClient('user')
@@ -34,6 +50,8 @@ const start = async () => {
         disabled: false,
         frozen: false,
         delisted: false,
+        created_at: new Date(),
+        updated_at: new Date(),
       })
       .returning('*');
 
@@ -47,6 +65,8 @@ const start = async () => {
           disabled: false,
           frozen: false,
           delisted: false,
+          created_at: new Date(),
+          updated_at: new Date(),
         })
         .returning('*');
 
