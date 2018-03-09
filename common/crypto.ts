@@ -1,21 +1,16 @@
 import scrypt from 'scrypt-for-humans';
 
-export async function generateHash(password: string): string {
-  // console.log('generateHash', password);
-
+export async function generateHash(password: string): Promise<string> {
   const result = await scrypt.hash(password);
-
-  // console.log('generateHash result', password, result);
 
   return result;
 }
 
-export async function verifyPassword(password: string, hash: string) {
-  // console.log('verifyHash', password, hash);
-
+export async function verifyPassword(
+  password: string,
+  hash: string,
+): Promise<string> {
   const result = await scrypt.verifyHash(password, hash);
-
-  // console.log('verifyHash result', password, hash, true);
 
   return result;
 }

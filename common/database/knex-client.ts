@@ -1,5 +1,4 @@
 import knex from 'knex';
-import { return24Volume } from '../../services/influxdb/common/poloniex/client';
 
 const {
   POSTGRES_HOST,

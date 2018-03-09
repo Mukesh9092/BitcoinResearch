@@ -1,6 +1,6 @@
 import { ServerRequest, ServerResponse } from 'http';
 
-import _ from 'lodash';
+import { capitalize as capitalizeString } from 'lodash';
 
 function capitalize(req: ServerRequest, res: ServerResponse) {
   let body: Buffer[] = [];
@@ -14,7 +14,7 @@ function capitalize(req: ServerRequest, res: ServerResponse) {
     })
     .on('end', () => {
       const result = Buffer.concat(body).toString();
-      res.end(_.capitalize(result));
+      res.end(capitalizeString(result));
     });
 }
 

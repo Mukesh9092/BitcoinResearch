@@ -13,8 +13,8 @@ export default async () => {
     }
 
     client = new InfluxDB({
-      host: INFLUXDB_HOST,
-      database: INFLUXDB_DATABASE,
+      host: String(INFLUXDB_HOST),
+      database: String(INFLUXDB_DATABASE),
       schema,
     });
 
