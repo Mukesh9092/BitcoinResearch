@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import isDevelopment from '../environment/isDevelopment';
 
 const requestMatches = (req: Request): boolean =>
-  isDevelopment() && req.url.match(/^\/_next/);
+  isDevelopment() && Boolean(req.url.match(/^\/_next/));
 
 export default function logger(app: Application) {
   if (isDevelopment) {
