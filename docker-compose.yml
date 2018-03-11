@@ -38,14 +38,6 @@ services:
       - ./services/authentication:/service
     env_file: .env
 
-  noflo:
-    build: ./services/noflo
-    ports:
-      - ${NOFLO_PORT}:${NOFLO_PORT}
-    volumes:
-      - ./services/noflo:/service
-    env_file: .env
-
   redis:
     build: ./services/redis
     ports:
@@ -55,12 +47,12 @@ services:
       - ./services/redis/data:/data
     env_file: .env
 
-  redis-commander:
-    build: ./services/redis-commander
+  redis-admin:
+    build: ./services/redis-admin
     ports:
-      - ${REDIS_COMMANDER_PORT}:${REDIS_COMMANDER_PORT}
+      - ${REDIS_ADMIN_PORT}:${REDIS_ADMIN_PORT}
     volumes:
-      - ./services/redis-commander:/service
+      - ./services/redis-admin:/service
     env_file: .env
 
   postgresql:
@@ -84,21 +76,35 @@ services:
   influxdb:
     image: influxdb:latest
     ports:
-      - ${INFLUXDB_PORT}:${INFLUXDB_PORT_IN}
-      - ${INFLUXDB_ADMIN_PORT}:${INFLUXDB_ADMIN_PORT_IN}
-      - ${INFLUXDB_GRAPHITE_PORT}:${INFLUXDB_GRAPHITE_PORT_IN}
+      - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
     volumes:
       - ./services/influxdb/data:/var/lib/influxdb
     env_file: .env
 
-  arangodb:
-    image: arangodb
+  influxdb-chronograf:
+    image: chronograf:latest
     ports:
-      - ${ARANGO_PORT}:${ARANGO_PORT}
+      - ${INFLUXDB_CHRONOGRAF_PORT}:${INFLUXDB_CHRONOGRAF_PORT}
     volumes:
-      - ./services/arangodb/data:/var/lib/arangodb3
-      - ./services/arangodb/apps:/var/lib/arangodb3-apps
+      - ./services/influxdb-chronograf/data:/var/lib/chronograf
     env_file: .env
+
+  # noflo:
+  #   build: ./services/noflo
+  #   ports:
+  #     - ${NOFLO_PORT}:${NOFLO_PORT}
+  #   volumes:
+  #     - ./services/noflo:/service
+  #   env_file: .env
+
+  # arangodb:
+  #   image: arangodb
+  #   ports:
+  #     - ${ARANGO_PORT}:${ARANGO_PORT}
+  #   volumes:
+  #     - ./services/arangodb/data:/var/lib/arangodb3
+  #     - ./services/arangodb/apps:/var/lib/arangodb3-apps
+  #   env_file: .env
 
   # eventstore:
   #   image: eventstore/eventstore

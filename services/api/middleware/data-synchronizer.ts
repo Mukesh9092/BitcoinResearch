@@ -1,29 +1,146 @@
 import * as moment from 'moment';
+import Poloniex from 'poloniex-api-node';
 import { Application } from 'express';
 
 import { importCurrencyPairs } from '../common/database/repositories/currency-pair';
-import { getKnexClient } from '../common/database/knex-client';
+import { getInfluxClient } from '../common/influxdb/client';
+import { insert } from '../common/influxdb/entities/order-book';
 
-const IDLE_TIMEOUT = 1000 * 60 * 5;
-const PERIODS = [300, 900, 1800, 7200, 14400, 86400];
-const QUERY_CANDLE_AMOUNT = 100;
+import {
+  OrderBookMessage,
+  UnsanitizedMessage,
+  UnsanitizedOrderBookMessage,
+  UnsanitizedOrderBookRemoveMessage,
+  UnsanitizedOrderBookModifyMessage,
+} from '../common/types/order-book';
 
-async function update() {
-  console.log('data-synchronizer: Updating.');
+function sanitizeOrderBookMessage(
+  message: UnsanitizedOrderBookMessage,
+): OrderBookMessage[] {
+  const bids = Object.keys(message.data.bids).map((key): OrderBookMessage => {
+    return {
+      mutationType: 'modify',
+      mutationSide: 'bid',
+      rate: Number(key),
+      amount: Number(message.data.bids[key]),
+    };
+  });
 
-  await importCurrencyPairs();
+  const asks = Object.keys(message.data.asks).map((key): OrderBookMessage => {
+    return {
+      mutationType: 'modify',
+      mutationSide: 'ask',
+      rate: Number(key),
+      amount: Number(message.data.asks[key]),
+    };
+  });
 
-  console.log('data-synchronizer: Update complete.');
-
-  idle();
+  return bids.concat(asks);
 }
 
-function idle() {
-  console.log('data-synchronizer: Idling for 5 minutes.');
+function sanitizeOrderBookModifyMessage(
+  message: UnsanitizedOrderBookModifyMessage,
+): OrderBookMessage {
+  const { type, rate, amount } = message.data;
 
-  setTimeout(update, IDLE_TIMEOUT);
+  if (!(type === 'bid' || type === 'ask')) {
+    throw new Error(`Invalid message data type: '${type}'.`);
+  }
+
+  return {
+    mutationType: 'modify',
+    mutationSide: type,
+    rate: Number(rate),
+    amount: Number(amount),
+  };
 }
 
-export default function graphql(app: Application): void {
-  update();
+function sanitizeOrderBookRemoveMessage(
+  message: UnsanitizedOrderBookRemoveMessage,
+): OrderBookMessage {
+  const { type, rate, amount } = message.data;
+
+  if (!(type === 'bid' || type === 'ask')) {
+    throw new Error(`Invalid message data type: '${type}'.`);
+  }
+
+  return {
+    mutationType: 'remove',
+    mutationSide: type,
+    rate: Number(rate),
+    amount: Number(amount),
+  };
+}
+
+function sanitizeMessages(
+  unsanitizedMessages: UnsanitizedMessage[],
+): OrderBookMessage[] {
+  return unsanitizedMessages.reduce(
+    (memo: OrderBookMessage[], unsanitizedMessage: UnsanitizedMessage) => {
+      let newMessages: OrderBookMessage[];
+
+      switch (unsanitizedMessage.type) {
+        case 'orderBook':
+          newMessages = sanitizeOrderBookMessage(unsanitizedMessage);
+          break;
+
+        case 'orderBookModify':
+          newMessages = [sanitizeOrderBookModifyMessage(unsanitizedMessage)];
+          break;
+
+        case 'orderBookRemove':
+          newMessages = [sanitizeOrderBookRemoveMessage(unsanitizedMessage)];
+          break;
+
+        default:
+          throw new Error(
+            `Invalid message: '${JSON.stringify(unsanitizedMessage)}'.`,
+          );
+      }
+
+      return memo.concat(newMessages);
+    },
+    [],
+  );
+}
+
+export default async function dataSynchronizer(
+  app: Application,
+): Promise<void> {
+  const poloniexClient = new Poloniex();
+  const influxClient = await getInfluxClient();
+
+  poloniexClient.on('open', () => {
+    console.log('Poloniex Websocket Open');
+  });
+
+  poloniexClient.on('close', (reason: any, details: any) => {
+    console.log('Poloniex Websocket Closed');
+
+    console.log('reason', reason);
+    console.log('details', details);
+  });
+
+  poloniexClient.on('error', (error: Error) => {
+    console.error(error);
+  });
+
+  poloniexClient.on(
+    'message',
+    async (
+      channelName: string,
+      messages: UnsanitizedOrderBookMessage[],
+      seq: number,
+    ) => {
+      const sanitizedMessages = sanitizeMessages(messages);
+
+      await insert(sanitizedMessages);
+
+      // console.log(sanitizedMessages);
+    },
+  );
+
+  poloniexClient.subscribe('BTC_ETC');
+
+  poloniexClient.openWebSocket({ version: 2 });
 }

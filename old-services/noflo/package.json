@@ -38,6 +38,7 @@
     "noflo-filesystem": "^2.0.1",
     "noflo-nodejs": "^0.9.0",
     "noflo-xpress": "^0.5.0",
+    "noflo-yaml": "^0.4.0",
     "prettier": "^1.11.1",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2"

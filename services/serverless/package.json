@@ -12,7 +12,8 @@
     "precommit": "lint-staged",
     "lint": "tslint --project .",
     "fix": "tslint --project . --fix",
-    "prettier": "prettier --write ./**/*.tsx ./**/*.ts"
+    "prettier": "prettier --write ./**/*.tsx ./**/*.ts",
+    "compile": "tsc -p ."
   },
   "lint-staged": {
     "./**/*.{ts,tsx}": [
