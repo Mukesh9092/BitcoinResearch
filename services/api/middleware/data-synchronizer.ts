@@ -1,107 +1,21 @@
 import * as moment from 'moment';
+import H from 'highland';
 import Poloniex from 'poloniex-api-node';
 import { Application } from 'express';
 
 import { importCurrencyPairs } from '../common/database/repositories/currency-pair';
 import { getInfluxClient } from '../common/influxdb/client';
 import { insert } from '../common/influxdb/entities/order-book';
+import { SanitizedOrderBookMessage } from '../common/types/order-book';
 
-import {
-  OrderBookMessage,
-  UnsanitizedMessage,
-  UnsanitizedOrderBookMessage,
-  UnsanitizedOrderBookRemoveMessage,
-  UnsanitizedOrderBookModifyMessage,
-} from '../common/types/order-book';
+let inserted = 0;
+setInterval(() => {
+  console.log(`Inserted ${inserted} Order Book events.`);
+  inserted = 0;
+}, 1000);
 
-function sanitizeOrderBookMessage(
-  message: UnsanitizedOrderBookMessage,
-): OrderBookMessage[] {
-  const bids = Object.keys(message.data.bids).map((key): OrderBookMessage => {
-    return {
-      mutationType: 'modify',
-      mutationSide: 'bid',
-      rate: Number(key),
-      amount: Number(message.data.bids[key]),
-    };
-  });
-
-  const asks = Object.keys(message.data.asks).map((key): OrderBookMessage => {
-    return {
-      mutationType: 'modify',
-      mutationSide: 'ask',
-      rate: Number(key),
-      amount: Number(message.data.asks[key]),
-    };
-  });
-
-  return bids.concat(asks);
-}
-
-function sanitizeOrderBookModifyMessage(
-  message: UnsanitizedOrderBookModifyMessage,
-): OrderBookMessage {
-  const { type, rate, amount } = message.data;
-
-  if (!(type === 'bid' || type === 'ask')) {
-    throw new Error(`Invalid message data type: '${type}'.`);
-  }
-
-  return {
-    mutationType: 'modify',
-    mutationSide: type,
-    rate: Number(rate),
-    amount: Number(amount),
-  };
-}
-
-function sanitizeOrderBookRemoveMessage(
-  message: UnsanitizedOrderBookRemoveMessage,
-): OrderBookMessage {
-  const { type, rate, amount } = message.data;
-
-  if (!(type === 'bid' || type === 'ask')) {
-    throw new Error(`Invalid message data type: '${type}'.`);
-  }
-
-  return {
-    mutationType: 'remove',
-    mutationSide: type,
-    rate: Number(rate),
-    amount: Number(amount),
-  };
-}
-
-function sanitizeMessages(
-  unsanitizedMessages: UnsanitizedMessage[],
-): OrderBookMessage[] {
-  return unsanitizedMessages.reduce(
-    (memo: OrderBookMessage[], unsanitizedMessage: UnsanitizedMessage) => {
-      let newMessages: OrderBookMessage[];
-
-      switch (unsanitizedMessage.type) {
-        case 'orderBook':
-          newMessages = sanitizeOrderBookMessage(unsanitizedMessage);
-          break;
-
-        case 'orderBookModify':
-          newMessages = [sanitizeOrderBookModifyMessage(unsanitizedMessage)];
-          break;
-
-        case 'orderBookRemove':
-          newMessages = [sanitizeOrderBookRemoveMessage(unsanitizedMessage)];
-          break;
-
-        default:
-          throw new Error(
-            `Invalid message: '${JSON.stringify(unsanitizedMessage)}'.`,
-          );
-      }
-
-      return memo.concat(newMessages);
-    },
-    [],
-  );
+function logUnknownMessage(message: object) {
+  console.log(`Unknown: `, JSON.stringify(message));
 }
 
 export default async function dataSynchronizer(
@@ -109,6 +23,15 @@ export default async function dataSynchronizer(
 ): Promise<void> {
   const poloniexClient = new Poloniex();
   const influxClient = await getInfluxClient();
+  const currencyPairs = await importCurrencyPairs();
+
+  for (let index = 0; index < currencyPairs.length; index++) {
+    const element = currencyPairs[index];
+
+    // console.log(`Subscribing to ${element.key}`);
+
+    poloniexClient.subscribe(element.key);
+  }
 
   poloniexClient.on('open', () => {
     console.log('Poloniex Websocket Open');
@@ -125,22 +48,81 @@ export default async function dataSynchronizer(
     console.error(error);
   });
 
+  // poloniexClient.on('message', (...args: any[]) => {
+  //   console.log('MESSAGE', args);
+  // });
+
   poloniexClient.on(
     'message',
-    async (
-      channelName: string,
-      messages: UnsanitizedOrderBookMessage[],
-      seq: number,
-    ) => {
-      const sanitizedMessages = sanitizeMessages(messages);
+    async (channelName: string, unsanitizedMessages: any[], seq: number) => {
+      // console.log(`Messages: `, unsanitizedMessages.length);
 
-      await insert(sanitizedMessages);
+      for (let index = 0; index < unsanitizedMessages.length; index++) {
+        const message = unsanitizedMessages[index];
 
-      // console.log(sanitizedMessages);
+        if (message.type === 'orderBook') {
+          const bidKeys = Object.keys(message.data.bids);
+
+          const bidMessages = bidKeys.map(
+            (key: string): SanitizedOrderBookMessage => {
+              return {
+                mutationType: 'modify',
+                mutationSide: 'bid',
+                rate: Number(key),
+                amount: Number(message.data.bids[key]),
+              };
+            },
+          );
+
+          const askKeys = Object.keys(message.data.asks);
+
+          const askMessages = askKeys.map(
+            (key: string): SanitizedOrderBookMessage => {
+              return {
+                mutationType: 'modify',
+                mutationSide: 'ask',
+                rate: Number(key),
+                amount: Number(message.data.asks[key]),
+              };
+            },
+          );
+
+          const allMessages = bidMessages.concat(askMessages);
+
+          await insert(allMessages);
+
+          inserted += allMessages.length;
+
+          return;
+        }
+
+        if (
+          message.type === 'orderBookModify' ||
+          message.type === 'orderBookRemove'
+        ) {
+          // console.log(message);
+
+          if (!(message.data.type === 'bid' || message.data.type === 'ask')) {
+            logUnknownMessage(message);
+            return;
+          }
+
+          await insert({
+            mutationType: 'modify',
+            mutationSide: message.data.type,
+            rate: Number(message.data.rate),
+            amount: Number(message.data.amount),
+          });
+
+          inserted += 1;
+
+          return;
+        }
+
+        logUnknownMessage(message);
+      }
     },
   );
-
-  poloniexClient.subscribe('BTC_ETC');
 
   poloniexClient.openWebSocket({ version: 2 });
 }

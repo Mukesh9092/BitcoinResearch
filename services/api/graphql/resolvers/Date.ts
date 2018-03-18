@@ -1,8 +1,8 @@
-export function __serialize(value: any): any {
+function __serialize(value: any): any {
   return value;
 }
 
-export function __parseValue(value: any): number {
+function __parseValue(value: any): number {
   if (typeof value === 'number') {
     return value;
   }
@@ -15,6 +15,12 @@ export function __parseValue(value: any): number {
 }
 
 // TODO: Find out type of ast and ast.value
-export function __parseLiteral(ast: any): any {
+function __parseLiteral(ast: any): any {
   return ast.value;
 }
+
+export default {
+  __serialize,
+  __parseLiteral,
+  __parseValue,
+};

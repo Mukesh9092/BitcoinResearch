@@ -1,6 +1,6 @@
 import { FieldType, toNanoDate, IPoint } from 'influx';
 
-import { OrderBookMessage } from '../../types/order-book';
+import { SanitizedOrderBookMessage } from '../../types/order-book';
 import { ensureArray } from '../../array';
 import { getInfluxClient } from '../client';
 
@@ -18,7 +18,7 @@ export const orderBookSchema = {
 };
 
 export async function insert(
-  messages: OrderBookMessage | OrderBookMessage[],
+  messages: SanitizedOrderBookMessage | SanitizedOrderBookMessage[],
 ): Promise<void> {
   const client = await getInfluxClient();
 

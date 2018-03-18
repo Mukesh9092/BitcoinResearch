@@ -89,6 +89,24 @@ services:
       - ./services/influxdb-chronograf/data:/var/lib/chronograf
     env_file: .env
 
+  influxdb-telegraf:
+    image: telegraf:latest
+    ports:
+      - ${INFLUXDB_TELEGRAF_STATSD_PORT}:${INFLUXDB_TELEGRAF_STATSD_PORT}
+      - ${INFLUXDB_TELEGRAF_UDP_PORT}:${INFLUXDB_TELEGRAF_UDP_PORT}
+      - ${INFLUXDB_TELEGRAF_TCP_PORT}:${INFLUXDB_TELEGRAF_TCP_PORT}
+    volumes:
+      - ./services/influxdb-telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    env_file: .env
+
+  influxdb-kapacitor:
+    image: kapacitor:latest
+    ports:
+      - ${INFLUXDB_KAPACITOR_PORT}:${INFLUXDB_KAPACITOR_PORT}
+    volumes:
+      - ./services/influxdb-kapacitor/data:/var/lib/kapacitor
+    env_file: .env
+
   # noflo:
   #   build: ./services/noflo
   #   ports:

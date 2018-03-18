@@ -12,8 +12,8 @@ import { formatError } from './common/errors';
 const {
   API_HOST,
   API_PORT,
-  APPLICATION_HOST,
-  APPLICATION_PORT,
+  WEB_HOST,
+  WEB_PORT,
   AUTHENTICATION_HOST,
   AUTHENTICATION_PORT,
   NOFLO_HOST,
@@ -23,7 +23,7 @@ const {
 } = process.env;
 
 expressServiceWith(
-  (app: Application) => {
+  async (app: Application) => {
     loggerMiddleware(app);
     sessionsMiddleware(app);
     passportMiddleware(app);
@@ -51,13 +51,15 @@ expressServiceWith(
 
     app.all('/*', (req, res) => {
       proxy.web(req, res, {
-        target: `http://${APPLICATION_HOST}:${APPLICATION_PORT}`,
+        target: `http://${WEB_HOST}:${WEB_PORT}`,
       });
     });
 
     proxy.on('error', error => {
       console.log(formatError(error));
     });
+
+    return app;
   },
   String(PROXY_HOST),
   Number(PROXY_PORT),

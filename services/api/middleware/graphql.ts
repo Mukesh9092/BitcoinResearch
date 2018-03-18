@@ -6,25 +6,8 @@ import schema from '../graphql/schema';
 
 import Date from '../graphql/resolvers/Date';
 
-import {
-  userById,
-  candlesticks,
-  currencyPairs,
-} from '../graphql/resolvers/RootQuery';
-
-const resolversObject = {
-  Date,
-
-  RootQuery: {
-    userById,
-    candlesticks,
-    currencyPairs,
-  },
-
-  RootMutation: {},
-};
-
-// console.log('RESOLVERS', resolversObject);
+import RootQuery from '../graphql/resolvers/RootQuery';
+import RootMutation from '../graphql/resolvers/RootQuery';
 
 export default function graphql(app: Application): void {
   app.all('/api/graphql', (req, res, next) => {
@@ -37,7 +20,10 @@ export default function graphql(app: Application): void {
     graphqlExpress({
       schema: makeExecutableSchema({
         typeDefs: String(schema),
-        resolvers: resolversObject,
+        resolvers: {
+          RootQuery,
+          RootMutation,
+        },
       }),
     })(req, res, next);
   });

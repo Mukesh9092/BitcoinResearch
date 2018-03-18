@@ -8,18 +8,20 @@ import { formatError } from '../errors';
 import { verifyPassword } from '../crypto';
 
 passport.serializeUser((user: any, cb) => {
+  console.log('Passport serializeUser', user);
+
   cb(null, user.id);
 });
 
 async function deserializeUser(id: string, cb: Function) {
   try {
-    // console.log('Passport deserializeUser id', id);
+    console.log('Passport deserializeUser id', id);
 
     const knexClient = getKnexClient();
 
     const result = await knexClient.select('*').where({ id });
 
-    // console.log('Passport deserializeUser result', result);
+    console.log('Passport deserializeUser result', result);
 
     cb(null, result);
   } catch (error) {
@@ -32,13 +34,13 @@ passport.deserializeUser(deserializeUser);
 
 async function localStrategy(email: string, password: string, cb: Function) {
   try {
-    // console.log('Passport LocalStrategy', email, password);
+    console.log('Passport LocalStrategy', email, password);
 
     const knexClient = getKnexClient();
 
     const user = await knexClient.select('*').where({ email });
 
-    // console.log('Passport LocalStrategy user', user);
+    console.log('Passport LocalStrategy user', user);
 
     if (!user) {
       return cb(null, false, { message: 'Incorrect email or password' });
@@ -46,7 +48,7 @@ async function localStrategy(email: string, password: string, cb: Function) {
 
     const verified = verifyPassword(password, user.passwordHash);
 
-    // console.log('Passport LocalStrategy verified', verified);
+    console.log('Passport LocalStrategy verified', verified);
 
     if (!verified) {
       return cb(null, false, { message: 'Incorrect email or password' });
@@ -64,7 +66,6 @@ passport.use(
     {
       usernameField: 'email',
       passwordField: 'password',
-      // session: true
     },
     localStrategy,
   ),

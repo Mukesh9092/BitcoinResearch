@@ -6,7 +6,14 @@
     "@babel/preset-typescript"
   ],
   "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-decorators",
-    ["@babel/plugin-proposal-class-properties", { "loose": true }]
-  ]
+    "@babel/plugin-proposal-class-properties",
+    "react-hot-loader/babel"
+  ],
+  "env": {
+    "development": {
+      "plugins": ["react-hot-loader/babel"]
+    }
+  }
 }

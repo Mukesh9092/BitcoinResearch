@@ -5,21 +5,17 @@ export default function authenticationHeaderExtraction(app: Application) {
   app.use((req: Request, res: Response, next: Function) => {
     try {
       const user = req.headers['x-user'];
+      // console.log('​authenticationHeaderExtraction -> user', user);
+
       const session = req.headers['x-session'];
+      // console.log('​authenticationHeaderExtraction -> session', session);
 
-      if (!user) {
-        throw new Error('No user header found');
-      }
-
-      if (!session) {
-        throw new Error('No session header found');
-      }
-
+      // Needed for typing.
       const authenticatedRequest: AuthenticatedRequest = req as AuthenticatedRequest;
 
       authenticatedRequest.authentication = {
-        user: JSON.parse(String(user)),
-        session: JSON.parse(String(session)),
+        user: user === '' ? null : JSON.parse(String(user)),
+        session: session === '' ? null : JSON.parse(String(session)),
       };
 
       next();

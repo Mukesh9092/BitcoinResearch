@@ -11,22 +11,22 @@ import { localAuthentication, logout } from './routes';
 
 const { AUTHENTICATION_HOST, AUTHENTICATION_PORT } = process.env;
 
-function configureApplication(app: Application) {
-  genericExpressServiceMiddleware(app);
-  loggerMiddleware(app);
-  sessionsMiddleware(app);
-  passportMiddleware(app);
-
-  app.post(
-    '/api/authentication/local',
-    passport.authenticate('local'),
-    localAuthentication,
-  );
-  app.get('/api/authentication/logout', logout);
-}
-
 expressServiceWith(
-  configureApplication,
+  async (app: Application) => {
+    genericExpressServiceMiddleware(app);
+    loggerMiddleware(app);
+    sessionsMiddleware(app);
+    passportMiddleware(app);
+
+    app.post(
+      '/api/authentication/local',
+      passport.authenticate('local'),
+      localAuthentication,
+    );
+    app.get('/api/authentication/logout', logout);
+
+    return app;
+  },
   String(AUTHENTICATION_HOST),
   Number(AUTHENTICATION_PORT),
 );

@@ -1,4 +1,4 @@
-export interface UnsanitizedOrderBookMessage {
+export interface UnsanitizedOrderBookStateMessage {
   type: 'orderBook';
   data: {
     bids: {
@@ -28,14 +28,18 @@ export interface UnsanitizedOrderBookRemoveMessage {
   };
 }
 
-export type UnsanitizedMessage =
-  | UnsanitizedOrderBookMessage
+export type UnsanitizedOrderBookMessage =
+  | UnsanitizedOrderBookStateMessage
   | UnsanitizedOrderBookModifyMessage
   | UnsanitizedOrderBookRemoveMessage;
 
-export interface OrderBookMessage {
+export interface SanitizedOrderBookMessage {
   mutationType: 'modify' | 'remove';
   mutationSide: 'bid' | 'ask';
   rate: number;
   amount: number;
+}
+
+export interface UnknownOrderBookMessage {
+  json: string;
 }

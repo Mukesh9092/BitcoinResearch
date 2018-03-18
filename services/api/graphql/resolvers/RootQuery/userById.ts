@@ -1,15 +1,18 @@
 import { getKnexClient } from '../../../common/database/knex-client';
 
-export default async (obj: Object, options: { id: string }) => {
-  try {
-    const knexClient = getKnexClient();
+// export default async (obj: Object, options: { id: string }) => {
+export default async (...args: any[]) => {
+  console.log('ARGS', args);
 
-    let result = await knexClient('user')
-      .select('*')
-      .where({ id: options.id });
+  // try {
+  //   const knexClient = getKnexClient();
 
-    return result;
-  } catch (error) {
-    throw error;
-  }
+  //   let result = await knexClient('user')
+  //     .select('*')
+  //     .where({ id: options.id });
+
+  //   return result;
+  // } catch (error) {
+  //   throw error;
+  // }
 };

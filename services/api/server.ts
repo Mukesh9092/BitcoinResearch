@@ -10,16 +10,16 @@ import loggerMiddleware from './common/middleware/logger';
 
 const { API_HOST, API_PORT } = process.env;
 
-function configureApplication(app: Application) {
-  genericExpressService(app);
-  loggerMiddleware(app);
-  authenticationHeaderExtractionMiddleware(app);
-  graphqlMiddleware(app);
-  dataSynchronizerMiddleware(app);
-}
-
 expressServiceWithMiddleware(
-  configureApplication,
+  async (app: Application) => {
+    genericExpressService(app);
+    loggerMiddleware(app);
+    authenticationHeaderExtractionMiddleware(app);
+    graphqlMiddleware(app);
+    dataSynchronizerMiddleware(app);
+
+    return app;
+  },
   String(API_HOST),
   Number(API_PORT),
 );
