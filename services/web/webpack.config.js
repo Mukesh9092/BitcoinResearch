@@ -22,6 +22,14 @@ const base = {
         exclude: /node_modules/,
         use: 'babel-loader',
       },
+      {
+        test: /\.css$/,
+        use: [{ loader: 'css-loader', options: { importLoaders: 1 } }],
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'file-loader',
+      },
     ],
   },
   resolve: {

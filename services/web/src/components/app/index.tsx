@@ -1,6 +1,7 @@
 import React from 'react';
 import { History } from 'history';
 import { Route, Link } from 'react-router-dom';
+import { Button } from '@blueprintjs/core';
 
 import { About } from '../about';
 import { Home } from '../home';
@@ -26,6 +27,8 @@ export const App = (props: Props) => (
 
     <Route exact={true} path="/" component={Home} />
     <Route path="/about" component={About} />
-    <div className={styles.container}>8</div>
+    <div className={styles.container}>
+      <Button>WHAT</Button>
+    </div>
   </React.Fragment>
 );

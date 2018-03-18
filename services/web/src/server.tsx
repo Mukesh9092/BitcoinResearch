@@ -8,6 +8,8 @@ import { Request, Response, NextFunction } from 'express';
 import webpackConfig from '../webpack.config';
 import { App } from '../src/components/app';
 
+global.window = {};
+
 const PUBLIC_ASSET_PATH = webpackConfig[0].output.publicPath;
 
 interface WebpackAssets {
@@ -78,6 +80,10 @@ export default (options: any) => {
     const clientAssets = getClientAssets(res);
     const styles = getClientStyles(clientAssets);
     const scripts = getClientScripts(clientAssets);
+
+    console.log('TITLE', title);
+    console.log('STYLES', styles);
+    console.log('SCRIPTS', scripts);
 
     const html = `
       <!doctype html>

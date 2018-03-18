@@ -9,10 +9,10 @@ import { insert } from '../common/influxdb/entities/order-book';
 import { SanitizedOrderBookMessage } from '../common/types/order-book';
 
 let inserted = 0;
-setInterval(() => {
-  console.log(`Inserted ${inserted} Order Book events.`);
-  inserted = 0;
-}, 1000);
+// setInterval(() => {
+//   console.log(`Inserted ${inserted} Order Book events.`);
+//   inserted = 0;
+// }, 1000);
 
 function logUnknownMessage(message: object) {
   console.log(`Unknown: `, JSON.stringify(message));
@@ -124,5 +124,5 @@ export default async function dataSynchronizer(
     },
   );
 
-  poloniexClient.openWebSocket({ version: 2 });
+  //poloniexClient.openWebSocket({ version: 2 });
 }
