@@ -1,58 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/server';
-import _ from 'lodash';
 import createHistory from 'history/createMemoryHistory';
-import { StaticRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { Request, Response, NextFunction } from 'express';
+import { StaticRouter } from 'react-router-dom';
 
 import normalizeStyle from 'normalize.css';
 import blueprintStyle from '../node_modules/@blueprintjs/core/dist/blueprint.css';
 
-import webpackConfig from '../webpack.config';
-import { App } from '../src/components/app';
-
-const PUBLIC_ASSET_PATH = webpackConfig[0].output.publicPath;
-
-interface WebpackAssets {
-  [key: string]: string;
-}
-
-function normalizeToArray(x: any) {
-  return Array.isArray(x) ? x : [x];
-}
-
-function getClientAssets(res: Response): WebpackAssets {
-  const webpackStats = res.locals.webpackStats.toJson();
-
-  const [clientStats] = webpackStats.children.filter(
-    (x: { name: string }) => x.name === 'client',
-  );
-
-  return clientStats.assetsByChunkName;
-}
-
-function getClientStyles(assets: WebpackAssets) {
-  return _(assets)
-    .values()
-    .flatten()
-    .filter((path: string) => path.endsWith('.css'))
-    .map(
-      (path: string) =>
-        `<link rel="stylesheet" href="${PUBLIC_ASSET_PATH}${path}" />`,
-    )
-    .join('\n');
-}
-
-function getClientScripts(assets: WebpackAssets) {
-  return _(assets)
-    .values()
-    .flatten()
-    .filter((path: string) => path.endsWith('.js'))
-    .map(
-      (path: string) => `<script src="${PUBLIC_ASSET_PATH}${path}" /></script>`,
-    )
-    .join('\n');
-}
+import store from './store.ts';
+import { App } from './components/app';
+import {
+  getClientAssets,
+  getClientScripts,
+  getClientStyles,
+} from './helpers/assets.ts';
 
 interface RenderContext {
   url?: string;
@@ -63,9 +25,11 @@ export default (options: any) => {
     const history = createHistory({ initialEntries: [req.path] });
     const renderContext: RenderContext = {};
     const app = ReactDOM.renderToString(
-      <StaticRouter location={req.url} context={renderContext}>
-        <App history={history} />
-      </StaticRouter>,
+      <Provider store={store}>
+        <StaticRouter location={req.url} context={renderContext}>
+          <App history={history} />
+        </StaticRouter>
+      </Provider>,
     );
 
     if (renderContext.url) {
