@@ -5,10 +5,11 @@ import createHistory from 'history/createMemoryHistory';
 import { StaticRouter } from 'react-router-dom';
 import { Request, Response, NextFunction } from 'express';
 
+import normalizeStyle from 'normalize.css';
+import blueprintStyle from '../node_modules/@blueprintjs/core/dist/blueprint.css';
+
 import webpackConfig from '../webpack.config';
 import { App } from '../src/components/app';
-
-global.window = {};
 
 const PUBLIC_ASSET_PATH = webpackConfig[0].output.publicPath;
 
@@ -91,6 +92,12 @@ export default (options: any) => {
           <head>
             <meta charset="utf-8">
             <title>${title}</title>
+            <style type="text/css">
+              ${normalizeStyle.toString()}
+            </style>
+            <style type="text/css">
+              ${blueprintStyle.toString()}
+            </style>
             ${styles}
           </head>
           <body>

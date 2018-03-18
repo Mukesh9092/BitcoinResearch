@@ -3,8 +3,10 @@ import { History } from 'history';
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@blueprintjs/core';
 
-import { About } from '../about';
-import { Home } from '../home';
+import { Navigation } from '../navigation';
+
+import { About } from '../pages/about';
+import { Home } from '../pages/home';
 
 import * as styles from './styles';
 
@@ -14,21 +16,8 @@ interface Props {
 
 export const App = (props: Props) => (
   <React.Fragment>
-    <ul>
-      <li>
-        <Link to="/">Home</Link>
-      </li>
-      <li>
-        <Link to="/about">About</Link>
-      </li>
-    </ul>
-
-    <hr />
-
+    <Navigation history={props.history} />
     <Route exact={true} path="/" component={Home} />
     <Route path="/about" component={About} />
-    <div className={styles.container}>
-      <Button>WHAT</Button>
-    </div>
   </React.Fragment>
 );
