@@ -1,6 +1,7 @@
 {
   "name": "flush-requires-boilerplate-webpack-chunknames",
-  "description": "A boilerplate showing how to achieve Universal Code-Splitting and Universal HMR with react-universal-component, webpack-flush-chunks and extract-css-chunks-webpack-plugin",
+  "description":
+    "A boilerplate showing how to achieve Universal Code-Splitting and Universal HMR with react-universal-component, webpack-flush-chunks and extract-css-chunks-webpack-plugin",
   "version": "1.0.0",
   "main": "server/index.ts",
   "author": "James Gillmore <james@faceyspacey.com>",
@@ -13,14 +14,16 @@
     "prettier": "prettier --write ./**/*.tsx ./**/*.ts",
     "test": "jest",
     "dev": "npm run start",
-    "start": "npm run clean; NODE_ENV=development babel-node --extensions '.js,.jsx,.ts,.tsx' index.ts",
-    "start:prod": "NODE_ENV=production babel-node --extensions '.js,.jsx,.ts,.tsx' index.ts"
+    "start":
+      "npm run clean; NODE_ENV=development babel-node --extensions '.js,.jsx,.ts,.tsx' index.ts",
+    "start:prod":
+      "NODE_ENV=production babel-node --extensions '.js,.jsx,.ts,.tsx' index.ts"
   },
   "lint-staged": {
     "linters": {
       "*.js": [
         "prettier --single-quote --semi=false --write",
-        "eslint --fix",
+        "tslint --fix",
         "git add"
       ]
     }
@@ -30,14 +33,7 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
   },
   "dependencies": {
     "@babel/cli": "^7.0.0-beta.42",
