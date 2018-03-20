@@ -81,6 +81,7 @@ services:
     volumes:
       - ./services/eventstore/data:/var/lib/eventstore
       - ./services/eventstore/logs:/var/log/eventstore
+    env_file: .env
 
   # influxdb:
   #   image: influxdb:latest
