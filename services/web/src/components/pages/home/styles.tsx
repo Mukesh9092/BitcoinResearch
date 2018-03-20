@@ -1,7 +1,7 @@
 import { css } from 'emotion';
 
 export const container = css`
-  background-color: #dddddd;
+  background-color: #ffffff;
 `;
 
 export const counter = css`

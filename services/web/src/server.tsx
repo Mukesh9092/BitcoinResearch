@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import createHistory from 'history/createMemoryHistory';
+import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { Request, Response, NextFunction } from 'express';
 import { StaticRouter } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { StaticRouter } from 'react-router-dom';
 import normalizeStyle from 'normalize.css';
 import blueprintStyle from '../node_modules/@blueprintjs/core/dist/blueprint.css';
 
+import apolloClient from './apollo-client.ts';
 import store from './store.ts';
 import { App } from './components/app';
 import {
@@ -25,11 +27,13 @@ export default (options: any) => {
     const history = createHistory({ initialEntries: [req.path] });
     const renderContext: RenderContext = {};
     const app = ReactDOM.renderToString(
-      <Provider store={store}>
-        <StaticRouter location={req.url} context={renderContext}>
-          <App history={history} />
-        </StaticRouter>
-      </Provider>,
+      <ApolloProvider client={apolloClient}>
+        <Provider store={store}>
+          <StaticRouter location={req.url} context={renderContext}>
+            <App history={history} />
+          </StaticRouter>
+        </Provider>
+      </ApolloProvider>,
     );
 
     if (renderContext.url) {

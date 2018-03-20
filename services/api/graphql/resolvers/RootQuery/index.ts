@@ -1,9 +1,9 @@
-import candlesticks from './candlesticks';
+// import candlesticks from './candlesticks';
 import currencyPairs from './currencyPairs';
-import userById from './userById';
+// import userById from './userById';
 
 export default {
-  candlesticks,
+  // candlesticks,
   currencyPairs,
-  userById,
+  // userById,
 };

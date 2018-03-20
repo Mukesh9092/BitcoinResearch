@@ -7,7 +7,7 @@ import schema from '../graphql/schema';
 import Date from '../graphql/resolvers/Date';
 
 import RootQuery from '../graphql/resolvers/RootQuery';
-import RootMutation from '../graphql/resolvers/RootQuery';
+// import RootMutation from '../graphql/resolvers/RootMutation';
 
 export default function graphql(app: Application): void {
   app.all('/api/graphql', (req, res, next) => {
@@ -22,7 +22,7 @@ export default function graphql(app: Application): void {
         typeDefs: String(schema),
         resolvers: {
           RootQuery,
-          RootMutation,
+          // RootMutation,
         },
       }),
     })(req, res, next);

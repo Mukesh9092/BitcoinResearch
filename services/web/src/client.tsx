@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import createHistory from 'history/createBrowserHistory';
+import { ApolloProvider } from 'react-apollo';
 import { App } from './components/app';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 
+import apolloClient from './apollo-client.ts';
 import store from './store.ts';
 
 const history = createHistory();
@@ -13,11 +15,13 @@ const history = createHistory();
 const render = (AppComponent: any) => {
   ReactDOM.hydrate(
     <AppContainer>
-      <Provider store={store}>
-        <Router history={history}>
-          <AppComponent history={history} />
-        </Router>
-      </Provider>
+      <ApolloProvider client={apolloClient}>
+        <Provider store={store}>
+          <Router history={history}>
+            <AppComponent history={history} />
+          </Router>
+        </Provider>
+      </ApolloProvider>
     </AppContainer>,
     document.getElementById('root'),
   );
