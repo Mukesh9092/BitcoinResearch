@@ -55,17 +55,20 @@ export async function importCurrencyPairs() {
 
     const currencyPairDocuments = sanitize(volumes, currencies);
 
+    console.log(
+      'importCurrencyPairs -> currencyPairDocuments.length',
+      currencyPairDocuments.length,
+    );
+
     await knexClient('currency_pair')
       .where({})
       .delete();
-
-    console.log('documents', currencyPairDocuments);
 
     const result = await knexClient('currency_pair')
       .insert(currencyPairDocuments)
       .returning('*');
 
-    console.log('##### RESULT', result.length);
+    console.log('​importCurrencyPairs -> result.length', result.length);
 
     return result;
   } catch (error) {

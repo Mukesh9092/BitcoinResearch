@@ -73,39 +73,48 @@ services:
       - ${POSTGRES_ADMIN_PORT}:${POSTGRES_ADMIN_PORT}
     env_file: .env
 
-  influxdb:
-    image: influxdb:latest
+  eventstore:
+    image: eventstore/eventstore
     ports:
-      - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
+      - ${EVENTSTORE_PORT}:${EVENTSTORE_PORT}
+      - ${EVENTSTORE_HTTP_PORT}:${EVENTSTORE_HTTP_PORT}
     volumes:
-      - ./services/influxdb/data:/var/lib/influxdb
-    env_file: .env
+      - ./services/eventstore/data:/var/lib/eventstore
+      - ./services/eventstore/logs:/var/log/eventstore
 
-  influxdb-chronograf:
-    image: chronograf:latest
-    ports:
-      - ${INFLUXDB_CHRONOGRAF_PORT}:${INFLUXDB_CHRONOGRAF_PORT}
-    volumes:
-      - ./services/influxdb-chronograf/data:/var/lib/chronograf
-    env_file: .env
+  # influxdb:
+  #   image: influxdb:latest
+  #   ports:
+  #     - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
+  #   volumes:
+  #     - ./services/influxdb/data:/var/lib/influxdb
+  #   env_file: .env
 
-  influxdb-telegraf:
-    image: telegraf:latest
-    ports:
-      - ${INFLUXDB_TELEGRAF_STATSD_PORT}:${INFLUXDB_TELEGRAF_STATSD_PORT}
-      - ${INFLUXDB_TELEGRAF_UDP_PORT}:${INFLUXDB_TELEGRAF_UDP_PORT}
-      - ${INFLUXDB_TELEGRAF_TCP_PORT}:${INFLUXDB_TELEGRAF_TCP_PORT}
-    volumes:
-      - ./services/influxdb-telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    env_file: .env
+  # influxdb-chronograf:
+  #   image: chronograf:latest
+  #   ports:
+  #     - ${INFLUXDB_CHRONOGRAF_PORT}:${INFLUXDB_CHRONOGRAF_PORT}
+  #   volumes:
+  #     - ./services/influxdb-chronograf/data:/var/lib/chronograf
+  #   env_file: .env
 
-  influxdb-kapacitor:
-    image: kapacitor:latest
-    ports:
-      - ${INFLUXDB_KAPACITOR_PORT}:${INFLUXDB_KAPACITOR_PORT}
-    volumes:
-      - ./services/influxdb-kapacitor/data:/var/lib/kapacitor
-    env_file: .env
+  # influxdb-telegraf:
+  #   image: telegraf:latest
+  #   ports:
+  #     - ${INFLUXDB_TELEGRAF_STATSD_PORT}:${INFLUXDB_TELEGRAF_STATSD_PORT}
+  #     - ${INFLUXDB_TELEGRAF_UDP_PORT}:${INFLUXDB_TELEGRAF_UDP_PORT}
+  #     - ${INFLUXDB_TELEGRAF_TCP_PORT}:${INFLUXDB_TELEGRAF_TCP_PORT}
+  #   volumes:
+  #     - ./services/influxdb-telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  #   env_file: .env
+
+  # influxdb-kapacitor:
+  #   image: kapacitor:latest
+  #   ports:
+  #     - ${INFLUXDB_KAPACITOR_PORT}:${INFLUXDB_KAPACITOR_PORT}
+  #   volumes:
+  #     - ./services/influxdb-kapacitor/data:/var/lib/kapacitor
+  #   env_file: .env
 
   # noflo:
   #   build: ./services/noflo
@@ -123,16 +132,6 @@ services:
   #     - ./services/arangodb/data:/var/lib/arangodb3
   #     - ./services/arangodb/apps:/var/lib/arangodb3-apps
   #   env_file: .env
-
-  # eventstore:
-  #   image: eventstore/eventstore
-  #   ports:
-  #     - ${EVENTSTORE_PORT}:${EVENTSTORE_PORT}
-  #     - ${EVENTSTORE_HTTP_PORT}:${EVENTSTORE_HTTP_PORT}
-  #   volumes:
-  #     - ./services/eventstore/data:/var/lib/eventstore
-  #     - ./services/eventstore/logs:/var/log/eventstore
-
 
   # rethinkdb:
   #   build: ./services/rethinkdb

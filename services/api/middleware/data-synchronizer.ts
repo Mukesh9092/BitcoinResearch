@@ -6,16 +6,137 @@ import { Application } from 'express';
 import { importCurrencyPairs } from '../common/database/repositories/currency-pair';
 import { getInfluxClient } from '../common/influxdb/client';
 import { insert } from '../common/influxdb/entities/order-book';
-import { SanitizedOrderBookMessage } from '../common/types/order-book';
+import {
+  SanitizedOrderBookMessage,
+  SanitizedOrderBookModifyMessage,
+  SanitizedOrderBookNewTradeMessage,
+  SanitizedOrderBookRemoveMessage,
+  UnsanitizedOrderBookMessage,
+  UnsanitizedOrderBookModifyMessage,
+  UnsanitizedOrderBookNewTradeMessage,
+  UnsanitizedOrderBookRemoveMessage,
+  UnsanitizedOrderBookStateMessage,
+} from '../common/types/order-book';
 
-let inserted = 0;
-// setInterval(() => {
-//   console.log(`Inserted ${inserted} Order Book events.`);
-//   inserted = 0;
-// }, 1000);
+const INSERT_INTERVAL = 1000;
+const INSERT_BATCH_SIZE = 1000;
+
+let messages: (
+  | SanitizedOrderBookModifyMessage
+  | SanitizedOrderBookRemoveMessage
+  | SanitizedOrderBookNewTradeMessage)[] = [];
+setInterval(async () => {
+  try {
+    if (messages.length >= INSERT_BATCH_SIZE) {
+      await insert(messages);
+      console.log(`Inserted messages: ${messages.length}`);
+      messages = [];
+    }
+  } catch (error) {
+    console.log('error oh noes', error);
+  }
+}, INSERT_INTERVAL);
 
 function logUnknownMessage(message: object) {
   console.log(`Unknown: `, JSON.stringify(message));
+}
+
+async function handleOrderBookStateMessage(
+  message: UnsanitizedOrderBookStateMessage,
+) {
+  Object.keys(message.data.bids).forEach((key: string) => {
+    messages.push({
+      mutationType: 'modify',
+      mutationSide: 'bid',
+      rate: Number(key),
+      amount: Number(message.data.bids[key]),
+    });
+  });
+
+  Object.keys(message.data.asks).forEach((key: string) => {
+    messages.push({
+      mutationType: 'modify',
+      mutationSide: 'ask',
+      rate: Number(key),
+      amount: Number(message.data.asks[key]),
+    });
+  });
+}
+
+async function handleOrderBookModifyMessage(
+  message: UnsanitizedOrderBookModifyMessage,
+) {
+  messages.push({
+    mutationType: 'modify',
+    mutationSide: message.data.type,
+    rate: Number(message.data.rate),
+    amount: Number(message.data.amount),
+  });
+}
+
+async function handleOrderBookRemoveMessage(
+  message: UnsanitizedOrderBookRemoveMessage,
+) {
+  messages.push({
+    mutationType: 'remove',
+    mutationSide: message.data.type,
+    rate: Number(message.data.rate),
+    amount: Number(message.data.amount),
+  });
+}
+
+async function handleNewTradeMessage(
+  message: UnsanitizedOrderBookNewTradeMessage,
+) {
+  messages.push({
+    mutationType: 'trade',
+    mutationSide: message.data.type,
+    tradeID: message.data.tradeID,
+    rate: Number(message.data.rate),
+    amount: Number(message.data.amount),
+    total: Number(message.data.total),
+    date: new Date(message.data.date),
+  });
+}
+
+async function handleMessages(
+  channelName: string,
+  unsanitizedMessages: any[],
+  seq: number,
+) {
+  // console.log(`Messages: `, unsanitizedMessages.length);
+
+  for (let index = 0; index < unsanitizedMessages.length; index++) {
+    const message = unsanitizedMessages[index];
+
+    switch (message.type) {
+      case 'orderBook':
+        handleOrderBookStateMessage(
+          message as UnsanitizedOrderBookStateMessage,
+        );
+        break;
+
+      case 'orderBookModify':
+        handleOrderBookModifyMessage(
+          message as UnsanitizedOrderBookModifyMessage,
+        );
+        break;
+
+      case 'orderBookRemove':
+        handleOrderBookRemoveMessage(
+          message as UnsanitizedOrderBookRemoveMessage,
+        );
+        break;
+
+      case 'newTrade':
+        handleNewTradeMessage(message as UnsanitizedOrderBookNewTradeMessage);
+        break;
+
+      default:
+        logUnknownMessage(message);
+        break;
+    }
+  }
 }
 
 export default async function dataSynchronizer(
@@ -52,77 +173,7 @@ export default async function dataSynchronizer(
   //   console.log('MESSAGE', args);
   // });
 
-  poloniexClient.on(
-    'message',
-    async (channelName: string, unsanitizedMessages: any[], seq: number) => {
-      // console.log(`Messages: `, unsanitizedMessages.length);
+  poloniexClient.on('message', handleMessages);
 
-      for (let index = 0; index < unsanitizedMessages.length; index++) {
-        const message = unsanitizedMessages[index];
-
-        if (message.type === 'orderBook') {
-          const bidKeys = Object.keys(message.data.bids);
-
-          const bidMessages = bidKeys.map(
-            (key: string): SanitizedOrderBookMessage => {
-              return {
-                mutationType: 'modify',
-                mutationSide: 'bid',
-                rate: Number(key),
-                amount: Number(message.data.bids[key]),
-              };
-            },
-          );
-
-          const askKeys = Object.keys(message.data.asks);
-
-          const askMessages = askKeys.map(
-            (key: string): SanitizedOrderBookMessage => {
-              return {
-                mutationType: 'modify',
-                mutationSide: 'ask',
-                rate: Number(key),
-                amount: Number(message.data.asks[key]),
-              };
-            },
-          );
-
-          const allMessages = bidMessages.concat(askMessages);
-
-          await insert(allMessages);
-
-          inserted += allMessages.length;
-
-          return;
-        }
-
-        if (
-          message.type === 'orderBookModify' ||
-          message.type === 'orderBookRemove'
-        ) {
-          // console.log(message);
-
-          if (!(message.data.type === 'bid' || message.data.type === 'ask')) {
-            logUnknownMessage(message);
-            return;
-          }
-
-          await insert({
-            mutationType: 'modify',
-            mutationSide: message.data.type,
-            rate: Number(message.data.rate),
-            amount: Number(message.data.amount),
-          });
-
-          inserted += 1;
-
-          return;
-        }
-
-        logUnknownMessage(message);
-      }
-    },
-  );
-
-  //poloniexClient.openWebSocket({ version: 2 });
+  poloniexClient.openWebSocket({ version: 2 });
 }
