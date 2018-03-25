@@ -2,7 +2,7 @@
 FROM archlinux/base
 
 RUN pacman -Syu --noconfirm
-RUN pacman -S curl awk grep tar --noconfirm
+RUN pacman -S --noconfirm awk curl grep tar which 
 
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 9.7.1

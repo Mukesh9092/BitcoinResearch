@@ -2,7 +2,6 @@ import Router from 'next/router';
 import * as React from 'react';
 
 import { isBrowser } from '../common/environment';
-import { Application } from '../stores/application';
 
 export interface ApplicationProperties {
   application: Application;
@@ -30,7 +29,6 @@ export default class ApplicationPage extends React.Component {
 
     if (isBrowser()) {
       application = Application.getBrowserInstance(ctx);
-
     } else {
       application = await Application.getServerInstance(ctx);
     }

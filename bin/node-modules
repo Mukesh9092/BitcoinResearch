@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 sudo ls
-for dir in services/*/; do { cd "$dir" && rm -rf node_modules && npm install; } & done; wait
+./bin/all-services sudo rm -rf node_modules package-lock.json
+./bin/all-services npm i

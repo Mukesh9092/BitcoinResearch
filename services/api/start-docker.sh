@@ -7,5 +7,5 @@ exec /service/common/wait-for-it.sh \
   --timeout=$SERVICE_CONNECTION_TIMEOUT \
   $POSTGRES_HOST:$POSTGRES_PORT \
   -- \
-    npm run dev
+    npm run dev $API_SERVICE_NAME
 

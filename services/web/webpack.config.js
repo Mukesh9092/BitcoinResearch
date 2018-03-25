@@ -18,11 +18,6 @@ const base = {
         use: 'babel-loader',
       },
       {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: 'babel-loader',
-      },
-      {
         test: /\.css$/,
         use: [{ loader: 'css-loader', options: { importLoaders: 1 } }],
       },
@@ -33,7 +28,7 @@ const base = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tx', '.tsx', '.css'],
+    extensions: ['.js', '.jsx', '.css'],
   },
   plugins: [new WriteFilePlugin()],
 };
@@ -46,7 +41,7 @@ const client = {
     client: [
       'react-hot-loader/patch',
       'webpack-hot-middleware/client?name=client&reload=true',
-      './src/client.tsx',
+      './src/client.jsx',
     ],
   },
   plugins: base.plugins.concat([new webpack.HotModuleReplacementPlugin()]),
@@ -57,7 +52,7 @@ const server = {
   name: 'server',
   target: 'node',
   entry: {
-    server: ['./src/server.tsx'],
+    server: ['./src/server.jsx'],
   },
   output: {
     ...base.output,

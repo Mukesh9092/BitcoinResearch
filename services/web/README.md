@@ -4,7 +4,6 @@ Features:
 
 * Webpack 4
 * Babel 7
-* TypeScript
 * React
 * Server Side Rendering
 * Universal Hot Module Reloading
