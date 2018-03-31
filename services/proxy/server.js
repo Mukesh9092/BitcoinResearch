@@ -9,16 +9,16 @@ import sessionsMiddleware from './common/middleware/sessions';
 import { formatError } from './common/errors';
 
 const {
-  API_HOST,
-  API_PORT,
-  WEB_HOST,
-  WEB_PORT,
+  API_GRAPHQL_HOST,
+  API_GRAPHQL_PORT,
   AUTHENTICATION_HOST,
   AUTHENTICATION_PORT,
-  NOFLO_HOST,
-  NOFLO_PORT,
+  // NOFLO_HOST,
+  // NOFLO_PORT,
   PROXY_HOST,
   PROXY_PORT,
+  WEB_HOST,
+  WEB_PORT,
 } = process.env;
 
 expressServiceWith(
@@ -36,15 +36,9 @@ expressServiceWith(
       });
     });
 
-    app.all('/api/noflo/*', (req, res) => {
+    app.all('/api/graphql/*', (req, res) => {
       proxy.web(req, res, {
-        target: `http://${NOFLO_HOST}:${NOFLO_PORT}`,
-      });
-    });
-
-    app.all('/api/*', (req, res) => {
-      proxy.web(req, res, {
-        target: `http://${API_HOST}:${API_PORT}`,
+        target: `http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}`,
       });
     });
 

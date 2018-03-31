@@ -1,7 +1,22 @@
 import Poloniex from 'poloniex-api-node';
 
+import { act } from '../../common/hemera/client';
 import { importCurrencyPairs } from '../../common/database/repositories/currency-pair';
-import { writeMessage } from '../../common/eventstore/client';
+
+async function writeMessage(streamName, eventType, data) {
+  try {
+    const result = await act({
+      pubsub$: true,
+      topic: 'OrderBookEvents',
+      cmd: eventType,
+      data: data,
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function orderBook(streamName, marketKey, message) {
   await writeMessage(streamName, message.type, {
@@ -80,31 +95,29 @@ async function handleClose(reason, details) {
 
   console.log('reason', reason);
   console.log('details', details);
-
-  start();
 }
 
 async function handleError(error) {
   console.error(error.stack || error.message || error);
 }
 
-let poloniexClient;
-let currencyPairs;
-
 async function start() {
-  console.log('Opening Poloniex Websocket');
+  try {
+    const poloniexClient = new Poloniex();
+    const currencyPairs = await importCurrencyPairs();
 
-  poloniexClient = new Poloniex();
-  currencyPairs = await importCurrencyPairs();
+    currencyPairs.forEach(({ key }) => poloniexClient.subscribe(key));
 
-  currencyPairs.forEach(({ key }) => poloniexClient.subscribe(key));
+    poloniexClient.on('open', handleOpen);
+    poloniexClient.on('close', handleClose);
+    poloniexClient.on('error', handleError);
+    poloniexClient.on('message', handleMessages);
 
-  poloniexClient.on('open', handleOpen);
-  poloniexClient.on('close', handleClose);
-  poloniexClient.on('error', handleError);
-  poloniexClient.on('message', handleMessages);
-
-  poloniexClient.openWebSocket({ version: 2 });
+    console.log('Opening Poloniex Websocket');
+    poloniexClient.openWebSocket({ version: 2 });
+  } catch (error) {
+    throw error;
+  }
 }
 
 start();

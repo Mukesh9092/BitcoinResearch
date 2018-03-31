@@ -20,6 +20,18 @@ services:
       retries: 3
       # start_period: 1m
 
+  nats-admin:
+    build: ./services/nats-admin
+    ports:
+      - ${NATS_ADMIN_PORT}:3000
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://${NATS_ADMIN_HOST}:${NATS_ADMIN_PORT}"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      # start_period: 1m
+
   redis:
     build: ./services/redis
     ports:

@@ -13,30 +13,34 @@ import loggerMiddleware from '../../common/middleware/logger';
 
 const { API_GRAPHQL_HOST, API_GRAPHQL_PORT } = process.env;
 
+console.log(`http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}`);
+
 expressServiceWithMiddleware(
   async app => {
     genericExpressService(app);
     loggerMiddleware(app);
-    authenticationHeaderExtractionMiddleware(app);
+    // authenticationHeaderExtractionMiddleware(app);
 
-    app.all('/api/graphql', (req, res, next) => {
-      graphqlExpress({
-        schema: makeExecutableSchema({
-          typeDefs: String(schema),
-          resolvers: {
-            RootQuery,
-            // RootMutation,
-          },
-        }),
-      })(req, res, next);
+    const graphqlSchema = makeExecutableSchema({
+      typeDefs: String(schema),
+      resolvers: {
+        RootQuery,
+        // RootMutation,
+      },
     });
 
-    app.use(
-      '/api/graphiql',
-      graphiqlExpress({
-        endpointURL: '/api/graphql',
-      }),
-    );
+    const graphiqlMiddleware = graphiqlExpress({
+      endpointURL: '/api/graphql',
+    });
+
+    const graphqlMiddleware = graphqlExpress({
+      schema: graphqlSchema,
+    });
+
+    app.use('/api/graphql/graphiql', graphiqlMiddleware);
+    app.all('/api/graphql', (req, res, next) => {
+      graphqlMiddleware(req, res, next);
+    });
 
     return app;
   },

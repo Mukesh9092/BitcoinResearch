@@ -16,8 +16,21 @@ const schema = `
     currencyB24HVolume: String!
   }
 
+  type OrderBookEntry {
+    rate: String!
+    amount: String!
+  }
+
+  type OrderBook {
+    marketKey: String!
+
+    bids: [OrderBookEntry]
+    asks: [OrderBookEntry]
+  }
+
   type RootQuery {
     currencyPairs: [CurrencyPair]
+    getOrderBook(marketKey: String!): OrderBook
   }
 
   schema {
