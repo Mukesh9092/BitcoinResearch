@@ -1,5 +1,5 @@
-import Date from './Date';
-import RootQuery from './RootQuery';
+import Date from './Date'
+import RootQuery from './RootQuery'
 // import RootMutation from './RootMutation';
 
-export default { Date, RootQuery };
+export default { Date, RootQuery }

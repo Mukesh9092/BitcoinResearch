@@ -1,18 +1,18 @@
 export default function logout(req, res, next) {
-  const { session } = req;
+  const { session } = req
 
   if (!session) {
-    res.sendStatus(401);
+    res.sendStatus(401)
   }
 
   session &&
     session.destroy(error => {
       if (error) {
-        next(error);
-        return;
+        next(error)
+        return
       }
 
-      req.logout();
-      res.sendStatus(200);
-    });
+      req.logout()
+      res.sendStatus(200)
+    })
 }

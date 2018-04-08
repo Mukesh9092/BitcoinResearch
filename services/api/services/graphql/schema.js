@@ -30,12 +30,43 @@ const schema = `
 
   type RootQuery {
     currencyPairs: [CurrencyPair]
-    getOrderBook(marketKey: String!): OrderBook
+    orderBook(marketKey: String!): OrderBook
+  }
+  
+  type OrderBookModifyEvent {
+    marketKey: String!
+    mutationType: String!
+    mutationSide: String!
+    rate: String!
+    amount: String!
+  }
+
+  type OrderBookRemoveEvent {
+    marketKey: String!
+    mutationType: String!
+    mutationSide: String!
+    rate: String!
+    amount: String!
+  }
+
+  type OrderBookNewTradeEvent {
+    marketKey: String!
+    mutationType: String!
+    mutationSide: String!
+    rate: String!
+    amount: String!
+  }
+
+  type RootSubscription {
+    orderBookModify(marketKey: String!): OrderBookModifyEvent
+    orderBookRemove(marketKey: String!): OrderBookRemoveEvent
+    orderBookNewTrade(marketKey: String!): OrderBookNewTradeEvent
   }
 
   schema {
     query: RootQuery
+    subscription: RootSubscription
   }
-`;
+`
 
-export default schema;
+export default schema

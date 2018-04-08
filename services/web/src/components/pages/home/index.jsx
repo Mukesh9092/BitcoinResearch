@@ -1,91 +1,69 @@
-import React from 'react';
-import gql from 'graphql-tag';
-import { Button } from '@blueprintjs/core';
-import { History } from 'history';
-import { connect } from 'react-redux';
-import { graphql } from 'react-apollo';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Query } from 'react-apollo'
 
-import { incrementCounter, decrementCounter } from '../../../actions/counter';
+import Grid from 'material-ui/Grid'
+import Paper from 'material-ui/Paper'
+import { withStyles } from 'material-ui/styles'
 
-import * as styles from './styles';
+import { currencyPairsQuery } from '../../../queries/currencyPairs'
 
-const MY_QUERY = gql`
-  query {
-    currencyPairs {
-      id
-      key
-      currencyAKey
-      currencyAName
-      currencyATxFee
-      currencyAMinConf
-      currencyBKey
-      currencyBName
-      currencyBTxFee
-      currencyBMinConf
-      currencyA24HVolume
-      currencyB24HVolume
-    }
+import { Table } from './table'
+
+const styles = theme => {
+  return {
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      marginTop: theme.spacing.unit * 2,
+      padding: theme.spacing.unit,
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+    pageTitle: {
+      ...theme.typography.title,
+    },
   }
-`;
+}
 
-const MyComponentWithData = graphql(MY_QUERY)(props => <div>...</div>);
+export const HomeComponent = props => {
+  const { classes } = props
 
-const HomeComponent = ({ count, increment, decrement }) => (
-  <React.Fragment>
-    <div className={styles.container}>
-      <h1>123</h1>
-      <div className={styles.counter}>{count}</div>
-      <Button
-        onClick={() => {
-          increment();
-        }}
-      >
-        +
-      </Button>
-      <Button
-        onClick={() => {
-          decrement();
-        }}
-      >
-        -
-      </Button>
-    </div>
-  </React.Fragment>
-);
+  return (
+    <Query query={currencyPairsQuery}>
+      {({ loading, error, data }) => {
+        if (loading) {
+          return null
+        }
 
-const withConnect = connect(
-  (state, ownProps) => {
-    console.log('CONNECT OWNPROPS', ownProps);
+        if (error) {
+          return (
+            <React.Fragment>
+              <h1>Error</h1>
+              <pre>{JSON.stringify(data.error)}</pre>
+            </React.Fragment>
+          )
+        }
 
-    return {
-      ...ownProps,
-      count: state.counter.count,
-    };
-  },
-  dispatch => ({
-    increment: () => {
-      dispatch(incrementCounter());
-    },
-    decrement: () => {
-      dispatch(decrementCounter());
-    },
-  }),
-);
-const withGraphQL = graphql(MY_QUERY, {
-  options: (props) => {
-    console.log('GRAPHQL OPTIONS PROPS', props);
-    return {
-      ...props,
-      fetchPolicy: 'cache-and-network',
-      errorPolicy: 'all',
-    };
-  },
-  props: ({ ownProps, mutate }) => {
-    console.log('GRAPHQL PROPS OWNPROPS', ownProps, arguments);
-    return {
-      ...ownProps,
-    };
-  },
-});
+        const { currencyPairs } = data
 
-export const Home = withGraphQL(withConnect(HomeComponent));
+        return (
+          <Grid container spacing={8}>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <h1 className={classes.pageTitle}>Currency Pairs</h1>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Table data={currencyPairs} />
+            </Grid>
+          </Grid>
+        )
+      }}
+    </Query>
+  )
+}
+
+export const Home = withStyles(styles)(HomeComponent)

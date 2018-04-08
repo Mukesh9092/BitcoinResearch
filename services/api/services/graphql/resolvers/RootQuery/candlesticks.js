@@ -1,20 +1,20 @@
-import { getInfluxClient } from '../../../../common/influxdb/client';
+import { getInfluxClient } from '../../../../common/influxdb/client'
 import {
   findByCurrencyPairAndPeriodBetweenStartAndEnd,
   importForCurrencyPairAndPeriodBetweenStartAndEnd,
-} from '../../../../common/influxdb/entities/candlestick';
+} from '../../../../common/influxdb/entities/candlestick'
 
-import fetchPoloniex from '../fetchPoloniex';
+import fetchPoloniex from '../fetchPoloniex'
 
-const MILLISECOND_MULTIPLIER = 1000;
+const MILLISECOND_MULTIPLIER = 1000
 
 const convertToGraphQLFormat = data => {
   return data.map(x => {
-    x.id = x.time;
+    x.id = x.time
 
-    return x;
-  });
-};
+    return x
+  })
+}
 
 export default async function candlesticks(
   root,
@@ -27,7 +27,7 @@ export default async function candlesticks(
     // period,
     // start,
     // end,
-  );
+  )
 
   // const currencyPairKey = `${currencyAKey}_${currencyBKey}`;
 

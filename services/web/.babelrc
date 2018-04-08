@@ -8,6 +8,7 @@
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-decorators",
     "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-optional-chaining",
     "react-hot-loader/babel"
   ],
   "env": {

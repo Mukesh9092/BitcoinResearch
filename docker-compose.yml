@@ -13,24 +13,30 @@ services:
       - ${NATS_HTTP_PORT}:${NATS_HTTP_PORT}
       - ${NATS_CLUSTER_PORT}:${NATS_CLUSTER_PORT}
     env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${NATS_HOST}:${NATS_HTTP_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    environment:
+      - SERVICE_NAME=nats
+    # TODO: Find healthcheck path
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${NATS_HOST}:${NATS_HTTP_PORT}"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
   nats-admin:
     build: ./services/nats-admin
     ports:
       - ${NATS_ADMIN_PORT}:3000
     env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${NATS_ADMIN_HOST}:${NATS_ADMIN_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    environment:
+      - SERVICE_NAME=nats-admin
+    # TODO: Find healthcheck path
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${NATS_ADMIN_HOST}:${NATS_ADMIN_PORT}"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
   redis:
     build: ./services/redis
@@ -40,6 +46,8 @@ services:
       - ./services/redis:/service
       - ./services/redis/data:/data
     env_file: .env
+    environment:
+      - SERVICE_NAME=redis
 
   redis-admin:
     build: ./services/redis-admin
@@ -50,12 +58,15 @@ services:
     volumes:
       - ./services/redis-admin:/service
     env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${REDIS_ADMIN_HOST}:${REDIS_ADMIN_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    environment:
+      - SERVICE_NAME=redis-admin
+    # TODO: Find healthcheck path
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${REDIS_ADMIN_HOST}:${REDIS_ADMIN_PORT}"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
   postgresql:
     image: postgres:latest
@@ -64,6 +75,8 @@ services:
     volumes:
       - ./services/postgresql/data:/var/lib/postgresql/data
     env_file: .env
+    environment:
+      - SERVICE_NAME=postgresql
 
   postgresql-admin:
     image: sosedoff/pgweb
@@ -76,28 +89,31 @@ services:
     ports: 
       - ${POSTGRES_ADMIN_PORT}:${POSTGRES_ADMIN_PORT}
     env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${POSTGRES_HOST}:${POSTGRES_ADMIN_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    environment:
+      - SERVICE_NAME=postgresql-admin
+    # TODO: Find healthcheck path
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${POSTGRES_HOST}:${POSTGRES_ADMIN_PORT}"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
-  eventstore:
-    image: eventstore/eventstore
-    ports:
-      - ${EVENTSTORE_PORT}:${EVENTSTORE_PORT}
-      - ${EVENTSTORE_HTTP_PORT}:${EVENTSTORE_HTTP_PORT}
-    volumes:
-      - ./services/eventstore/data:/var/lib/eventstore
-      - ./services/eventstore/logs:/var/log/eventstore
-    env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${EVENTSTORE_HOST}:${EVENTSTORE_HTTP_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+  # eventstore:
+  #   image: eventstore/eventstore
+  #   ports:
+  #     - ${EVENTSTORE_PORT}:${EVENTSTORE_PORT}
+  #     - ${EVENTSTORE_HTTP_PORT}:${EVENTSTORE_HTTP_PORT}
+  #   volumes:
+  #     - ./services/eventstore/data:/var/lib/eventstore
+  #     - ./services/eventstore/logs:/var/log/eventstore
+  #   env_file: .env
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://${EVENTSTORE_HOST}:${EVENTSTORE_HTTP_PORT}"]
+  #     interval: 1m
+  #     timeout: 10s
+  #     retries: 3
+  #     # start_period: 1m
 
   proxy:
     build: ./services/proxy
@@ -110,12 +126,14 @@ services:
     volumes:
       - ./services/proxy:/service
     env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${PROXY_HOST}:${PROXY_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    environment:
+      - SERVICE_NAME=proxy
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${PROXY_HOST}:${PROXY_PORT}"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
   authentication:
     build: ./services/authentication
@@ -129,12 +147,14 @@ services:
     volumes:
       - ./services/authentication:/service
     env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${AUTHENTICATION_HOST}:${AUTHENTICATION_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    environment:
+      - SERVICE_NAME=authentication
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${AUTHENTICATION_HOST}:${AUTHENTICATION_PORT}"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
   web:
     build: ./services/web
@@ -146,12 +166,14 @@ services:
     volumes:
       - ./services/web:/service
     env_file: .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${WEB_HOST}:${WEB_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    environment:
+      - SERVICE_NAME=web
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${WEB_HOST}:${WEB_PORT}/healthcheck"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
   graphql:
     build: ./services/api
@@ -164,13 +186,14 @@ services:
       - ./services/api:/service
     env_file: .env
     environment:
+      - SERVICE_NAME=graphql
       - API_SERVICE_NAME=graphql
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # start_period: 1m
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 3
+    #   # start_period: 1m
 
   orderbook-importer:
     build: ./services/api
@@ -180,6 +203,7 @@ services:
       - ./services/api:/service
     env_file: .env
     environment:
+      - SERVICE_NAME=orderbook-importer
       - API_SERVICE_NAME=orderbook-importer
 
   orderbook-state:
@@ -192,6 +216,7 @@ services:
       - ./services/api:/service
     env_file: .env
     environment:
+      - SERVICE_NAME=orderbook-state
       - API_SERVICE_NAME=orderbook-state
 
   # influxdb:

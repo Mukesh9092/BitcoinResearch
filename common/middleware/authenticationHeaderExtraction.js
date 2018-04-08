@@ -1,23 +1,18 @@
 export default function authenticationHeaderExtraction(app) {
   app.use((req, res, next) => {
     try {
-      const user = req.headers['x-user'];
-      // console.log('​authenticationHeaderExtraction -> user', user);
+      const user = req.headers['x-user']
 
-      const session = req.headers['x-session'];
-      // console.log('​authenticationHeaderExtraction -> session', session);
+      const session = req.headers['x-session']
 
-      // Needed for typing.
-      const authenticatedRequest = req;
-
-      authenticatedRequest.authentication = {
+      req.authentication = {
         user: user === '' ? null : JSON.parse(String(user)),
         session: session === '' ? null : JSON.parse(String(session)),
-      };
+      }
 
-      next();
+      next()
     } catch (error) {
-      next(error);
+      next(error)
     }
-  });
+  })
 }

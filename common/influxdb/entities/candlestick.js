@@ -1,7 +1,9 @@
-import { FieldType, toNanoDate } from 'influx';
+import { FieldType, toNanoDate } from 'influx'
 
-import { returnChartData } from '../../poloniex/client';
-import getClient from '../client';
+import { log } from '../../../common/log'
+
+import getClient from '../client'
+import { returnChartData } from '../../poloniex/client'
 
 export const schema = {
   measurement: 'candlesticks',
@@ -15,7 +17,7 @@ export const schema = {
     quoteVolume: FieldType.FLOAT,
     weightedAverage: FieldType.FLOAT,
   },
-};
+}
 
 export const findByCurrencyPairAndPeriodBetweenStartAndEnd = async (
   currencyAKey,
@@ -25,19 +27,19 @@ export const findByCurrencyPairAndPeriodBetweenStartAndEnd = async (
   end,
 ) => {
   try {
-    console.log(
+    log.debug(
       'influxdb entities candlestick findByCurrencyPairAndPeriodBetweenStartAndEnd',
       currencyAKey,
       currencyBKey,
       period,
       start,
       end,
-    );
+    )
 
-    const client = await getClient();
+    const client = await getClient()
 
-    const startNano = toNanoDate(String(start)).getNanoTime();
-    const endNano = toNanoDate(String(end)).getNanoTime();
+    const startNano = toNanoDate(String(start)).getNanoTime()
+    const endNano = toNanoDate(String(end)).getNanoTime()
 
     const result = await client.query(`
       SELECT * FROM candlesticks
@@ -48,13 +50,13 @@ export const findByCurrencyPairAndPeriodBetweenStartAndEnd = async (
         time        >= ${startNano}      AND
         time        <= ${endNano}
       ORDER BY time ASC
-    `);
+    `)
 
-    return result;
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 const sanitizeAPIChartDataJSON = (a, currencyAKey, currencyBKey, period) => {
   return a.map(x => {
@@ -75,9 +77,9 @@ const sanitizeAPIChartDataJSON = (a, currencyAKey, currencyBKey, period) => {
         quoteVolume: x.quoteVolume,
         weightedAverage: x.weightedAverage,
       },
-    };
-  });
-};
+    }
+  })
+}
 
 export const importForCurrencyPairAndPeriodBetweenStartAndEnd = async (
   currencyAKey,
@@ -87,16 +89,16 @@ export const importForCurrencyPairAndPeriodBetweenStartAndEnd = async (
   end,
 ) => {
   try {
-    console.log(
+    log.debug(
       'influxdb entities candlestick importForCurrencyPairAndPeriodBetweenStartAndEnd',
       currencyAKey,
       currencyBKey,
       period,
       start,
       end,
-    );
+    )
 
-    const client = await getClient();
+    const client = await getClient()
 
     const apiResultJSON = await returnChartData(
       currencyAKey,
@@ -104,17 +106,17 @@ export const importForCurrencyPairAndPeriodBetweenStartAndEnd = async (
       period,
       start / 1000 / 1000 / 1000,
       end / 1000 / 1000 / 1000,
-    );
+    )
 
     const data = sanitizeAPIChartDataJSON(
       apiResultJSON,
       currencyAKey,
       currencyBKey,
       period,
-    );
+    )
 
-    await client.writePoints(data);
+    await client.writePoints(data)
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}

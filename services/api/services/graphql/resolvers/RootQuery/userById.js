@@ -1,8 +1,8 @@
-import { getKnexClient } from '../../../../common/database/knex-client';
+import { getKnexClient } from '../../../../common/database/knex-client'
 
 // export default async (obj: Object, options: { id: string }) => {
 export default async (...args) => {
-  console.log('ARGS', args);
+  console.log('ARGS', args)
 
   // try {
   //   const knexClient = getKnexClient();
@@ -15,4 +15,4 @@ export default async (...args) => {
   // } catch (error) {
   //   throw error;
   // }
-};
+}

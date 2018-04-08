@@ -1,4 +1,4 @@
-import logout from './logout';
-import localAuthentication from './localAuthentication';
+import logout from './logout'
+import localAuthentication from './localAuthentication'
 
-export { localAuthentication, logout };
+export { localAuthentication, logout }

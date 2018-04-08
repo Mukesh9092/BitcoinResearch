@@ -1,6 +1,6 @@
 import { act } from '../../../../common/hemera/client';
 
-export default async function getOrderBook(obj, args, context, info) {
+export default async function orderBook(obj, args, context, info) {
   try {
     const { marketKey } = args;
 

@@ -1,7 +1,7 @@
 import currencyPairs from './currencyPairs';
-import getOrderBook from './getOrderBook';
+import orderBook from './orderBook';
 
 export default {
   currencyPairs,
-  getOrderBook,
+  orderBook,
 };

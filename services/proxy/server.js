@@ -1,16 +1,19 @@
-import * as httpProxy from 'http-proxy';
-import unhandledError from 'unhandled-error';
+import * as httpProxy from 'http-proxy'
+import unhandledError from 'unhandled-error'
 
-import authenticationHeaderInjectionMiddleware from './common/middleware/authenticationHeaderInjection';
-import expressServiceWith from './common/middleware/expressServiceWith';
-import loggerMiddleware from './common/middleware/logger';
-import passportMiddleware from './common/middleware/passport';
-import sessionsMiddleware from './common/middleware/sessions';
-import { formatError } from './common/errors';
+import authenticationHeaderInjectionMiddleware from './common/middleware/authenticationHeaderInjection'
+import expressServiceWith from './common/middleware/expressServiceWith'
+import genericExpressService from './common/middleware/genericExpressService'
+import loggerMiddleware from './common/middleware/logger'
+import passportMiddleware from './common/middleware/passport'
+import sessionsMiddleware from './common/middleware/sessions'
+import { formatError } from './common/errors'
+import { log } from './common/log'
 
 const {
   API_GRAPHQL_HOST,
   API_GRAPHQL_PORT,
+  API_GRAPHQL_WS_PORT,
   AUTHENTICATION_HOST,
   AUTHENTICATION_PORT,
   // NOFLO_HOST,
@@ -19,43 +22,66 @@ const {
   PROXY_PORT,
   WEB_HOST,
   WEB_PORT,
-} = process.env;
+} = process.env
 
 expressServiceWith(
   async app => {
-    loggerMiddleware(app);
-    sessionsMiddleware(app);
-    passportMiddleware(app);
-    authenticationHeaderInjectionMiddleware(app);
+    genericExpressService(app)
+    loggerMiddleware(app)
+    sessionsMiddleware(app)
+    passportMiddleware(app)
+    authenticationHeaderInjectionMiddleware(app)
 
-    const proxy = httpProxy.createProxyServer();
+    const proxy = httpProxy.createProxyServer()
 
-    app.all('/api/authentication/*', (req, res) => {
+    const graphqlSubscriptionsProxy = httpProxy.createProxyServer({
+      target: `ws://${API_GRAPHQL_HOST}:${API_GRAPHQL_WS_PORT}`,
+      ws: true,
+    })
+
+    const proxyRequestToAuthentication = (req, res) => {
       proxy.web(req, res, {
         target: `http://${AUTHENTICATION_HOST}:${AUTHENTICATION_PORT}`,
-      });
-    });
+      })
+    }
 
-    app.all('/api/graphql/*', (req, res) => {
+    const proxyRequestToGraphQL = (req, res) => {
       proxy.web(req, res, {
         target: `http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}`,
-      });
-    });
+      })
+    }
 
-    app.all('/*', (req, res) => {
+    // const proxyRequestToGraphQLSubscriptions = (req, res) => {
+    //   proxy.ws(req, res, {
+    //     target: `http://${API_GRAPHQL_HOST}:${API_GRAPHQL_WS_PORT}`,
+    //   })
+    // }
+
+    const proxyRequestToWeb = (req, res) => {
       proxy.web(req, res, {
         target: `http://${WEB_HOST}:${WEB_PORT}`,
-      });
-    });
+      })
+    }
+
+    app.all('/api/authentication/*', proxyRequestToAuthentication)
+    app.all('/api/authentication', proxyRequestToAuthentication)
+    // app.all('/api/graphql/subscriptions', proxyRequestToGraphQLSubscriptions)
+    app.all('/api/graphql/*', proxyRequestToGraphQL)
+    app.all('/api/graphql', proxyRequestToGraphQL)
+    app.all('/*', proxyRequestToWeb)
+
+    app.server.on('upgrade', (req, socket, head) => {
+      graphqlSubscriptionsProxy.ws(req, socket, head)
+    })
 
     proxy.on('error', error => {
-      console.log(formatError(error));
-    });
+      log.error(error)
+    })
 
-    return app;
+    return app
   },
   String(PROXY_HOST),
   Number(PROXY_PORT),
-);
+)
 
-unhandledError(console.log);
+unhandledError(error => log.error(error))

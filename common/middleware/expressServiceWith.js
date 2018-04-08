@@ -1,18 +1,22 @@
-import express from 'express';
+import { createServer } from 'http'
 
-import { formatError } from '../errors';
+import express from 'express'
 
-export default function expressServiceWith(middleware, host, port) {
-  const app = express();
+import { log } from '../../common/log'
 
-  middleware(app);
+export default async function expressServiceWith(middleware, host, port) {
+  let app = express()
 
-  app.listen(port, host, error => {
+  app.server = createServer(app)
+
+  app = await middleware(app)
+
+  app.server.listen(port, host, error => {
     if (error) {
-      console.log(formatError(error));
-      return;
+      log.error(error)
+      return
     }
 
-    console.log(`HTTP Server listening at http://${host}:${port}.`);
-  });
+    log.info(`HTTP Server listening at http://${host}:${port}.`)
+  })
 }

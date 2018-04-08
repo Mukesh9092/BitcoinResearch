@@ -1,7 +1,8 @@
-import Poloniex from 'poloniex-api-node';
+import Poloniex from 'poloniex-api-node'
 
-import { act } from '../../common/hemera/client';
-import { importCurrencyPairs } from '../../common/database/repositories/currency-pair';
+import { act } from '../../common/hemera/client'
+import { importCurrencyPairs } from '../../common/database/repositories/currency-pair'
+import { log } from '../../common/log'
 
 async function writeMessage(streamName, eventType, data) {
   try {
@@ -10,44 +11,44 @@ async function writeMessage(streamName, eventType, data) {
       topic: 'OrderBookEvents',
       cmd: eventType,
       data: data,
-    });
+    })
 
-    return result;
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
 async function orderBook(streamName, marketKey, message) {
-  await writeMessage(streamName, message.type, {
+  await writeMessage(streamName, 'orderBook', {
     marketKey,
     bids: message.data.bids,
     asks: message.data.asks,
-  });
+  })
 }
 
 async function orderBookModify(streamName, marketKey, message) {
-  await writeMessage(streamName, message.type, {
+  await writeMessage(streamName, 'orderBookModify', {
     marketKey,
     mutationType: 'modify',
     mutationSide: message.data.type,
     rate: message.data.rate,
     amount: message.data.amount,
-  });
+  })
 }
 
 async function orderBookRemove(streamName, marketKey, message) {
-  await writeMessage(streamName, message.type, {
+  await writeMessage(streamName, 'orderBookRemove', {
     marketKey,
     mutationType: 'remove',
     mutationSide: message.data.type,
     rate: message.data.rate,
     amount: message.data.amount,
-  });
+  })
 }
 
-async function newTrade(streamName, marketKey, message) {
-  await writeMessage(streamName, message.type, {
+async function orderBookNewTrade(streamName, marketKey, message) {
+  await writeMessage(streamName, 'orderBookNewTrade', {
     marketKey,
     mutationType: 'trade',
     mutationSide: message.data.type,
@@ -56,68 +57,65 @@ async function newTrade(streamName, marketKey, message) {
     amount: message.data.amount,
     total: message.data.total,
     date: message.data.date,
-  });
+  })
 }
 
 const handlers = {
   orderBook,
   orderBookModify,
   orderBookRemove,
-  newTrade,
-};
+  newTrade: orderBookNewTrade,
+}
 
 async function handleMessages(marketKey, unsanitizedMessages, seq) {
   try {
     for (let index = 0; index < unsanitizedMessages.length; index++) {
-      const message = unsanitizedMessages[index];
+      const message = unsanitizedMessages[index]
 
-      const streamName = `OrderBook_${marketKey}`;
+      const streamName = `OrderBook_${marketKey}`
 
-      const handler = handlers[message.type];
+      const handler = handlers[message.type]
 
       if (!handler) {
-        return;
+        return
       }
 
-      handler(streamName, marketKey, message);
+      handler(streamName, marketKey, message)
     }
   } catch (error) {
-    console.log(error.stack || error.message || error);
+    log.error(error)
   }
 }
 
 async function handleOpen() {
-  console.log('Poloniex Websocket Open');
+  log.info('Poloniex Websocket Open')
 }
 
 async function handleClose(reason, details) {
-  console.log('Poloniex Websocket Closed');
-
-  console.log('reason', reason);
-  console.log('details', details);
+  log.info('Poloniex Websocket Closed')
 }
 
 async function handleError(error) {
-  console.error(error.stack || error.message || error);
+  log.error(error)
 }
 
 async function start() {
   try {
-    const poloniexClient = new Poloniex();
-    const currencyPairs = await importCurrencyPairs();
+    const poloniexClient = new Poloniex()
+    const currencyPairs = await importCurrencyPairs()
 
-    currencyPairs.forEach(({ key }) => poloniexClient.subscribe(key));
+    currencyPairs.forEach(({ key }) => poloniexClient.subscribe(key))
 
-    poloniexClient.on('open', handleOpen);
-    poloniexClient.on('close', handleClose);
-    poloniexClient.on('error', handleError);
-    poloniexClient.on('message', handleMessages);
+    poloniexClient.on('open', handleOpen)
+    poloniexClient.on('close', handleClose)
+    poloniexClient.on('error', handleError)
+    poloniexClient.on('message', handleMessages)
 
-    console.log('Opening Poloniex Websocket');
-    poloniexClient.openWebSocket({ version: 2 });
+    log.info('Opening Poloniex Websocket')
+    poloniexClient.openWebSocket({ version: 2 })
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
-start();
+start()

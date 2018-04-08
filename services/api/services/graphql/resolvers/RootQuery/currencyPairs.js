@@ -1,15 +1,15 @@
-import { getKnexClient } from '../../../../common/database/knex-client';
+import { getKnexClient } from '../../../../common/database/knex-client'
 
 export default async function currencyPairs() {
   try {
-    const knexClient = getKnexClient();
+    const knexClient = getKnexClient()
 
     let result = await knexClient('currency_pair')
       .select()
-      .where({});
+      .where({})
 
-    return result;
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
 }

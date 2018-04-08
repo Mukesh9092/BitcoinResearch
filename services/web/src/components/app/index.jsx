@@ -1,36 +1,24 @@
-import React from 'react';
-import { Button } from '@blueprintjs/core';
-import { History } from 'history';
-import { Route, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React from 'react'
+import { History } from 'history'
+import { Route } from 'react-router-dom'
 
-import { incrementCounter, decrementCounter } from '../../actions/counter';
-import { Navigation } from '../navigation';
+import { Navigation } from '../navigation'
 
-import { About } from '../pages/about';
-import { Home } from '../pages/home';
+import { About } from '../pages/about'
+import { Home } from '../pages/home'
+import { OrderBook } from '../pages/orderbook'
 
-import * as styles from './styles';
+import * as styles from './styles'
 
-const Application = props => (
-  <React.Fragment>
-    <Navigation history={props.history} />
-    <Route exact path="/" component={Home} />
-    <Route path="/about" component={About} />
-  </React.Fragment>
-);
+export const ApplicationComponent = props => {
+  return (
+    <React.Fragment>
+      <Navigation />
+      <Route exact path="/" component={Home} />
+      <Route path="/about" component={About} />
+      <Route path="/orderbook/:marketKey" component={OrderBook} />
+    </React.Fragment>
+  )
+}
 
-export const App = connect(
-  (state, ownProps) => ({
-    history: ownProps.history,
-    count: state.counter.count,
-  }),
-  dispatch => ({
-    increment: () => {
-      dispatch(incrementCounter());
-    },
-    decrement: () => {
-      dispatch(decrementCounter());
-    },
-  }),
-)(Application);
+export const App = ApplicationComponent

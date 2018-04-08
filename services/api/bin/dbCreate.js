@@ -1,47 +1,47 @@
-import * as faker from 'faker';
-import { generateHash, verifyPassword } from '../common/crypto';
-import { promisify } from 'util';
+import * as faker from 'faker'
+import { generateHash, verifyPassword } from '../common/crypto'
+import { promisify } from 'util'
 
-import { getKnexClient } from '../common/database/knex-client';
+import { getKnexClient } from '../common/database/knex-client'
 
 const start = async () => {
   try {
-    const knexClient = getKnexClient();
+    const knexClient = getKnexClient()
 
-    console.log(`Dropping tables.`);
+    console.log(`Dropping tables.`)
 
-    await knexClient.schema.dropTableIfExists('currency_pair');
-    await knexClient.schema.dropTableIfExists('user');
+    await knexClient.schema.dropTableIfExists('currency_pair')
+    await knexClient.schema.dropTableIfExists('user')
 
-    console.log(`Creating tables.`);
+    console.log(`Creating tables.`)
 
     await knexClient.schema.createTable('user', table => {
-      table.increments();
-      table.string('email');
-      table.string('passwordHash');
-      table.boolean('disabled');
-      table.boolean('frozen');
-      table.boolean('delisted');
-      table.timestamps();
-    });
+      table.increments()
+      table.string('email')
+      table.string('passwordHash')
+      table.boolean('disabled')
+      table.boolean('frozen')
+      table.boolean('delisted')
+      table.timestamps()
+    })
 
     await knexClient.schema.createTable('currency_pair', table => {
-      table.increments();
-      table.string('key');
-      table.string('currencyA24HVolume');
-      table.string('currencyAKey');
-      table.string('currencyAMinConf');
-      table.string('currencyAName');
-      table.string('currencyATxFee');
-      table.string('currencyB24HVolume');
-      table.string('currencyBKey');
-      table.string('currencyBMinConf');
-      table.string('currencyBName');
-      table.string('currencyBTxFee');
-      table.timestamps();
-    });
+      table.increments()
+      table.string('key')
+      table.string('currencyA24HVolume')
+      table.string('currencyAKey')
+      table.string('currencyAMinConf')
+      table.string('currencyAName')
+      table.string('currencyATxFee')
+      table.string('currencyB24HVolume')
+      table.string('currencyBKey')
+      table.string('currencyBMinConf')
+      table.string('currencyBName')
+      table.string('currencyBTxFee')
+      table.timestamps()
+    })
 
-    console.log(`Inserting rows.`);
+    console.log(`Inserting rows.`)
 
     let user = await knexClient('user')
       .insert({
@@ -53,7 +53,7 @@ const start = async () => {
         created_at: new Date(),
         updated_at: new Date(),
       })
-      .returning('*');
+      .returning('*')
 
     // console.log(`Created: `, user);
 
@@ -68,17 +68,17 @@ const start = async () => {
           created_at: new Date(),
           updated_at: new Date(),
         })
-        .returning('*');
+        .returning('*')
 
       // console.log(`Created: `, user);
     }
 
-    console.log(`Done.`);
+    console.log(`Done.`)
 
-    process.exit(0);
+    process.exit(0)
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
-start();
+start()
