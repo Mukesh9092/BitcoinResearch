@@ -1,42 +1,40 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Query } from 'react-apollo'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Query } from 'react-apollo';
 
-import Grid from 'material-ui/Grid'
-import Paper from 'material-ui/Paper'
-import { withStyles } from 'material-ui/styles'
+import Grid from 'material-ui/Grid';
+import Paper from 'material-ui/Paper';
+import { withStyles } from 'material-ui/styles';
 
-import { log } from '../../../../common/log'
+import { log } from '../../../../common/log';
 
-import { orderBookQuery } from '../../../queries/orderBook'
+import { orderBookQuery } from '../../../queries/orderBook';
 
-import { Table } from './table'
+import { Table } from './table';
 
-const styles = theme => {
-  return {
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      marginTop: theme.spacing.unit * 2,
-      padding: theme.spacing.unit,
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    pageTitle: {
-      ...theme.typography.title,
-    },
-  }
-}
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 2,
+    padding: theme.spacing.unit,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+  pageTitle: {
+    ...theme.typography.title,
+  },
+});
 
-export const OrderBookComponent = props => {
-  const { classes, match: { params: { marketKey } } } = props
+export const OrderBookComponent = (props) => {
+  const { classes, match: { params: { marketKey } } } = props;
 
   return (
     <Query query={orderBookQuery} variables={{ marketKey }}>
       {({ loading, error, data }) => {
         if (loading) {
-          return null
+          return null;
         }
 
         if (error) {
@@ -45,12 +43,12 @@ export const OrderBookComponent = props => {
               <h1>Error</h1>
               <pre>{JSON.stringify(data.error)}</pre>
             </React.Fragment>
-          )
+          );
         }
 
-        const { orderBook } = data
+        const { orderBook } = data;
 
-        log.debug({ orderBook })
+        log.debug({ orderBook });
 
         return (
           <Grid container spacing={8}>
@@ -68,13 +66,13 @@ export const OrderBookComponent = props => {
               <Table data={orderBook.asks} />
             </Grid>
           </Grid>
-        )
+        );
       }}
     </Query>
-  )
-}
+  );
+};
 
-export const OrderBook = withStyles(styles)(OrderBookComponent)
+export const OrderBook = withStyles(styles)(OrderBookComponent);
 
 /*
 const COMMENTS_SUBSCRIPTION = gql`

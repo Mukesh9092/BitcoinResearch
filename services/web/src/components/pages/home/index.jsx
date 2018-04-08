@@ -1,40 +1,38 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Query } from 'react-apollo'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Query } from 'react-apollo';
 
-import Grid from 'material-ui/Grid'
-import Paper from 'material-ui/Paper'
-import { withStyles } from 'material-ui/styles'
+import Grid from 'material-ui/Grid';
+import Paper from 'material-ui/Paper';
+import { withStyles } from 'material-ui/styles';
 
-import { currencyPairsQuery } from '../../../queries/currencyPairs'
+import { currencyPairsQuery } from '../../../queries/currencyPairs';
 
-import { Table } from './table'
+import { Table } from './table';
 
-const styles = theme => {
-  return {
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      marginTop: theme.spacing.unit * 2,
-      padding: theme.spacing.unit,
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    pageTitle: {
-      ...theme.typography.title,
-    },
-  }
-}
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 2,
+    padding: theme.spacing.unit,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+  pageTitle: {
+    ...theme.typography.title,
+  },
+});
 
-export const HomeComponent = props => {
-  const { classes } = props
+export const HomeComponent = (props) => {
+  const { classes } = props;
 
   return (
     <Query query={currencyPairsQuery}>
       {({ loading, error, data }) => {
         if (loading) {
-          return null
+          return null;
         }
 
         if (error) {
@@ -43,10 +41,10 @@ export const HomeComponent = props => {
               <h1>Error</h1>
               <pre>{JSON.stringify(data.error)}</pre>
             </React.Fragment>
-          )
+          );
         }
 
-        const { currencyPairs } = data
+        const { currencyPairs } = data;
 
         return (
           <Grid container spacing={8}>
@@ -60,10 +58,10 @@ export const HomeComponent = props => {
               <Table data={currencyPairs} />
             </Grid>
           </Grid>
-        )
+        );
       }}
     </Query>
-  )
-}
+  );
+};
 
-export const Home = withStyles(styles)(HomeComponent)
+export const Home = withStyles(styles)(HomeComponent);

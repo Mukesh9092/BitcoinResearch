@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
 export const orderBookQuery = gql`
   query orderBook($marketKey: String!) {
@@ -14,4 +14,4 @@ export const orderBookQuery = gql`
       }
     }
   }
-`
+`;
