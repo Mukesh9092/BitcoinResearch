@@ -18,12 +18,8 @@ expressServiceWith(
     sessionsMiddleware(app)
     passportMiddleware(app)
 
-    app.post(
-      '/api/authentication/local',
-      passport.authenticate('local'),
-      localAuthentication,
-    )
-    app.get('/api/authentication/logout', logout)
+    app.post('/local', passport.authenticate('local'), localAuthentication)
+    app.get('/logout', logout)
 
     return app
   },

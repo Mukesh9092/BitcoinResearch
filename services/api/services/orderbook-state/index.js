@@ -109,16 +109,16 @@ async function start() {
           const oldValue = Number(orderBook[side][rate])
           const newValue = oldValue - Number(amount)
 
-          log.info(
-            'OrderBook#orderBookNewTrade',
-            mutationType,
-            mutationSide,
-            side,
-            rate,
-            amount,
-            oldValue,
-            newValue,
-          )
+          // log.info(
+          //   'OrderBook#orderBookNewTrade',
+          //   mutationType,
+          //   mutationSide,
+          //   side,
+          //   rate,
+          //   amount,
+          //   oldValue,
+          //   newValue,
+          // )
 
           orderBook[side][rate] = String(newValue)
 

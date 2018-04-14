@@ -1,4 +1,6 @@
-let level = 'info'
+const { LOG_LEVEL = 'info' } = process.env
+
+let level = LOG_LEVEL
 
 const levels = {
   silent: -1,
@@ -29,6 +31,8 @@ const create = (name, fn = defaultLogger) => {
   }
 }
 
+const logCurrentLevel = () => log[level](`Logging at level: ${level}`)
+
 export const log = {
   error: create('error', error =>
     console.error(error.stack || error.message || error),
@@ -38,6 +42,8 @@ export const log = {
   info: create('info'),
   setLevel: newLevel => {
     level = newLevel
-    log[level](`Logging at level: ${level}`)
+    logCurrentLevel()
   },
 }
+
+logCurrentLevel()

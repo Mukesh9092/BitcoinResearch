@@ -1,19 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import createHistory from 'history/createBrowserHistory';
-import { ApolloProvider } from 'react-apollo';
-import { App } from './components/app';
-import { AppContainer } from 'react-hot-loader';
-import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import createHistory from 'history/createBrowserHistory'
+import { ApolloProvider } from 'react-apollo'
+import { App } from './components/app'
+import { AppContainer } from 'react-hot-loader'
+import { Provider } from 'react-redux'
+import { Router } from 'react-router-dom'
 
-import { getBrowserApolloClient } from '../common/apollo-client';
-import { log } from '../common/log';
+import { getBrowserApolloClient } from '../common/apollo-client'
+import { log } from '../common/log'
 
-const history = createHistory();
-const apolloClient = getBrowserApolloClient();
+const history = createHistory()
+const apolloClient = getBrowserApolloClient()
 
-const render = (AppComponent) => {
+const render = AppComponent => {
   ReactDOM.hydrate(
     <AppContainer>
       <ApolloProvider client={apolloClient}>
@@ -23,16 +23,21 @@ const render = (AppComponent) => {
       </ApolloProvider>
     </AppContainer>,
     document.getElementById('root'),
-  );
-};
-
-if (process.env.NODE_ENV === 'development' && module.hot) {
-  log.setLevel('debug');
-  module.hot.accept('./components/app', () => {
-    const { App: NewApp } = require('./components/app');
-
-    render(NewApp);
-  });
+  )
 }
 
-render(App);
+if (process.env.NODE_ENV === 'development' && module.hot) {
+  log.setLevel('debug')
+
+  module.hot.accept('./components/app', () => {
+    log.debug('Update to ./components/app')
+
+    const { App: NewApp } = require('./components/app')
+
+    log.debug(NewApp)
+
+    render(NewApp)
+  })
+}
+
+render(App)

@@ -14,6 +14,8 @@ const {
   API_GRAPHQL_HOST,
   API_GRAPHQL_PORT,
   API_GRAPHQL_WS_PORT,
+  API_GRAPHIQL_HOST,
+  API_GRAPHIQL_PORT,
   AUTHENTICATION_HOST,
   AUTHENTICATION_PORT,
   // NOFLO_HOST,
@@ -34,44 +36,62 @@ expressServiceWith(
 
     const proxy = httpProxy.createProxyServer()
 
-    const graphqlSubscriptionsProxy = httpProxy.createProxyServer({
-      target: `ws://${API_GRAPHQL_HOST}:${API_GRAPHQL_WS_PORT}`,
-      ws: true,
-    })
+    const logRequest = req =>
+      log.debug({
+        url: req.url,
+        method: req.method,
+        statusCode: req.statusCode,
+        statusMessage: req.statusMessage,
+        headers: req.headers,
+        trailers: req.trailers,
+        baseUrl: req.baseUrl,
+        originalUrl: req.originalUrl,
+        params: req.params,
+        query: req.query,
+        body: req.body,
+        sessionID: req.sessionID,
+        session: req.session,
+        _passport: req._passport,
+      })
 
-    const proxyRequestToAuthentication = (req, res) => {
+    const toAuthentication = (req, res) =>
       proxy.web(req, res, {
         target: `http://${AUTHENTICATION_HOST}:${AUTHENTICATION_PORT}`,
       })
-    }
 
-    const proxyRequestToGraphQL = (req, res) => {
+    const toGraphiQL = (req, res) =>
+      proxy.web(req, res, {
+        target: `http://${API_GRAPHIQL_HOST}:${API_GRAPHIQL_PORT}`,
+      })
+
+    const toGraphQL = (req, res) =>
       proxy.web(req, res, {
         target: `http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}`,
       })
-    }
 
-    // const proxyRequestToGraphQLSubscriptions = (req, res) => {
-    //   proxy.ws(req, res, {
-    //     target: `http://${API_GRAPHQL_HOST}:${API_GRAPHQL_WS_PORT}`,
-    //   })
-    // }
-
-    const proxyRequestToWeb = (req, res) => {
+    const toWeb = (req, res) =>
       proxy.web(req, res, {
         target: `http://${WEB_HOST}:${WEB_PORT}`,
       })
-    }
 
-    app.all('/api/authentication/*', proxyRequestToAuthentication)
-    app.all('/api/authentication', proxyRequestToAuthentication)
-    // app.all('/api/graphql/subscriptions', proxyRequestToGraphQLSubscriptions)
-    app.all('/api/graphql/*', proxyRequestToGraphQL)
-    app.all('/api/graphql', proxyRequestToGraphQL)
-    app.all('/*', proxyRequestToWeb)
+    app.all('/api/authentication/*', (req, res) => {
+      logRequest(req)
+      toAuthentication(req, res)
+    })
 
-    app.server.on('upgrade', (req, socket, head) => {
-      graphqlSubscriptionsProxy.ws(req, socket, head)
+    app.all('/api/graphiql', (req, res) => {
+      logRequest(req)
+      toGraphiQL(req, res)
+    })
+
+    app.all('/api/graphql', (req, res) => {
+      logRequest(req)
+      toGraphQL(req, res)
+    })
+
+    app.all('/*', (req, res) => {
+      logRequest(req)
+      toWeb(req, res)
     })
 
     proxy.on('error', error => {

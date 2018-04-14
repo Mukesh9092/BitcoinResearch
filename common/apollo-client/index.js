@@ -10,7 +10,7 @@ import 'isomorphic-fetch'
 import { log } from '../log'
 
 export function getBrowserApolloClient() {
-  const httpLink = new HttpLink({ uri: '/api/graphql' })
+  const httpLink = new HttpLink({ uri: 'http://graphql.api.docker.localhost' })
 
   const authLink = setContext((_, props) => {
     return {
@@ -26,7 +26,7 @@ export function getBrowserApolloClient() {
     cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
   })
 
-  log.debug('getBrowserApolloClient', client)
+  log.debug({ getBrowserApolloClient: client })
 
   return client
 }
@@ -37,7 +37,7 @@ export function getServerApolloClient(options) {
   const { API_GRAPHQL_HOST, API_GRAPHQL_PORT } = process.env
 
   const httpLink = new HttpLink({
-    uri: `http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}/api/graphql`,
+    uri: `http://${API_GRAPHQL_HOST}:${API_GRAPHQL_PORT}`,
   })
 
   const authLink = setContext((_, props) => {
@@ -56,7 +56,7 @@ export function getServerApolloClient(options) {
     cache: new InMemoryCache(),
   })
 
-  console.log('client', client)
+  log.debug({ getServerApolloClient: client })
 
   return client
 }

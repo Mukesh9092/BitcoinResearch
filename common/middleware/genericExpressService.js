@@ -1,6 +1,7 @@
-import cookieParser from 'cookie-parser';
-import { json } from 'body-parser';
+import { json } from 'body-parser'
+import cors from 'cors'
 
 export default function genericExpressService(app) {
-  app.use(cookieParser()).use(json());
+  app.use(json())
+  app.use(cors())
 }

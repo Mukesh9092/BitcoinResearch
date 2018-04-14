@@ -1,16 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
+import { withStyles } from 'material-ui/styles'
+import Paper from 'material-ui/Paper'
 import MaterialTable, {
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-} from 'material-ui/Table';
+} from 'material-ui/Table'
 
-import { log } from '../../../../common/log';
+import { log } from '../../../../common/log'
 
 const styles = theme => ({
   root: {
@@ -19,49 +19,35 @@ const styles = theme => ({
     overflowX: 'auto',
   },
   table: {
-    minWidth: 700,
+    // minWidth: 700,
   },
-});
+})
 
-export const TableComponent = (props) => {
-  const { data, classes } = props;
+export const TableComponent = props => {
+  const { data, classes } = props
 
   return (
     <Paper className={classes.root}>
       <MaterialTable className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>From Name</TableCell>
-            <TableCell>Key</TableCell>
-            <TableCell>To Name</TableCell>
+            <TableCell>Rate</TableCell>
+            <TableCell>Amount</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((row, i) => {
-            log.debug({ row });
-
             return (
               <TableRow key={i}>
-                {/* <TableCell>
-                  <Link to={`/currency/${row.currencyAKey}`}>
-                    {row.currencyAName}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link to={`/orderbook/${row.key}`}>{row.key}</Link>
-                </TableCell>
-                <TableCell>
-                  <Link to={`/currency/${row.currencyBKey}`}>
-                    {row.currencyBName}
-                  </Link>
-                </TableCell> */}
+                <TableCell>{row.rate}</TableCell>
+                <TableCell>{row.amount}</TableCell>
               </TableRow>
-            );
+            )
           })}
         </TableBody>
       </MaterialTable>
     </Paper>
-  );
-};
+  )
+}
 
-export const Table = withStyles(styles)(TableComponent);
+export const Table = withStyles(styles)(TableComponent)
