@@ -1,21 +1,16 @@
-import { getCurrencyPairs } from '../../common/database/repositories/currency-pair'
+// import { getCurrencyPairs } from '../../common/database/repositories/currency-pair'
 import { getHemeraClient } from '../../common/hemera/client'
-import { readEvents } from '../../common/eventstore/client'
 import { log } from '../../common/log'
+
+import OrderBook from '../../common/domain-model/OrderBook'
 
 async function start() {
   try {
     const hemera = await getHemeraClient()
 
-    const currencyPairs = await getCurrencyPairs()
-    const currencyPairKeys = currencyPairs.map(currencyPair => currencyPair.key)
-    const orderBooks = currencyPairKeys.reduce((object, key) => {
-      object[key] = {
-        bids: [],
-        asks: [],
-      }
-      return object
-    }, {})
+    // const currencyPairs = await getCurrencyPairs()
+    // const currencyPairKeys = currencyPairs.map(currencyPair => currencyPair.key)
+    const orderBooks = {}
 
     hemera.add({ topic: 'OrderBook', cmd: 'getOrderBook' }, async event => {
       log.info(['getOrderBook', event.marketKey, orderBooks[event.marketKey]])
@@ -26,15 +21,15 @@ async function start() {
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBook' },
       async event => {
         try {
-          const { marketKey, asks, bids } = event.data
-          const orderBook = orderBooks[marketKey]
+          // log.debug(event)
 
-          orderBook.asks = asks
-          orderBook.bids = bids
+          const { marketKey, asks, bids } = event.data
+
+          orderBooks[marketKey] = new OrderBook({ bids, asks })
 
           return true
         } catch (error) {
-          throw error
+          log.error(error)
         }
       },
     )
@@ -43,22 +38,15 @@ async function start() {
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookModify' },
       async event => {
         try {
-          const {
-            marketKey,
-            mutationType,
-            mutationSide,
-            rate,
-            amount,
-          } = event.data
+          // log.debug(event)
 
-          const orderBook = orderBooks[marketKey]
-          const side = orderBook[`${mutationSide}s`]
+          const { marketKey, mutationSide, rate, amount } = event.data
 
-          side[rate] = amount
+          orderBooks[marketKey].modify(`${mutationSide}s`, rate, amount)
 
           return true
         } catch (error) {
-          throw error
+          log.error(error)
         }
       },
     )
@@ -67,20 +55,15 @@ async function start() {
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookRemove' },
       async event => {
         try {
-          const {
-            marketKey,
-            mutationType,
-            mutationSide,
-            rate,
-            amount,
-          } = event.data
+          // log.debug(event)
 
-          const orderBook = orderBooks[marketKey]
-          delete orderBook[`${mutationSide}s`][rate]
+          const { marketKey, mutationSide, rate } = event.data
+
+          orderBooks[marketKey].remove(`${mutationSide}s`, rate)
 
           return true
         } catch (error) {
-          throw error
+          log.error(error)
         }
       },
     )
@@ -89,47 +72,22 @@ async function start() {
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookNewTrade' },
       async event => {
         try {
-          const {
-            marketKey,
-            mutationType,
-            mutationSide,
-            rate,
-            amount,
-          } = event.data
+          // log.debug(event)
 
-          const orderBook = orderBooks[marketKey]
+          const { marketKey, mutationSide, rate, amount } = event.data
 
-          let side = 'asks'
+          const side = mutationSide === 'buy' ? 'bids' : 'asks'
 
-          if (mutationSide === 'buy') {
-            side = 'bids'
-          }
-
-          // TODO: Validate this operation.
-          const oldValue = Number(orderBook[side][rate])
-          const newValue = oldValue - Number(amount)
-
-          // log.info(
-          //   'OrderBook#orderBookNewTrade',
-          //   mutationType,
-          //   mutationSide,
-          //   side,
-          //   rate,
-          //   amount,
-          //   oldValue,
-          //   newValue,
-          // )
-
-          orderBook[side][rate] = String(newValue)
+          orderBooks[marketKey].remove(side, rate, amount)
 
           return true
         } catch (error) {
-          throw error
+          log.error(error)
         }
       },
     )
   } catch (error) {
-    console.error(error)
+    log.error(error)
   }
 }
 

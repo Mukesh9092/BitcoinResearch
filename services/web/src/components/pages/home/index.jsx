@@ -1,50 +1,48 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Query } from 'react-apollo'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Query } from 'react-apollo';
 
-import Grid from 'material-ui/Grid'
-import Paper from 'material-ui/Paper'
-import { LinearProgress } from 'material-ui/Progress'
-import { withStyles } from 'material-ui/styles'
+import Grid from 'material-ui/Grid';
+import Paper from 'material-ui/Paper';
+import { LinearProgress } from 'material-ui/Progress';
+import { withStyles } from 'material-ui/styles';
 
-import { log } from '../../../../common/log'
+import { log } from '../../../../common/log';
 
-import { currencyPairsQuery } from '../../../queries/currencyPairs'
+import { currencyPairsQuery } from '../../../queries/currencyPairs';
 
-import { Table } from './table'
+import { Table } from './table';
 
-const styles = theme => {
-  return {
-    root: {
-      flexGrow: 1,
-    },
-    titlePaper: {
-      marginTop: theme.spacing.unit * 2,
-      padding: theme.spacing.unit,
-      color: theme.palette.text.secondary,
-    },
-    pageTitle: {
-      ...theme.typography.title,
-      textAlign: 'center',
-    },
-    body: {
-      ...theme.typography.body1,
-    },
-  }
-}
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  titlePaper: {
+    marginTop: theme.spacing.unit * 2,
+    padding: theme.spacing.unit,
+    color: theme.palette.text.secondary,
+  },
+  pageTitle: {
+    ...theme.typography.title,
+    textAlign: 'center',
+  },
+  body: {
+    ...theme.typography.body1,
+  },
+});
 
-export const HomeComponent = props => {
-  const { classes } = props
+export const HomeComponent = (props) => {
+  const { classes } = props;
 
-  log.debug('before query')
+  log.debug('before query');
 
   return (
     <Query query={currencyPairsQuery}>
       {({ loading, error, data }) => {
-        log.debug('after query')
-        log.debug(loading)
-        log.debug(error)
-        log.debug(data)
+        log.debug('after query');
+        log.debug(loading);
+        log.debug(error);
+        log.debug(data);
 
         if (loading) {
           return (
@@ -55,7 +53,7 @@ export const HomeComponent = props => {
                 </Paper>
               </Grid>
             </Grid>
-          )
+          );
         }
 
         if (error) {
@@ -64,10 +62,10 @@ export const HomeComponent = props => {
               <h1>Error</h1>
               <pre>{JSON.stringify(error)}</pre>
             </React.Fragment>
-          )
+          );
         }
 
-        const { currencyPairs } = data
+        const { currencyPairs } = data;
 
         return (
           <Grid container spacing={8}>
@@ -81,10 +79,10 @@ export const HomeComponent = props => {
               <Table data={currencyPairs} />
             </Grid>
           </Grid>
-        )
+        );
       }}
     </Query>
-  )
-}
+  );
+};
 
-export const Home = withStyles(styles)(HomeComponent)
+export const Home = withStyles(styles)(HomeComponent);

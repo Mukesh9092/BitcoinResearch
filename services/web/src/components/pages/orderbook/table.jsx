@@ -1,16 +1,16 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles'
-import Paper from 'material-ui/Paper'
+import { withStyles } from 'material-ui/styles';
+import Paper from 'material-ui/Paper';
 import MaterialTable, {
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-} from 'material-ui/Table'
+} from 'material-ui/Table';
 
-import { log } from '../../../../common/log'
+import { log } from '../../../../common/log';
 
 const styles = theme => ({
   root: {
@@ -21,10 +21,10 @@ const styles = theme => ({
   table: {
     // minWidth: 700,
   },
-})
+});
 
-export const TableComponent = props => {
-  const { data, classes } = props
+export const TableComponent = (props) => {
+  const { data, classes } = props;
 
   return (
     <Paper className={classes.root}>
@@ -36,18 +36,16 @@ export const TableComponent = props => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row, i) => {
-            return (
-              <TableRow key={i}>
-                <TableCell>{row.rate}</TableCell>
-                <TableCell>{row.amount}</TableCell>
-              </TableRow>
-            )
-          })}
+          {data.map((row, i) => (
+            <TableRow key={i}>
+              <TableCell>{row.rate}</TableCell>
+              <TableCell>{row.amount}</TableCell>
+            </TableRow>
+            ))}
         </TableBody>
       </MaterialTable>
     </Paper>
-  )
-}
+  );
+};
 
-export const Table = withStyles(styles)(TableComponent)
+export const Table = withStyles(styles)(TableComponent);

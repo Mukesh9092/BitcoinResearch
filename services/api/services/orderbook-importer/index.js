@@ -10,7 +10,7 @@ async function writeMessage(streamName, eventType, data) {
       pubsub$: true,
       topic: 'OrderBookEvents',
       cmd: eventType,
-      data: data,
+      data,
     })
 
     return result
@@ -67,9 +67,17 @@ const handlers = {
   newTrade: orderBookNewTrade,
 }
 
-async function handleMessages(marketKey, unsanitizedMessages, seq) {
+let count = 0
+
+setInterval(() => {
+  log.info(`Messages: ${count}`)
+  count = 0
+}, 60 * 1000)
+
+// seq
+async function handleMessages(marketKey, unsanitizedMessages) {
   try {
-    for (let index = 0; index < unsanitizedMessages.length; index++) {
+    for (let index = 0; index < unsanitizedMessages.length; index += 1) {
       const message = unsanitizedMessages[index]
 
       const streamName = `OrderBook_${marketKey}`
@@ -81,6 +89,8 @@ async function handleMessages(marketKey, unsanitizedMessages, seq) {
       }
 
       handler(streamName, marketKey, message)
+
+      count += 1
     }
   } catch (error) {
     log.error(error)
@@ -93,6 +103,8 @@ async function handleOpen() {
 
 async function handleClose(reason, details) {
   log.info('Poloniex Websocket Closed')
+  log.info(`Reason: ${reason}`)
+  log.info(`Details: ${details}`)
 }
 
 async function handleError(error) {
@@ -102,9 +114,11 @@ async function handleError(error) {
 async function start() {
   try {
     const poloniexClient = new Poloniex()
-    const currencyPairs = await importCurrencyPairs()
 
-    currencyPairs.forEach(({ key }) => poloniexClient.subscribe(key))
+    // const currencyPairs = await importCurrencyPairs()
+    // currencyPairs.forEach(({ key }) => poloniexClient.subscribe(key))
+
+    poloniexClient.subscribe('BTC_ETH')
 
     poloniexClient.on('open', handleOpen)
     poloniexClient.on('close', handleClose)

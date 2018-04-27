@@ -180,6 +180,22 @@ services:
       - traefik.backend=orderbook-state
       - traefik.frontend.rule=Host:orderbook-state.docker.localhost
 
+  ohlc-state:
+    build: ./services/api
+    depends_on:
+      - nats
+    ports:
+      - ${API_OHLC_STATE_PORT}:${API_OHLC_STATE_PORT}
+    volumes:
+      - ./services/api:/service
+    env_file: .env
+    environment:
+      - SERVICE_NAME=ohlc-state
+      - API_SERVICE_NAME=ohlc-state
+    labels:
+      - traefik.backend=ohlc-state
+      - traefik.frontend.rule=Host:ohlc-state.docker.localhost
+
   # eventstore:
   #   image: eventstore/eventstore
   #   ports:
