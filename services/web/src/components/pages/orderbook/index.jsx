@@ -1,18 +1,18 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Query } from 'react-apollo';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Query } from 'react-apollo'
 
-import Grid from 'material-ui/Grid';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import Paper from 'material-ui/Paper';
-import { LinearProgress } from 'material-ui/Progress';
-import { withStyles } from 'material-ui/styles';
+import Grid from 'material-ui/Grid'
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
+import Paper from 'material-ui/Paper'
+import { LinearProgress } from 'material-ui/Progress'
+import { withStyles } from 'material-ui/styles'
 
-import { log } from '../../../../common/log';
+import { log } from '../../../../common/log'
 
-import { orderBookQuery } from '../../../queries/orderBook';
+import { orderBookQuery } from '../../../queries/orderBook'
 
-import { Table } from './table';
+import { Table } from './table'
 
 const styles = theme => ({
   root: {
@@ -30,10 +30,10 @@ const styles = theme => ({
   body: {
     ...theme.typography.body1,
   },
-});
+})
 
-export const OrderBookComponent = (props) => {
-  const { classes, match: { params: { marketKey } } } = props;
+export const OrderBookComponent = props => {
+  const { classes, match: { params: { marketKey } } } = props
 
   return (
     <Query query={orderBookQuery} variables={{ marketKey }}>
@@ -47,7 +47,7 @@ export const OrderBookComponent = (props) => {
                 </Paper>
               </Grid>
             </Grid>
-          );
+          )
         }
 
         if (error) {
@@ -56,10 +56,10 @@ export const OrderBookComponent = (props) => {
               <h1>Error</h1>
               <pre>{JSON.stringify(error)}</pre>
             </React.Fragment>
-          );
+          )
         }
 
-        const { orderBook } = data;
+        const { orderBook } = data
 
         return (
           <Grid container spacing={8}>
@@ -80,13 +80,13 @@ export const OrderBookComponent = (props) => {
               <Table data={orderBook.asks.slice(0, 10)} />
             </Grid>
           </Grid>
-        );
+        )
       }}
     </Query>
-  );
-};
+  )
+}
 
-export const OrderBook = withStyles(styles)(OrderBookComponent);
+export const OrderBook = withStyles(styles)(OrderBookComponent)
 
 /*
 const COMMENTS_SUBSCRIPTION = gql`

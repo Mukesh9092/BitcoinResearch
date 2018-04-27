@@ -1,8 +1,8 @@
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import React from 'react';
-import { History } from 'history';
-import { withStyles } from 'material-ui/styles';
+import Grid from 'material-ui/Grid'
+import Paper from 'material-ui/Paper'
+import React from 'react'
+import { History } from 'history'
+import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   root: {
@@ -20,10 +20,10 @@ const styles = theme => ({
   body: {
     ...theme.typography.body1,
   },
-});
+})
 
-export const AboutComponent = (props) => {
-  const { classes } = props;
+export const AboutComponent = props => {
+  const { classes } = props
 
   return (
     <Grid container spacing={8}>
@@ -52,7 +52,7 @@ export const AboutComponent = (props) => {
         </Paper>
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
-export const About = withStyles(styles)(AboutComponent);
+export const About = withStyles(styles)(AboutComponent)
