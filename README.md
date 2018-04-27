@@ -8,10 +8,11 @@ This is my architecture, ever evolving ..
 
 # Links
 
-* NATS: http://0.0.0.0:8222
-* NATS Admin: http://0.0.0.0:8200
-* Redis Admin: http://0.0.0.0:8201
-* PostgreSQL Admin: http://0.0.0.0:8081
+* NATS: http://nats.docker.localhost
+* NATS Admin: http://nats-admin.docker.localhost
+* Redis Admin: http://redis-admin.docker.localhost
+* PostgreSQL Admin: http://postgresql-admin.docker.localhost
+* Web: http://docker.localhost
 
 # TODO
 
