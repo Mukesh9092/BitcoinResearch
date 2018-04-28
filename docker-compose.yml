@@ -30,35 +30,6 @@ services:
       - traefik.backend=nats-admin
       - traefik.frontend.rule=Host:nats-admin.docker.localhost
 
-  redis:
-    build: ./services/redis
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
-    volumes:
-      - ./services/redis:/service
-      - ./services/redis/data:/data
-    env_file: .env
-    environment:
-      - SERVICE_NAME=redis
-    labels:
-      - traefik.backend=redis
-      - traefik.frontend.rule=Host:redis.docker.localhost
-
-  redis-admin:
-    build: ./services/redis-admin
-    depends_on:
-      - redis
-    ports:
-      - ${REDIS_ADMIN_PORT}:${REDIS_ADMIN_PORT}
-    volumes:
-      - ./services/redis-admin:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=redis-admin
-    labels:
-      - traefik.backend=redis-admin
-      - traefik.frontend.rule=Host:redis-admin.docker.localhost
-
   postgresql:
     image: postgres:latest
     ports:
@@ -100,6 +71,22 @@ services:
       - ./services/proxy/traefik.toml:/traefik.toml
       - ./services/proxy/acme.json:/acme.json
 
+  web:
+    build: ./services/api
+    depends_on:
+      - nats
+    ports:
+      - ${WEB_PORT}:${WEB_PORT}
+    volumes:
+      - ./services/api:/service
+    env_file: .env
+    environment:
+      - SERVICE_NAME=web
+      - API_SERVICE_NAME=web
+    labels:
+      - traefik.backend=web
+      - traefik.frontend.rule=Host:docker.localhost
+
   graphql:
     build: ./services/api
     depends_on:
@@ -133,22 +120,6 @@ services:
     labels:
       - traefik.backend=graphiql
       - traefik.frontend.rule=Host:graphiql.api.docker.localhost
-
-  web:
-    build: ./services/web
-    depends_on:
-      - nats
-      - proxy
-    ports:
-      - ${WEB_PORT}:${WEB_PORT}
-    volumes:
-      - ./services/web:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=web
-    labels:
-      - traefik.backend=web
-      - traefik.frontend.rule=Host:docker.localhost
 
   orderbook-importer:
     build: ./services/api
@@ -196,6 +167,87 @@ services:
       - traefik.backend=ohlc-state
       - traefik.frontend.rule=Host:ohlc-state.docker.localhost
 
+  # redis:
+  #   build: ./services/redis
+  #   ports:
+  #     - ${REDIS_PORT}:${REDIS_PORT}
+  #   volumes:
+  #     - ./services/redis:/service
+  #     - ./services/redis/data:/data
+  #   env_file: .env
+  #   environment:
+  #     - SERVICE_NAME=redis
+  #   labels:
+  #     - traefik.backend=redis
+  #     - traefik.frontend.rule=Host:redis.docker.localhost
+
+  # redis-admin:
+  #   build: ./services/redis-admin
+  #   depends_on:
+  #     - redis
+  #   ports:
+  #     - ${REDIS_ADMIN_PORT}:${REDIS_ADMIN_PORT}
+  #   volumes:
+  #     - ./services/redis-admin:/service
+  #   env_file: .env
+  #   environment:
+  #     - SERVICE_NAME=redis-admin
+  #   labels:
+  #     - traefik.backend=redis-admin
+  #     - traefik.frontend.rule=Host:redis-admin.docker.localhost
+
+  # influxdb:
+  #   image: influxdb:latest
+  #   ports:
+  #     - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
+  #   volumes:
+  #     - ./services/influxdb/data:/var/lib/influxdb
+  #   env_file: .env
+  #   labels:
+  #     - traefik.backend=influxdb
+  #     - traefik.frontend.rule=Host:influxdb.docker.localhost
+
+  # influxdb-chronograf:
+  #   image: chronograf:latest
+  #   ports:
+  #     - ${INFLUXDB_CHRONOGRAF_PORT}:${INFLUXDB_CHRONOGRAF_PORT}
+  #   volumes:
+  #     - ./services/influxdb-chronograf/data:/var/lib/chronograf
+  #   env_file: .env
+  #   environment:
+  #     INFLUXDB_URL: http://${INFLUXDB_HOST}:${INFLUXDB_PORT}
+  #     KAPACITOR_URL: http://${INFLUXDB_KAPACITOR_HOST}:${INFLUXDB_KAPACITOR_PORT}
+  #   labels:
+  #     - traefik.backend=influxdb-chronograf
+  #     - traefik.frontend.rule=Host:influxdb-chronograf.docker.localhost
+
+  # influxdb-telegraf:
+  #   image: telegraf:latest
+  #   ports:
+  #     - ${INFLUXDB_TELEGRAF_STATSD_PORT}:${INFLUXDB_TELEGRAF_STATSD_PORT}/udp
+  #     - ${INFLUXDB_TELEGRAF_UDP_PORT}:${INFLUXDB_TELEGRAF_UDP_PORT}/udp
+  #     - ${INFLUXDB_TELEGRAF_TCP_PORT}:${INFLUXDB_TELEGRAF_TCP_PORT}
+  #   volumes:
+  #     - ./services/influxdb-telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  #   env_file: .env
+  #   labels:
+  #     - traefik.backend=influxdb-telegraf
+  #     - traefik.frontend.rule=Host:influxdb-telegraf.docker.localhost
+
+  # influxdb-kapacitor:
+  #   image: kapacitor:latest
+  #   ports:
+  #     - ${INFLUXDB_KAPACITOR_PORT}:${INFLUXDB_KAPACITOR_PORT}
+  #   volumes:
+  #     - ./services/influxdb-kapacitor/data:/var/lib/kapacitor
+  #   env_file: .env
+  #   environment:
+  #     KAPACITOR_HOSTNAME: ${INFLUXDB_KAPACITOR_HOST}
+  #     KAPACITOR_INFLUXDB_0_URLS_0: http://${INFLUXDB_HOST}:${INFLUXDB_PORT}
+  #   labels:
+  #     - traefik.backend=influxdb-kapacitor
+  #     - traefik.frontend.rule=Host:influxdb-kapacitor.docker.localhost
+
   # eventstore:
   #   image: eventstore/eventstore
   #   ports:
@@ -208,90 +260,3 @@ services:
   #   labels:
   #     - traefik.backend=eventstore
   #     - traefik.frontend.rule=Host:eventstore.docker.localhost
-
-  # authentication:
-  #   build: ./services/authentication
-  #   depends_on:
-  #     - nats
-  #     - proxy
-  #     - redis
-  #     - postgresql
-  #   ports:
-  #     - ${AUTHENTICATION_PORT}:${AUTHENTICATION_PORT}
-  #   volumes:
-  #     - ./services/authentication:/service
-  #   env_file: .env
-  #   environment:
-  #     - SERVICE_NAME=authentication
-  #   labels:
-  #     - traefik.backend=authentication
-  #     - traefik.frontend.rule=Host:auth.docker.localhost
-
-  # influxdb:
-  #   image: influxdb:latest
-  #   ports:
-  #     - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
-  #   volumes:
-  #     - ./services/influxdb/data:/var/lib/influxdb
-  #   env_file: .env
-
-  # influxdb-chronograf:
-  #   image: chronograf:latest
-  #   ports:
-  #     - ${INFLUXDB_CHRONOGRAF_PORT}:${INFLUXDB_CHRONOGRAF_PORT}
-  #   volumes:
-  #     - ./services/influxdb-chronograf/data:/var/lib/chronograf
-  #   env_file: .env
-
-  # influxdb-telegraf:
-  #   image: telegraf:latest
-  #   ports:
-  #     - ${INFLUXDB_TELEGRAF_STATSD_PORT}:${INFLUXDB_TELEGRAF_STATSD_PORT}
-  #     - ${INFLUXDB_TELEGRAF_UDP_PORT}:${INFLUXDB_TELEGRAF_UDP_PORT}
-  #     - ${INFLUXDB_TELEGRAF_TCP_PORT}:${INFLUXDB_TELEGRAF_TCP_PORT}
-  #   volumes:
-  #     - ./services/influxdb-telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-  #   env_file: .env
-
-  # influxdb-kapacitor:
-  #   image: kapacitor:latest
-  #   ports:
-  #     - ${INFLUXDB_KAPACITOR_PORT}:${INFLUXDB_KAPACITOR_PORT}
-  #   volumes:
-  #     - ./services/influxdb-kapacitor/data:/var/lib/kapacitor
-  #   env_file: .env
-
-  # noflo:
-  #   build: ./services/noflo
-  #   ports:
-  #     - ${NOFLO_PORT}:${NOFLO_PORT}
-  #   volumes:
-  #     - ./services/noflo:/service
-  #   env_file: .env
-
-  # arangodb:
-  #   image: arangodb
-  #   ports:
-  #     - ${ARANGO_PORT}:${ARANGO_PORT}
-  #   volumes:
-  #     - ./services/arangodb/data:/var/lib/arangodb3
-  #     - ./services/arangodb/apps:/var/lib/arangodb3-apps
-  #   env_file: .env
-
-  # rethinkdb:
-  #   build: ./services/rethinkdb
-  #   ports:
-  #     - ${RETHINKDB_PORT}:${RETHINKDB_PORT}
-  #     - ${RETHINKDB_PORT_INTRACLUSTER}:${RETHINKDB_PORT_INTRACLUSTER}
-  #     - ${RETHINKDB_PORT_WEB}:${RETHINKDB_PORT_WEB}
-  #   volumes:
-  #     - ./services/rethinkdb/data:/data
-  #   env_file: .env
-
-  # rethinkdb-chateau:
-  #   build: ./services/rethinkdb-chateau
-  #   ports:
-  #     - ${RETHINKDB_CHATEAU_PORT}:${RETHINKDB_CHATEAU_PORT}
-  #   volumes:
-  #     - ./services/rethinkdb-chateau:/service
-  #   env_file: .env

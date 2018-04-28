@@ -40,51 +40,96 @@ const getPeriodMultiplicatorForSize = s =>
     '24h': 30,
   }[s])
 
-const importMarket = async (key, size) => {
+async function importMarket(key, size) {
   const market = ensureMarket(key)
   const now = new Date()
   const period = getPeriodForSize(size)
-  const end = formatDateIntoMilliseconds(now)
-  const start = end - period * getPeriodMultiplicatorForSize(size)
-  const uri = `https://poloniex.com/public?command=returnChartData&currencyPair=${key}&start=${start}&end=${end}&period=${period}`
-  const result = await fetch(uri)
-  const resultJSON = await result.json()
+  const endTime = formatDateIntoMilliseconds(now)
+  const startTime = endTime - period * getPeriodMultiplicatorForSize(size)
+  const uri = `https://poloniex.com/public?command=returnChartData&currencyPair=${key}&start=${startTime}&end=${endTime}&period=${period}`
 
-  market[size] = market[size].concat(resultJSON)
+  log.debug({
+    message: 'importMarket',
+    key,
+    size,
+    now,
+    period,
+    startTime,
+    endTime,
+    uri,
+  })
 
-  log.debug({ market })
+  const response = await fetch(uri)
+  const result = await response.json()
+
+  log.debug({ message: 'importMarket result', result })
+
+  market[size] = market[size].concat(result)
+
+  log.debug({ message: 'ImportMarket', key, size })
 }
 
-const importUpdate = async (key, size) => {
+async function importUpdate(key, size) {
   const market = ensureMarket(key)
   const now = new Date()
   const period = getPeriodForSize(size)
-  const end = formatDateIntoMilliseconds(now)
-  const start = end - period * 2
-  const uri = `https://poloniex.com/public?command=returnChartData&currencyPair=${key}&start=${start}&end=${end}&period=${period}`
-  const result = await fetch(uri)
-  const resultJSON = await result.json()
+  const endTime = formatDateIntoMilliseconds(now)
+  const startTime = endTime - period * 2
+  const uri = `https://poloniex.com/public?command=returnChartData&currencyPair=${key}&start=${startTime}&end=${endTime}&period=${period}`
+
+  log.debug({
+    message: 'importUpdate',
+    key,
+    size,
+    now,
+    period,
+    startTime,
+    endTime,
+    uri,
+  })
+
+  const response = await fetch(uri)
+  const result = await response.json()
 
   const marketAtSize = market[size]
 
-  marketAtSize[marketAtSize.length] = resultJSON[0]
-  marketAtSize.push(resultJSON[1])
-
-  log.debug({ key, size, market })
+  marketAtSize.pop()
+  marketAtSize.push(result[0])
+  marketAtSize.push(result[1])
 }
 
-const start = async () => {
+async function startMarketImporter() {
+  const marketKey = 'BTC_ETH'
+  const size = '5m'
+
+  await importMarket(marketKey, size)
+
+  setInterval(importUpdate, getPeriodForSize(size) * 1000)
+}
+
+async function getOHLC(event) {
+  log.debug({ message: 'getOHLC', event })
+
+  const { marketKey, size, from, to } = event
+
+  const market = ensureMarket(marketKey)
+
+  const ohlc = market[size]
+
+  const filteredOHLC = ohlc.filter(x => x.date >= from && x.date <= to)
+
+  return filteredOHLC
+}
+
+async function start() {
   try {
     const hemera = await getHemeraClient()
 
-    const marketKey = 'BTC_ETH'
-    const size = '5m'
+    await startMarketImporter()
 
-    await importMarket(marketKey, size)
-
-    const interval = setInterval(importUpdate, getPeriodForSize(size) * 1000)
+    hemera.add({ topic: 'OHLC', cmd: 'getOHLC' }, getOHLC)
   } catch (error) {
-    console.error(error)
+    log.error(error)
   }
 }
 

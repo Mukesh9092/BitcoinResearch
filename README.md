@@ -13,6 +13,7 @@ This is my architecture, ever evolving ..
 * Redis Admin: http://redis-admin.docker.localhost
 * PostgreSQL Admin: http://postgresql-admin.docker.localhost
 * Web: http://docker.localhost
+* InfluxDB Chronograf: http://influxdb-chronograf.docker.localhost
 
 # TODO
 

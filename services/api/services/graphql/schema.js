@@ -28,11 +28,23 @@ const schema = `
     asks: [OrderBookEntry]
   }
 
+  type OHLC {
+    date: Int!
+    open: Float!
+    high: Float!
+    low: Float!
+    close: Float!
+    volume: Float!
+    quoteVolume: Float!
+    weightedAverage: Float!
+  }
+
   type RootQuery {
     currencyPairs: [CurrencyPair]
     orderBook(marketKey: String!): OrderBook
+    getOHLC(marketKey: String!, size: String!, from: Date!, to: Date!): [OHLC]
   }
-  
+
   type OrderBookModifyEvent {
     marketKey: String!
     mutationType: String!

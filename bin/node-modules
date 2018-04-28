@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-sudo ls
-./bin/all-services sudo rm -rf node_modules package-lock.json
-./bin/all-services npm i

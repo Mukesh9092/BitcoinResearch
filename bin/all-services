@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-for dir in services/*/; do { cd "$dir" && $@; } & done; wait

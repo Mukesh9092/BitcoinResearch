@@ -8,8 +8,6 @@ async function start() {
   try {
     const hemera = await getHemeraClient()
 
-    // const currencyPairs = await getCurrencyPairs()
-    // const currencyPairKeys = currencyPairs.map(currencyPair => currencyPair.key)
     const orderBooks = {}
 
     hemera.add({ topic: 'OrderBook', cmd: 'getOrderBook' }, async event => {
@@ -19,71 +17,39 @@ async function start() {
 
     hemera.add(
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBook' },
-      async event => {
-        try {
-          // log.debug(event)
+      ({ data: { marketKey, bids, asks } }) => {
+        orderBooks[marketKey] = new OrderBook({ bids, asks })
 
-          const { marketKey, asks, bids } = event.data
-
-          orderBooks[marketKey] = new OrderBook({ bids, asks })
-
-          return true
-        } catch (error) {
-          log.error(error)
-        }
+        return true
       },
     )
 
     hemera.add(
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookModify' },
-      async event => {
-        try {
-          // log.debug(event)
+      ({ data: { marketKey, mutationSide, rate, amount } }) => {
+        orderBooks[marketKey].modify(`${mutationSide}s`, rate, amount)
 
-          const { marketKey, mutationSide, rate, amount } = event.data
-
-          orderBooks[marketKey].modify(`${mutationSide}s`, rate, amount)
-
-          return true
-        } catch (error) {
-          log.error(error)
-        }
+        return true
       },
     )
 
     hemera.add(
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookRemove' },
-      async event => {
-        try {
-          // log.debug(event)
+      ({ data: { marketKey, mutationSide, rate } }) => {
+        orderBooks[marketKey].remove(`${mutationSide}s`, rate)
 
-          const { marketKey, mutationSide, rate } = event.data
-
-          orderBooks[marketKey].remove(`${mutationSide}s`, rate)
-
-          return true
-        } catch (error) {
-          log.error(error)
-        }
+        return true
       },
     )
 
     hemera.add(
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookNewTrade' },
-      async event => {
-        try {
-          // log.debug(event)
+      ({ data: { marketKey, mutationSide, rate, amount } }) => {
+        const side = mutationSide === 'buy' ? 'bids' : 'asks'
 
-          const { marketKey, mutationSide, rate, amount } = event.data
+        orderBooks[marketKey].trade(side, rate, amount)
 
-          const side = mutationSide === 'buy' ? 'bids' : 'asks'
-
-          orderBooks[marketKey].remove(side, rate, amount)
-
-          return true
-        } catch (error) {
-          log.error(error)
-        }
+        return true
       },
     )
   } catch (error) {
