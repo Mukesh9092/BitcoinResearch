@@ -13,17 +13,15 @@
     "lint:fix-code": "eslint --fix",
     "lint:fix-style": "prettier --write ./**/*.jsx ./**/*.js",
     "db-create": "babel-node bin/dbCreate.js",
-    "dev": "nodemon -e js,jsx,json -V --delay 2500ms --watch . --ignore node_modules --ignore services/web --exec 'npm run start'",
-    "dev-inspect": "nodemon -e js,jsx,json -V --delay 2500ms --watch . --ignore node_modules --ignore services/web --exec 'npm run start-inspect'",
+    "dev":
+      "nodemon -e js,jsx,json -V --delay 2500ms --watch . --ignore node_modules --ignore services/web --exec 'npm run start'",
+    "dev-inspect":
+      "nodemon -e js,jsx,json -V --delay 2500ms --watch . --ignore node_modules --ignore services/web --exec 'npm run start-inspect'",
     "start": "babel-node index.js",
     "start-inspect": "babel-node --inspect=0.0.0.0:9229 index.js"
   },
   "lint-staged": {
-    "./**/*.{js,jsx,json}": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ]
+    "./**/*.{js,jsx,json}": ["prettier --write", "eslint --fix", "git add"]
   },
   "dependencies": {
     "@material-ui/icons": "^1.0.0-beta.42",

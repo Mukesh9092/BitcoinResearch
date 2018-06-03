@@ -77,13 +77,13 @@ async function getOHLCV() {
 async function getSMA(timePeriod) {
   try {
     const set = ohlcv.slice(ohlcv.length - timePeriod)
-    
+
     const product = set.reduce((m, [time, high, low, open, close, volume]) => {
       return m + close
     }, 0)
-    
+
     const result = product / timePeriod
-    
+
     return result
   } catch (error) {
     log.error(error)
@@ -94,15 +94,15 @@ let lastEMA
 async function getEMA(timePeriod) {
   try {
     const multiplier = 2 / (timePeriod + 1)
-    
+
     log.debug('multiplier')
-    
+
     const { close } = ohlcv[ohlcv.length - 1]
-    
+
     const ema = close * multiplier + (lastEMA || close) * (1 - multiplier)
-    
+
     lastEMA = ema
-    
+
     return ema
   } catch (error) {
     log.error(error)
@@ -141,14 +141,14 @@ async function getBollingerBand(timePeriod) {
 async function start() {
   try {
     exchange = new Binance({ id: 'binance1' })
-    
+
     ohlcv = await exchange.fetchOHLCV(
       MARKET_SYMBOL,
       TIMEFRAME,
       undefined,
       DATA_SET_SIZE + LARGEST_INDICATOR_DATA_SET_SIZE,
     )
-    
+
     setInterval(async () => {
       try {
         ohlcv = await getOHLCV()
@@ -156,9 +156,8 @@ async function start() {
         emaShort = await getEMA(7)
 
         // log.debug('smaShort', smaShort)
-        
+
         log.debug('emaShort', emaShort)
-        
       } catch (error) {
         log.error(error)
       }
