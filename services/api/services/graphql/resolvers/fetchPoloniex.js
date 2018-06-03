@@ -1,4 +1,4 @@
-import * as fetch from 'isomorphic-unfetch'
+import fetch from 'isomorphic-fetch'
 
 // TODO: proper output type
 export default async function fetchPoloniex(queryString) {

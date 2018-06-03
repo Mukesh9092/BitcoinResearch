@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
-export const currencyPairsQuery = gql`
+export default gql`
   query currencyPairs {
     currencyPairs {
       id
@@ -17,4 +17,4 @@ export const currencyPairsQuery = gql`
       currencyB24HVolume
     }
   }
-`;
+`

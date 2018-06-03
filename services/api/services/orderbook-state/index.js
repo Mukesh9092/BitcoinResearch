@@ -4,50 +4,61 @@ import { log } from '../../common/log'
 
 import OrderBook from '../../common/domain-model/OrderBook'
 
+const orderBooks = {}
+let hemeraClient
+
+function ensureOrderbook(key) {
+  orderBooks[key] = orderBooks[key] || new OrderBook(key)
+
+  return orderBooks[key]
+}
+
 async function start() {
   try {
-    const hemera = await getHemeraClient()
+    hemeraClient = await getHemeraClient()
 
-    const orderBooks = {}
+    // How to save the cache per order book?
+    // What if no state event comes by? It would leak memory.
 
-    hemera.add({ topic: 'OrderBook', cmd: 'getOrderBook' }, async event => {
-      log.info(['getOrderBook', event.marketKey, orderBooks[event.marketKey]])
-      return orderBooks[event.marketKey]
-    })
+    hemeraClient.add(
+      { topic: 'OrderBook', cmd: 'getOrderBook' },
+      async (event) => {
+        const { key, bids, asks } = ensureOrderbook(event.key)
 
-    hemera.add(
-      { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBook' },
-      ({ data: { marketKey, bids, asks } }) => {
-        orderBooks[marketKey] = new OrderBook({ bids, asks })
+        return {
+          key,
+          bids,
+          asks,
+        }
+      },
+    )
+
+    hemeraClient.add(
+      { pubsub$: true, topic: 'OrderBookEvents', cmd: 'state' },
+      ({ data: { key, lastUpdateId, bids, asks } }) => {
+        const orderBook = ensureOrderbook(key)
+
+        orderBook.state({
+          lastUpdateId,
+          bids,
+          asks,
+        })
 
         return true
       },
     )
 
-    hemera.add(
-      { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookModify' },
-      ({ data: { marketKey, mutationSide, rate, amount } }) => {
-        orderBooks[marketKey].modify(`${mutationSide}s`, rate, amount)
+    hemeraClient.add(
+      { pubsub$: true, topic: 'OrderBookEvents', cmd: 'update' },
+      ({ data: { key, type, time, firstId, lastId, bids, asks } }) => {
+        const orderBook = ensureOrderbook(key)
 
-        return true
-      },
-    )
-
-    hemera.add(
-      { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookRemove' },
-      ({ data: { marketKey, mutationSide, rate } }) => {
-        orderBooks[marketKey].remove(`${mutationSide}s`, rate)
-
-        return true
-      },
-    )
-
-    hemera.add(
-      { pubsub$: true, topic: 'OrderBookEvents', cmd: 'orderBookNewTrade' },
-      ({ data: { marketKey, mutationSide, rate, amount } }) => {
-        const side = mutationSide === 'buy' ? 'bids' : 'asks'
-
-        orderBooks[marketKey].trade(side, rate, amount)
+        orderBook.update({
+          firstId,
+          lastId,
+          bids,
+          asks,
+        })
 
         return true
       },

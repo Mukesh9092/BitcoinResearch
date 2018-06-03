@@ -20,7 +20,7 @@ import serverRendererMiddleware from './server'
 const { WEB_HOST, WEB_PORT } = process.env
 
 expressServiceWithMiddleware(
-  async app => {
+  async (app) => {
     genericExpressService(app)
     loggerMiddleware(app)
     app.use(faviconMiddleware(join(__dirname, 'public/favicon.ico')))
@@ -44,7 +44,7 @@ expressServiceWithMiddleware(
         }),
       )
 
-      const compilerDonePromise = new Promise(resolve => {
+      const compilerDonePromise = new Promise((resolve) => {
         compiler.hooks.done.tap('ApplicationStart', resolve)
       })
 
@@ -70,6 +70,6 @@ expressServiceWithMiddleware(
   Number(WEB_PORT),
 )
 
-unhandledError(error => {
+unhandledError((error) => {
   log.error(error)
 })

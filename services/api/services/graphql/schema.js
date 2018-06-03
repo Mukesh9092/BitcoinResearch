@@ -22,7 +22,7 @@ const schema = `
   }
 
   type OrderBook {
-    marketKey: String!
+    key: String!
 
     bids: [OrderBookEntry]
     asks: [OrderBookEntry]
@@ -41,12 +41,12 @@ const schema = `
 
   type RootQuery {
     currencyPairs: [CurrencyPair]
-    orderBook(marketKey: String!): OrderBook
-    getOHLC(marketKey: String!, size: String!, from: Date!, to: Date!): [OHLC]
+    orderBook(key: String!): OrderBook
+    getOHLC(key: String!, size: String!, from: Date!, to: Date!): [OHLC]
   }
 
   type OrderBookModifyEvent {
-    marketKey: String!
+    key: String!
     mutationType: String!
     mutationSide: String!
     rate: String!
@@ -54,7 +54,7 @@ const schema = `
   }
 
   type OrderBookRemoveEvent {
-    marketKey: String!
+    key: String!
     mutationType: String!
     mutationSide: String!
     rate: String!
@@ -62,7 +62,7 @@ const schema = `
   }
 
   type OrderBookNewTradeEvent {
-    marketKey: String!
+    key: String!
     mutationType: String!
     mutationSide: String!
     rate: String!
@@ -70,9 +70,9 @@ const schema = `
   }
 
   type RootSubscription {
-    orderBookModify(marketKey: String!): OrderBookModifyEvent
-    orderBookRemove(marketKey: String!): OrderBookRemoveEvent
-    orderBookNewTrade(marketKey: String!): OrderBookNewTradeEvent
+    orderBookModify(key: String!): OrderBookModifyEvent
+    orderBookRemove(key: String!): OrderBookRemoveEvent
+    orderBookNewTrade(key: String!): OrderBookNewTradeEvent
   }
 
   schema {

@@ -1,9 +1,7 @@
-// import fetch from 'cross-fetch';
 import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { setContext } from 'apollo-link-context'
-import 'isomorphic-fetch'
 
 let client
 

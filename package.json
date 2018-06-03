@@ -1,10 +1,15 @@
+
 {
   "name": "test-next",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "precommit": "lerna run --concurrency 1 --stream precommit"
+    "precommit": "lerna run --concurrency 1 --stream precommit",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix .",
+    "lint:fix-file": "eslint --fix",
+    "lint:style": "prettier --write ./**/*.jsx ./**/*.js"
   },
   "repository": {
     "type": "git",
@@ -16,7 +21,23 @@
     "url": "https://github.com/Industrial/test-next.js/issues"
   },
   "homepage": "https://github.com/Industrial/test-next.js#readme",
-  "dependencies": {
-    "lerna": "^2.8.0"
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.7.0",
+    "lerna": "^2.8.0",
+    "prettier": "^1.11.1"
+  },
+  "lint-staged": {
+    "./**/*.{js,jsx,json}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

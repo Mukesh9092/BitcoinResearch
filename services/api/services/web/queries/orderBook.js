@@ -1,9 +1,8 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
-export const orderBookQuery = gql`
-  query orderBook($marketKey: String!) {
-    orderBook(marketKey: $marketKey) {
-      marketKey
+export default gql`
+  query orderBook($key: String!) {
+    orderBook(key: $key) {
       bids {
         rate
         amount
@@ -14,4 +13,4 @@ export const orderBookQuery = gql`
       }
     }
   }
-`;
+`

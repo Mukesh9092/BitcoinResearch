@@ -11,7 +11,7 @@ import { log } from '../../common/log'
 const { API_GRAPHIQL_HOST, API_GRAPHIQL_PORT } = process.env
 
 expressServiceWithMiddleware(
-  async app => {
+  async (app) => {
     genericExpressService(app)
     loggerMiddleware(app)
 

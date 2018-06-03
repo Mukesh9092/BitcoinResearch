@@ -3,12 +3,12 @@ import { act } from '../../../../common/hemera/client'
 
 export default async function getOHLC(obj, args) {
   try {
-    const { marketKey, size, from, to } = args
+    const { key, size, from, to } = args
 
     const result = await act({
       topic: 'OHLC',
       cmd: 'getOHLC',
-      marketKey,
+      key,
       size,
       from,
       to,
