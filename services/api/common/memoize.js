@@ -1,13 +1,13 @@
 export default function memoize(fn) {
-  let result;
+  let result
 
   return function memoized(...args) {
     if (result) {
-      return result;
+      return result
     }
 
-    result = fn(...args);
+    result = fn(...args)
 
-    return result;
-  };
+    return result
+  }
 }

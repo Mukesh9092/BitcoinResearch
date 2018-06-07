@@ -1,14 +1,14 @@
-import connectRedis from 'connect-redis';
-import expressSession from 'express-session';
+import connectRedis from 'connect-redis'
+import expressSession from 'express-session'
 
-const { REDIS_HOST, REDIS_PORT, SERVICE_SECRET } = process.env;
+const { REDIS_HOST, REDIS_PORT, SERVICE_SECRET } = process.env
 
-const RedisStore = connectRedis(expressSession);
+const RedisStore = connectRedis(expressSession)
 
 const redisStore = new RedisStore({
   host: String(REDIS_HOST),
   port: Number(REDIS_PORT),
-});
+})
 
 export default function sessions(app) {
   app.use(
@@ -26,5 +26,5 @@ export default function sessions(app) {
       rolling: false,
       store: redisStore,
     }),
-  );
+  )
 }

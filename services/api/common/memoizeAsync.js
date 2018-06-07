@@ -1,13 +1,13 @@
 export default function memoizeAsync(fn) {
-  let result;
+  let result
 
   return async function memoizedAsync(...args) {
     if (result) {
-      return result;
+      return result
     }
 
-    result = await fn(...args);
+    result = await fn(...args)
 
-    return result;
-  };
+    return result
+  }
 }

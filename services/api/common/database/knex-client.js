@@ -1,4 +1,4 @@
-import knex from 'knex';
+import knex from 'knex'
 
 const {
   POSTGRES_HOST,
@@ -6,12 +6,12 @@ const {
   POSTGRES_USER,
   POSTGRES_PASSWORD,
   POSTGRES_DB,
-} = process.env;
+} = process.env
 
-let instance;
+let instance
 export function getKnexClient() {
   if (instance) {
-    return instance;
+    return instance
   }
 
   instance = knex({
@@ -23,7 +23,7 @@ export function getKnexClient() {
       password: String(POSTGRES_PASSWORD),
       database: String(POSTGRES_DB),
     },
-  });
+  })
 
-  return instance;
+  return instance
 }

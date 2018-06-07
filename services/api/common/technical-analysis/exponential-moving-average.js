@@ -43,6 +43,6 @@ export function exponentialMovingAverage(
   })
 
   log.debug('exponentialMovingAverage result', result)
-  
+
   return result
 }

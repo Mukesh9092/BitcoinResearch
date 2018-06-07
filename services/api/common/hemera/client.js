@@ -1,44 +1,44 @@
-import { promisify } from 'util';
+import { promisify } from 'util'
 
-import Hemera from 'nats-hemera';
-import Nats from 'nats';
+import Hemera from 'nats-hemera'
+import Nats from 'nats'
 
-const { NATS_HOST, NATS_PORT } = process.env;
+const { NATS_HOST, NATS_PORT } = process.env
 
-let nats;
+let nats
 
 export async function getNatsClient() {
   if (nats) {
-    return nats;
+    return nats
   }
 
   nats = Nats.connect({
     servers: [`nats://${NATS_HOST}:${NATS_PORT}`],
-  });
+  })
 
-  return nats;
+  return nats
 }
 
-let hemera;
+let hemera
 
 export async function getHemeraClient() {
   if (hemera) {
-    return hemera;
+    return hemera
   }
 
-  const natsClient = await getNatsClient();
+  const natsClient = await getNatsClient()
 
   hemera = new Hemera(natsClient, {
     logLevel: 'info',
-  });
+  })
 
-  await hemera.ready();
+  await hemera.ready()
 
-  return hemera;
+  return hemera
 }
 
 export async function act(...args) {
-  const hemera = await getHemeraClient();
+  const hemera = await getHemeraClient()
 
-  return await promisify(hemera.act.bind(hemera))(...args);
+  return await promisify(hemera.act.bind(hemera))(...args)
 }

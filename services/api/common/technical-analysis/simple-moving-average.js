@@ -15,7 +15,7 @@ export function simpleMovingAverage(
   if (!array.length || window > array.length) {
     return NaN
   }
-  
+
   log.debug('simpleMovingAverage', array, window, input)
 
   const result = array.map((v, i) => {

@@ -1,7 +1,7 @@
-import redis from 'redis';
+import redis from 'redis'
 
 // import redisStreams from 'redis-streams';
 
 // redisStreams(redis);
 
-export default redis;
+export default redis
