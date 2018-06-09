@@ -1,49 +1,40 @@
 import { log } from '../log'
 
+import { pluck } from '../array'
 import { trueRange } from './true-range'
 
-export function averageTrueRange(
-  array,
-  window = array.length,
-  input = 'close',
-) {
-  if (!array.length || window > array.length) {
+export function averageTrueRange(array, input = 'close') {
+  if (!array.length) {
     return NaN
   }
 
-  log.debug('averageTrueRange', array, window, input)
+  const window = array.length
+  const inputValues = pluck(array, input)
 
-  const recurse = (t) => {
-    log.debug('averageTrueRange recurse t', t)
+  log.debug('averageTrueRange', window, inputValues)
 
-    if (t === 0) {
-      log.debug('averageTrueRange recurse t is 0', array[0][input])
-      return array[0][input]
+  const recurse = (i) => {
+    if (i === 0) {
+      log.debug('averageTrueRange recurse 0 result', inputValues[0])
+      return inputValues[0]
     }
 
-    const current = array[t]
-    const previous = array[t - 1]
+    const tr = trueRange(array[i], array[i - 1])
 
-    const tr = trueRange(previous ? [previous, current] : [current])
+    log.debug('averageTrueRange recurse tr', i, tr)
 
-    log.debug('averageTrueRange recurse tr', tr)
+    const total = recurse(i - 1) * (window - 1) + tr
 
-    const previousValue = recurse(t - 1)
+    log.debug('averageTrueRange recurse total', i, total)
 
-    log.debug('averageTrueRange recurse previousValue', previousValue)
+    const result = total / window
 
-    const result = previousValue * window - 1 + tr / window
-
-    log.debug('averageTrueRange recurse result', result)
+    log.debug('averageTrueRange recurse result', i, result)
 
     return result
   }
 
-  const result = array.map((v, i) => {
-    return {
-      atr: recurse(i),
-    }
-  })
+  const result = recurse(window - 1)
 
   log.debug('averageTrueRange result', result)
 

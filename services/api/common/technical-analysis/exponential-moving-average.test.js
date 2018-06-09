@@ -1,31 +1,13 @@
 import { exponentialMovingAverage } from './exponential-moving-average'
 
+import { log } from '../log'
+// log.setLevel('debug')
+
 test('exponentialMovingAverage / Empty Array', () => {
   const actual = []
   const expected = NaN
 
   expect(exponentialMovingAverage(actual)).toEqual(expected)
-})
-
-test('exponentialMovingAverage / Window higher then Array', () => {
-  const window = 3
-  const actual = [
-    {
-      open: 1,
-      high: 2,
-      low: 3,
-      close: 4,
-    },
-    {
-      open: 2,
-      high: 3,
-      low: 4,
-      close: 5,
-    },
-  ]
-  const expected = NaN
-
-  expect(exponentialMovingAverage(actual, window)).toEqual(expected)
 })
 
 test('exponentialMovingAverage / One OHLC object', () => {
@@ -37,17 +19,12 @@ test('exponentialMovingAverage / One OHLC object', () => {
       close: 4,
     },
   ]
-  const expected = [
-    {
-      ema: 4,
-    },
-  ]
+  const expected = 4
 
   expect(exponentialMovingAverage(actual)).toEqual(expected)
 })
 
 test('exponentialMovingAverage / One OHLC object and an input', () => {
-  const window = 1
   const actual = [
     {
       open: 1,
@@ -56,17 +33,12 @@ test('exponentialMovingAverage / One OHLC object and an input', () => {
       close: 4,
     },
   ]
-  const expected = [
-    {
-      ema: 3,
-    },
-  ]
+  const expected = 3
 
-  expect(exponentialMovingAverage(actual, window, 'low')).toEqual(expected)
+  expect(exponentialMovingAverage(actual, 'low')).toEqual(expected)
 })
 
 test('exponentialMovingAverage / Array of OHLC objects', () => {
-  const window = 3
   const actual = [
     {
       open: 1,
@@ -99,23 +71,7 @@ test('exponentialMovingAverage / Array of OHLC objects', () => {
       close: 5,
     },
   ]
-  const expected = [
-    {
-      ema: 1,
-    },
-    {
-      ema: 1,
-    },
-    {
-      ema: 1.5,
-    },
-    {
-      ema: 2.25,
-    },
-    {
-      ema: 3.125,
-    },
-  ]
+  const expected = 2.5925925925925926
 
-  expect(exponentialMovingAverage(actual, window)).toEqual(expected)
+  expect(exponentialMovingAverage(actual)).toEqual(expected)
 })
