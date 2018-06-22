@@ -6,8 +6,8 @@ export default class OrderBook {
     this.bids = {}
     this.asks = {}
 
-    this._updateCache = []
-    this._stateReceived = false
+    this.updateCache = []
+    this.stateReceived = false
   }
 
   applyUpdate(bids, asks) {
@@ -26,7 +26,7 @@ export default class OrderBook {
     this.bids = bids
     this.asks = asks
 
-    this._updateCache.forEach((update) => {
+    this.updateCache.forEach((update) => {
       if (update.lastId <= lastUpdateId) {
         return
       }
@@ -34,14 +34,14 @@ export default class OrderBook {
       this.applyUpdate(update.bids, update.asks)
     })
 
-    this._updateCache = []
+    this.updateCache = []
 
-    this._stateReceived = true
+    this.stateReceived = true
   }
 
   update({ firstId, lastId, bids, asks }) {
-    if (!this._stateReceived) {
-      this._updateCache.push({ firstId, lastId, bids, asks })
+    if (!this.stateReceived) {
+      this.updateCache.push({ firstId, lastId, bids, asks })
     }
 
     this.applyUpdate(bids, asks)

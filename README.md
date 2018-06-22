@@ -10,10 +10,15 @@ This is my architecture, ever evolving ..
 
 * NATS: http://nats.docker.localhost
 * NATS Admin: http://nats-admin.docker.localhost
+* EventStore: http://eventstore.docker.local
 * Redis Admin: http://redis-admin.docker.localhost
 * PostgreSQL Admin: http://postgresql-admin.docker.localhost
 * Web: http://docker.localhost
 * InfluxDB Chronograf: http://influxdb-chronograf.docker.localhost
+
+
+* STRAPI: http://strapi.api.docker.localhost
+* GraphQL: http://graphql.api.docker.localhost
 
 # TODO
 

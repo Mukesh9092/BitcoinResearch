@@ -1,9 +1,0 @@
-{
-  "verbose": true,
-  "delay": "2500ms",
-  "ignore": [
-    "./node_modules",
-    "./data",
-    "**/*.db"
-  ]
-}

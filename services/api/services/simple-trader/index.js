@@ -1,7 +1,18 @@
 import ccxt from 'ccxt'
-import ta from 'talib/build/Release/talib.node'
+import tulind from 'tulind'
+import JSONStream from 'JSONStream'
+import { createReadStream, createWriteStream } from 'fs'
 
 import { log } from '../../common/log'
+
+log.setLevel('debug')
+
+// var close = [4,5,6,6,6,5,5,5,6,4];
+//
+// tulind.indicators.sma.indicator([close], [3], (err, results) => {
+//   console.log("Result of sma is:");
+//   console.log(results[0]);
+// });
 
 // Because this API doesn't like linting tools.
 const Binance = ccxt.binance
@@ -25,18 +36,50 @@ const UPDATE_BAR_COUNT = 2
 // Interval to request each update at.
 const UPDATE_INTERVAL_MILLISECONDS = 1000 * 2
 
+let smaShort
+const smaShortLength = 7
+
+let smaLong
+const smaLongLength = 20
+
+let emaShort
+const emaShortLength = 7
+
+let emaLong
+const emaLongLength = 20
+
 let exchange
 let ohlcv
-let smaShort
-let smaLong
-let emaShort
-let emaLong
+let ohlcvAsArrays
+let resultSet
 
-function peek(array) {
-  return array[array.length - 1]
+function resolveCallbackWith(fn, ...args) {
+  return new Promise((resolve, reject) => {
+    fn(...args, (error, result) => {
+      if (error) {
+        return reject(error)
+      }
+
+      return resolve(result)
+    })
+  })
 }
 
-function ohlcvAsTALib(pairs) {
+async function getOHLCV() {
+  try {
+    const result = await exchange.fetchOHLCV(
+      MARKET_SYMBOL,
+      TIMEFRAME,
+      undefined,
+      UPDATE_BAR_COUNT,
+    )
+    return ohlcv.slice(UPDATE_BAR_COUNT, ohlcv.length).concat(result)
+  } catch (error) {
+    log.error(error)
+  }
+}
+
+function getOHLCVAsArrays(pairs) {
   return {
     open: pairs.map((entry) => {
       return entry[1]
@@ -60,86 +103,77 @@ function ohlcvAsTALib(pairs) {
   }
 }
 
-async function getOHLCV() {
+async function getIndicator(name, ...args) {
   try {
-    const result = await exchange.fetchOHLCV(
-      MARKET_SYMBOL,
-      TIMEFRAME,
-      undefined,
-      UPDATE_BAR_COUNT,
-    )
-    return ohlcv.slice(0, ohlcv.length - UPDATE_BAR_COUNT).concat(result)
+    const result = tulind.indicators[name]
+
+    if (!result) {
+      return
+    }
+
+    return (await resolveCallbackWith(result.indicator, ...args))[0]
   } catch (error) {
     log.error(error)
   }
 }
 
-async function getSMA(timePeriod) {
-  try {
-    const set = ohlcv.slice(ohlcv.length - timePeriod)
+async function updateValues() {
+  ohlcvAsArrays = getOHLCVAsArrays(ohlcv)
 
-    const product = set.reduce((m, [time, high, low, open, close, volume]) => {
-      return m + close
-    }, 0)
+  smaShort = await getIndicator('sma', [ohlcvAsArrays.close], [smaShortLength])
+  smaLong = await getIndicator('sma', [ohlcvAsArrays.close], [smaLongLength])
+  emaShort = await getIndicator('ema', [ohlcvAsArrays.close], [emaShortLength])
+  emaLong = await getIndicator('ema', [ohlcvAsArrays.close], [emaLongLength])
 
-    const result = product / timePeriod
+  // log.debug('ohlcv', ohlcvAsArrays.close.length)
+  // log.debug('smaShort', smaShort.length)
+  // log.debug('smaLong', smaLong.length)
+  // log.debug('emaShort', emaShort.length)
+  // log.debug('emaLong', emaLong.length)
 
-    return result
-  } catch (error) {
-    log.error(error)
-  }
-}
+  resultSet = ohlcv.map((x, i) => {
+    // log.debug('smaShort', ohlcv.length, i, ohlcv[i], smaShort[i])
+    // log.debug('emaShort', smaShort[i])
 
-let lastEMA
-async function getEMA(timePeriod) {
-  try {
-    const multiplier = 2 / (timePeriod + 1)
+    // log.debug('smaLong', smaLong[i])
+    // log.debug('emaLong', smaLong[i])
 
-    log.debug('multiplier')
+    const output = {
+      timestamp: x[0],
+      open: x[1],
+      high: x[2],
+      low: x[3],
+      close: x[4],
+      volume: x[5],
+    }
 
-    const { close } = ohlcv[ohlcv.length - 1]
+    if (i > smaShortLength) {
+      output.smaShort = smaShort[i - smaShortLength]
+    }
 
-    const ema = close * multiplier + (lastEMA || close) * (1 - multiplier)
+    if (i > smaLongLength) {
+      output.smaLong = smaLong[i - smaLongLength]
+    }
 
-    lastEMA = ema
+    if (i > emaShortLength) {
+      output.emaShort = emaShort[i - emaShortLength]
+    }
 
-    return ema
-  } catch (error) {
-    log.error(error)
-  }
-}
+    if (i > emaLongLength) {
+      output.emaLong = emaLong[i - emaLongLength]
+    }
 
-async function getBollingerBand(timePeriod) {
-  try {
-    const data = ohlcvAsTALib(ohlcv)
-
-    return await new Promise((resolve, reject) => {
-      ta.execute(
-        {
-          name: 'BBANDS',
-          startIdx: 0,
-          endIdx: data.close.length - 1,
-          inReal: data.close,
-          optInTimePeriod: timePeriod,
-          optInNbDevUp: 2,
-          optInNbDevDn: 2,
-          optInMAType: 0,
-        },
-        (error, result) => {
-          if (error) {
-            return reject(error)
-          }
-          return resolve(result.result)
-        },
-      )
-    })
-  } catch (error) {
-    log.error(error)
-  }
+    return output
+  })
 }
 
 async function start() {
   try {
+    const inputStream = JSONStream.stringify()
+    const outputStream = createWriteStream(`${__dirname}/output.json`)
+
+    inputStream.pipe(outputStream)
+
     exchange = new Binance({ id: 'binance1' })
 
     ohlcv = await exchange.fetchOHLCV(
@@ -149,15 +183,23 @@ async function start() {
       DATA_SET_SIZE + LARGEST_INDICATOR_DATA_SET_SIZE,
     )
 
+    await updateValues()
+
+    resultSet.forEach((x) => {
+      log.debug('writing', x)
+
+      inputStream.write(x)
+    })
+
     setInterval(async () => {
       try {
         ohlcv = await getOHLCV()
-        smaShort = await getSMA(7)
-        emaShort = await getEMA(7)
 
-        // log.debug('smaShort', smaShort)
+        await updateValues()
 
-        log.debug('emaShort', emaShort)
+        log.debug('writing', resultSet[resultSet.length - 1])
+
+        inputStream.write(resultSet[resultSet.length - 1])
       } catch (error) {
         log.error(error)
       }

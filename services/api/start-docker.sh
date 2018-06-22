@@ -2,7 +2,7 @@
 
 npm install
 
-exec /service/common/wait-for-it.sh \
+exec /service/wait-for-it.sh \
   --strict \
   --timeout=$SERVICE_CONNECTION_TIMEOUT \
   $POSTGRES_HOST:$POSTGRES_PORT \
