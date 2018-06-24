@@ -1,17 +1,16 @@
 FROM node:10
 
 # Expose the application's ports.
-EXPOSE $API_PORT
+EXPOSE $SERVICE_EXPOSE_PORT
 EXPOSE 9229
 
 # Create app directory
 RUN mkdir -p /service
+WORKDIR /service
 
 # Copy all files into container.
-COPY . /service
-
-# Run commands from this directory.
-WORKDIR /service
+COPY ./services/api .
+COPY ./common ./common
 
 # Run this command to start the application.
 CMD ./start-docker.sh

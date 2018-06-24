@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-exec /service/wait-for-it.sh \
+exec ./common/wait-for-it.sh \
   --strict \
   --timeout=$SERVICE_CONNECTION_TIMEOUT \
   $REDIS_HOST:$REDIS_PORT \

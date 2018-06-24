@@ -1,1 +1,1 @@
-require(`./services/${process.env.API_SERVICE_NAME}`)
+require(`./services/${process.env.SERVICE_NAME}`)

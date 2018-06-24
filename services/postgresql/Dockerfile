@@ -1,16 +1,19 @@
 FROM postgres:latest
 
 # Expose the application's ports.
-EXPOSE 8101
+EXPOSE $SERVICE_EXPOSE_PORT
 
 # Create app directory
 RUN mkdir -p /service
+WORKDIR /service
+
+# Create app directory
+RUN mkdir -p ./service
+WORKDIR ./service
 
 # Copy all files into container.
-COPY . /service
-
-# Run commands from this directory.
-WORKDIR /service
+COPY ./services/postgresql .
+COPY ./common ./common
 
 # Run this command to start the application.
 CMD postgres -h $POSTGRES_HOST -p $POSTGRES_PORT

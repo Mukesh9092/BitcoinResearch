@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-exec /service/wait-for-it.sh \
+exec ./common/wait-for-it.sh \
   --strict \
   --timeout=$SERVICE_CONNECTION_TIMEOUT \
   $NATS_HOST:$NATS_PORT \

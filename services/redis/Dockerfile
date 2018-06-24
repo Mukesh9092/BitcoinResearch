@@ -1,17 +1,19 @@
-# Use the latest Redis base image.
 FROM redis:latest
 
 # Expose the application's ports.
-EXPOSE 8100
+EXPOSE $SERVICE_EXPOSE_PORT
 
 # Create app directory
 RUN mkdir -p /service
+WORKDIR /service
+
+# Create app directory
+RUN mkdir -p ./service
+WORKDIR ./service
 
 # Copy all files into container.
-COPY . /service
-
-# Run commands from this directory.
-WORKDIR /service
+COPY ./services/redis .
+COPY ./common ./common
 
 # Run this command to start the application.
 CMD ./start-docker.sh
