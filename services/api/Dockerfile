@@ -10,7 +10,7 @@ WORKDIR /service
 
 # Copy all files into container.
 COPY ./services/api .
-COPY ./common ./common
+COPY ./bin ./bin
 
 # Run this command to start the application.
 CMD ./start-docker.sh

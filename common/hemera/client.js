@@ -40,5 +40,11 @@ export async function getHemeraClient() {
 export async function act(...args) {
   const hemera = await getHemeraClient()
 
-  return await promisify(hemera.act.bind(hemera))(...args)
+  return promisify(hemera.act.bind(hemera))(...args)
+}
+
+export async function add(...args) {
+  const hemera = await getHemeraClient()
+
+  hemera.add(...args)
 }

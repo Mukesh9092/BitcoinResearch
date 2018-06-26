@@ -1,11 +1,9 @@
-// import { getCurrencyPairs } from '../../common/database/repositories/currency-pair'
-import { getHemeraClient } from '../../common/hemera/client'
+import { add } from '../../common/hemera/client'
 import { log } from '../../common/log'
 
 import OrderBook from '../../common/domain-model/OrderBook'
 
 const orderBooks = {}
-let hemeraClient
 
 function ensureOrderbook(key) {
   orderBooks[key] = orderBooks[key] || new OrderBook(key)
@@ -15,25 +13,17 @@ function ensureOrderbook(key) {
 
 async function start() {
   try {
-    hemeraClient = await getHemeraClient()
+    await add({ topic: 'OrderBook', cmd: 'getOrderBook' }, async (event) => {
+      const { key, bids, asks } = ensureOrderbook(event.key)
 
-    // How to save the cache per order book?
-    // What if no state event comes by? It would leak memory.
+      return {
+        key,
+        bids,
+        asks,
+      }
+    })
 
-    hemeraClient.add(
-      { topic: 'OrderBook', cmd: 'getOrderBook' },
-      async (event) => {
-        const { key, bids, asks } = ensureOrderbook(event.key)
-
-        return {
-          key,
-          bids,
-          asks,
-        }
-      },
-    )
-
-    hemeraClient.add(
+    await add(
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'state' },
       ({ data: { key, lastUpdateId, bids, asks } }) => {
         const orderBook = ensureOrderbook(key)
@@ -48,7 +38,7 @@ async function start() {
       },
     )
 
-    hemeraClient.add(
+    await add(
       { pubsub$: true, topic: 'OrderBookEvents', cmd: 'update' },
       ({ data: { key, type, time, firstId, lastId, bids, asks } }) => {
         const orderBook = ensureOrderbook(key)

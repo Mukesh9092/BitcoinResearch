@@ -1,19 +1,63 @@
 const schema = `
   scalar Date
+  
+  type MarketInfo {
+    symbol: String!
+    status: String
+    baseAsset: String!
+    baseAssetPrecision: Int!
+    quoteAsset: String!
+    quotePrecision: Int
+    orderTypes: [String]!
+  }
+  
+  type MarketFilter {
+    filterType: String!
+    minPrice: String
+    maxPrice: String
+    minQty: String
+    maxQty: String
+    tickSize: String
+    stepSize: String
+    minNotional: String
+  }
+  
+  type MarketLimitsMinMax {
+    min: Int
+    max: Int
+  }
+  
+  type MarketLimits {
+    amount: MarketLimitsMinMax!
+    price: MarketLimitsMinMax!
+    cost: MarketLimitsMinMax!
+  }
+  
+  type MarketPrecision {
+    base: Int!
+    quote: Int!
+    amount: Int!
+    price: Int!
+  }
 
-  type CurrencyPair {
+  type Market {
+    active: Boolean!
+    base: String!
+    baseId: String!
+    filters: [MarketFilter]!
+    icebergAllowed: Boolean!
     id: String!
-    key: String!
-    currencyAKey: String!
-    currencyAName: String!
-    currencyATxFee:  String!
-    currencyAMinConf: String!
-    currencyBKey: String!
-    currencyBName: String!
-    currencyBTxFee:  String!
-    currencyBMinConf: String!
-    currencyA24HVolume: String!
-    currencyB24HVolume: String!
+    info: MarketInfo!
+    limits: MarketLimits!
+    lot: Boolean!
+    maker: Int!
+    percentage: Boolean!
+    precision: MarketPrecision!
+    quote: String!
+    quoteId: String!
+    symbol: String!
+    taker: Int!
+    tierBased: Boolean!
   }
 
   type OrderBookEntry {
@@ -40,7 +84,8 @@ const schema = `
   }
 
   type RootQuery {
-    currencyPairs: [CurrencyPair]
+    market: Market
+    markets: [Market]
     orderBook(key: String!): OrderBook
     getOHLC(key: String!, size: String!, from: Date!, to: Date!): [OHLC]
   }

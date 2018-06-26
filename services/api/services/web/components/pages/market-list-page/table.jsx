@@ -31,9 +31,9 @@ export const TableComponent = (props) => {
       <MaterialTable className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>From Name</TableCell>
-            <TableCell>Key</TableCell>
-            <TableCell>To Name</TableCell>
+            <TableCell>#</TableCell>
+            <TableCell>From</TableCell>
+            <TableCell>To</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -41,18 +41,10 @@ export const TableComponent = (props) => {
             return (
               <TableRow key={row.key}>
                 <TableCell>
-                  <Link to={`/currency/${row.currencyAKey}`}>
-                    {row.currencyAName}
-                  </Link>
+                  <Link to={`/market/${row.id}`}>{row.id}</Link>
                 </TableCell>
-                <TableCell>
-                  <Link to={`/market/${row.key}`}>{row.key}</Link>
-                </TableCell>
-                <TableCell>
-                  <Link to={`/currency/${row.currencyBKey}`}>
-                    {row.currencyBName}
-                  </Link>
-                </TableCell>
+                <TableCell>{row.base}</TableCell>
+                <TableCell>{row.quote}</TableCell>
               </TableRow>
             )
           })}

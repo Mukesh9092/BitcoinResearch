@@ -8,7 +8,7 @@ import { withStyles } from 'material-ui/styles'
 
 import { log } from '../../../../../common/log'
 
-import currencyPairsQuery from '../../../queries/currencyPairs'
+import marketsQuery from '../../../queries/markets'
 
 import { Table } from './table'
 
@@ -38,7 +38,7 @@ export const Component = (props) => {
   log.debug('before query')
 
   return (
-    <Query query={currencyPairsQuery}>
+    <Query query={marketsQuery}>
       {({ loading, error, data }) => {
         log.debug('after query')
         log.debug(loading)
@@ -66,7 +66,11 @@ export const Component = (props) => {
           )
         }
 
-        const { currencyPairs } = data
+        const { markets } = data
+
+        const filtered = markets.filter(({ active }) => {
+          return active
+        })
 
         return (
           <Grid container spacing={8}>
@@ -77,7 +81,7 @@ export const Component = (props) => {
             </Grid>
 
             <Grid item xs={12}>
-              <Table data={currencyPairs} />
+              <Table data={filtered} />
             </Grid>
           </Grid>
         )

@@ -51,9 +51,7 @@ services:
 
 
   redis:
-    build:
-      context: .
-      dockerfile: ./services/redis/Dockerfile
+    image: redislabs/rejson:latest
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
@@ -72,7 +70,6 @@ services:
       - ${REDIS_ADMIN_PORT}:${REDIS_ADMIN_PORT}
     volumes:
       - ./services/redis-admin:/service
-      - ./common:/service/common
     env_file: .env
     environment:
       - SERVICE_NAME=redis-admin
@@ -167,6 +164,30 @@ services:
       - traefik.port=${INFLUXDB_KAPACITOR_PORT}
 
 
+  market-importer:
+    build:
+      context: .
+      dockerfile: ./services/api/Dockerfile
+    depends_on:
+      - nats
+    volumes:
+      - ./services/api:/service
+    env_file: .env
+    environment:
+      - SERVICE_NAME=market-importer
+
+  market-state:
+    build:
+      context: .
+      dockerfile: ./services/api/Dockerfile
+    depends_on:
+      - nats
+    volumes:
+      - ./services/api:/service
+    env_file: .env
+    environment:
+      - SERVICE_NAME=market-state
+
   orderbook-importer:
     build:
       context: .
@@ -175,7 +196,6 @@ services:
       - nats
     volumes:
       - ./services/api:/service
-      - ./common:/service/common
     env_file: .env
     environment:
       - SERVICE_NAME=orderbook-importer
@@ -186,11 +206,8 @@ services:
       dockerfile: ./services/api/Dockerfile
     depends_on:
       - nats
-    ports:
-      - ${API_ORDERBOOK_STATE_PORT}:${API_ORDERBOOK_STATE_PORT}
     volumes:
       - ./services/api:/service
-      - ./common:/service/common
     env_file: .env
     environment:
       - SERVICE_NAME=orderbook-state
@@ -201,11 +218,8 @@ services:
       dockerfile: ./services/api/Dockerfile
     depends_on:
       - nats
-    ports:
-      - ${API_OHLC_STATE_PORT}:${API_OHLC_STATE_PORT}
     volumes:
       - ./services/api:/service
-      - ./common:/service/common
     env_file: .env
     environment:
       - SERVICE_NAME=ohlc-state
@@ -218,7 +232,6 @@ services:
       - ${API_GRAPHQL_PORT}:${API_GRAPHQL_PORT}
     volumes:
       - ./services/api:/service
-      - ./common:/service/common
     env_file: .env
     environment:
       - SERVICE_NAME=graphql
@@ -238,7 +251,6 @@ services:
       - ${API_GRAPHIQL_PORT}:${API_GRAPHIQL_PORT}
     volumes:
       - ./services/api:/service
-      - ./common:/service/common
     env_file: .env
     environment:
       - SERVICE_NAME=graphiql
@@ -256,7 +268,6 @@ services:
       - ${WEB_PORT}:${WEB_PORT}
     volumes:
       - ./services/api:/service
-      - ./common:/service/common
     env_file: .env
     environment:
       - SERVICE_NAME=web

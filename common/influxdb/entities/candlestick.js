@@ -19,7 +19,7 @@ export const schema = {
   },
 }
 
-export const findByCurrencyPairAndPeriodBetweenStartAndEnd = async (
+export const findByMarketAndPeriodBetweenStartAndEnd = async (
   currencyAKey,
   currencyBKey,
   period,
@@ -28,7 +28,7 @@ export const findByCurrencyPairAndPeriodBetweenStartAndEnd = async (
 ) => {
   try {
     log.debug(
-      'influxdb entities candlestick findByCurrencyPairAndPeriodBetweenStartAndEnd',
+      'influxdb entities candlestick findByMarketAndPeriodBetweenStartAndEnd',
       currencyAKey,
       currencyBKey,
       period,
@@ -81,7 +81,7 @@ const sanitizeAPIChartDataJSON = (a, currencyAKey, currencyBKey, period) => {
   })
 }
 
-export const importForCurrencyPairAndPeriodBetweenStartAndEnd = async (
+export const importForMarketAndPeriodBetweenStartAndEnd = async (
   currencyAKey,
   currencyBKey,
   period,
@@ -90,7 +90,7 @@ export const importForCurrencyPairAndPeriodBetweenStartAndEnd = async (
 ) => {
   try {
     log.debug(
-      'influxdb entities candlestick importForCurrencyPairAndPeriodBetweenStartAndEnd',
+      'influxdb entities candlestick importForMarketAndPeriodBetweenStartAndEnd',
       currencyAKey,
       currencyBKey,
       period,

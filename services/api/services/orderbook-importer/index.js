@@ -7,15 +7,6 @@ import { log } from '../../common/log'
 
 let websocketConnection
 
-async function writeMessage(streamName, eventType, data) {
-  return act({
-    pubsub$: true,
-    topic: 'OrderBookEvents',
-    cmd: eventType,
-    data,
-  })
-}
-
 async function fetchOrderBookState(key) {
   try {
     const upperCaseKey = key.toUpperCase()
@@ -31,7 +22,12 @@ async function fetchOrderBookState(key) {
       asks: result.asks,
     }
 
-    await writeMessage('OrderBookEvents', 'state', outgoingMessage)
+    await act({
+      pubsub$: true,
+      topic: 'OrderBookEvents',
+      cmd: 'state',
+      data: outgoingMessage,
+    })
   } catch (error) {
     log.error(error)
   }
@@ -65,7 +61,12 @@ async function handleWebsocketMessage(message) {
 
     // log.debug({ outgoingMessage })
 
-    await writeMessage('OrderBookEvents', 'update', outgoingMessage)
+    await act({
+      pubsub$: true,
+      topic: 'OrderBookEvents',
+      cmd: 'update',
+      data: outgoingMessage,
+    })
   } catch (error) {
     log.error(error)
   }

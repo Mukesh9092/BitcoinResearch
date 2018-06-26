@@ -10,7 +10,7 @@ export function sanitize(volumes, currencies) {
     })
     .sort()
 
-  const currencyPairs = volumeKeys.map((key) => {
+  const markets = volumeKeys.map((key) => {
     const [currencyAKey, currencyBKey] = key.split('_')
     const currencyA = currencies[currencyAKey]
     const currencyB = currencies[currencyBKey]
@@ -33,15 +33,15 @@ export function sanitize(volumes, currencies) {
     }
   })
 
-  const sortedCurrencyPairs = sortBy(currencyPairs, [
+  const sortedMarkets = sortBy(markets, [
     'key',
     'volume24h.currencyAVolume',
   ])
 
-  return sortedCurrencyPairs
+  return sortedMarkets
 }
 
-export async function importCurrencyPairs() {
+export async function importMarkets() {
   try {
     const knexClient = getKnexClient()
     const volumes = await return24Volume()
@@ -63,7 +63,7 @@ export async function importCurrencyPairs() {
   }
 }
 
-export async function getCurrencyPairs() {
+export async function getMarkets() {
   try {
     const knexClient = getKnexClient()
 
