@@ -10,7 +10,7 @@ import 'isomorphic-fetch'
 import { log } from '../log'
 
 export function getBrowserApolloClient() {
-  const httpLink = new HttpLink({ uri: 'http://graphql.api.docker.localhost' })
+  const httpLink = new HttpLink({ uri: 'http://graphql.docker.localhost' })
 
   const authLink = setContext((_, props) => {
     return {

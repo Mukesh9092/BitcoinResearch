@@ -12,4 +12,4 @@ COPY ./services/redis .
 COPY ./common ./common
 
 # Run this command to start the application.
-CMD /service/start-docker.sh
+CMD ./common/bin/docker-start

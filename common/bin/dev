@@ -4,7 +4,7 @@ nodemon \
     -e js,jsx \
     -V \
     --delay 2500ms \
-    --watch ./services/${SERVICE_NAME} \
+    --watch . \
     --ignore **/*.json \
     --ignore node_modules \
     --exec 'npm run start'

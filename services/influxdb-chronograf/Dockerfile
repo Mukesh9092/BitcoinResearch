@@ -12,4 +12,4 @@ WORKDIR /service
 COPY ./services/influxdb-chronograf .
 
 # Run this command to start the application.
-CMD ./start-docker.sh
+CMD ./common/bin/docker-start

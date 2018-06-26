@@ -167,11 +167,11 @@ services:
   market-importer:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - nats
     volumes:
-      - ./services/api:/service
+      - ./services/market-importer:/service
     env_file: .env
     environment:
       - SERVICE_NAME=market-importer
@@ -179,11 +179,11 @@ services:
   market-state:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - nats
     volumes:
-      - ./services/api:/service
+      - ./services/market-state:/service
     env_file: .env
     environment:
       - SERVICE_NAME=market-state
@@ -191,11 +191,11 @@ services:
   orderbook-importer:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - nats
     volumes:
-      - ./services/api:/service
+      - ./services/orderbook-importer:/service
     env_file: .env
     environment:
       - SERVICE_NAME=orderbook-importer
@@ -203,11 +203,11 @@ services:
   orderbook-state:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - nats
     volumes:
-      - ./services/api:/service
+      - ./services/orderbook-state:/service
     env_file: .env
     environment:
       - SERVICE_NAME=orderbook-state
@@ -215,11 +215,11 @@ services:
   ohlc-state:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - nats
     volumes:
-      - ./services/api:/service
+      - ./services/ohlc-state:/service
     env_file: .env
     environment:
       - SERVICE_NAME=ohlc-state
@@ -227,47 +227,47 @@ services:
   graphql:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     ports:
       - ${API_GRAPHQL_PORT}:${API_GRAPHQL_PORT}
     volumes:
-      - ./services/api:/service
+      - ./services/graphql:/service
     env_file: .env
     environment:
       - SERVICE_NAME=graphql
       - SERVICE_EXPOSE_PORT=${WEB_PORT}
     labels:
-      - traefik.frontend.rule=Host:graphql.api.docker.localhost
+      - traefik.frontend.rule=Host:graphql.docker.localhost
       - traefik.backend=graphql
       - traefik.port=${API_GRAPHQL_PORT}
 
   graphiql:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - graphql
     ports:
       - ${API_GRAPHIQL_PORT}:${API_GRAPHIQL_PORT}
     volumes:
-      - ./services/api:/service
+      - ./services/graphiql:/service
     env_file: .env
     environment:
       - SERVICE_NAME=graphiql
       - SERVICE_EXPOSE_PORT=${WEB_PORT}
     labels:
-      - traefik.frontend.rule=Host:graphiql.api.docker.localhost
+      - traefik.frontend.rule=Host:graphiql.docker.localhost
       - traefik.backend=graphiql
       - traefik.port=${API_GRAPHIQL_PORT}
 
   web:
     build:
       context: .
-      dockerfile: ./services/api/Dockerfile
+      dockerfile: ./docker/Dockerfile
     ports:
       - ${WEB_PORT}:${WEB_PORT}
     volumes:
-      - ./services/api:/service
+      - ./services/web:/service
     env_file: .env
     environment:
       - SERVICE_NAME=web

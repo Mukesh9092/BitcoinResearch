@@ -15,4 +15,4 @@ WORKDIR /service
 COPY ./services/redis-admin .
 
 # Run this command to start the application.
-CMD ./start-docker.sh
+CMD ./common/bin/docker-start

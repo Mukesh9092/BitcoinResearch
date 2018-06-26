@@ -15,9 +15,9 @@ This is my architecture, ever evolving ..
 * PostgreSQL Admin: http://postgresql-admin.docker.localhost
 * Web: http://docker.localhost
 * InfluxDB Chronograf: http://influxdb-chronograf.docker.localhost
-* STRAPI: http://strapi.api.docker.localhost
-* GraphQL: http://graphql.api.docker.localhost
-* GraphiQL: http://graphiql.api.docker.localhost
+* STRAPI: http://strapi.docker.localhost
+* GraphQL: http://graphql.docker.localhost
+* GraphiQL: http://graphiql.docker.localhost
 * Web (main app): http://docker.localhost
 
 # TODO
