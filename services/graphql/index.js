@@ -1,4 +1,3 @@
-
 import unhandledError from 'unhandled-error'
 import { graphqlExpress } from 'apollo-server-express'
 import { makeExecutableSchema } from 'graphql-tools'
@@ -34,8 +33,6 @@ expressServiceWithMiddleware(
     })
 
     app.use(graphqlMiddleware)
-
-    log.debug(0)
 
     /*
     new SubscriptionServer(

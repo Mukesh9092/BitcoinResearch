@@ -6,7 +6,7 @@ const { INFLUXDB_HOST, INFLUXDB_DATABASE, INFLUXDB_PORT } = process.env
 
 let client
 
-export async function getInfluxClient() {
+export async function getClient() {
   try {
     if (client) {
       return client

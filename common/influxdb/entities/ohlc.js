@@ -5,8 +5,10 @@ import { log } from '../../../common/log'
 import getClient from '../client'
 import { returnChartData } from '../../poloniex/client'
 
+const ENTITY_NAME = 'ohlc'
+
 export const schema = {
-  measurement: 'candlesticks',
+  measurement: ENTITY_NAME,
   tags: ['currencyAKey', 'currencyBKey', 'period'],
   fields: {
     open: FieldType.FLOAT,
@@ -28,7 +30,7 @@ export const findByMarketAndPeriodBetweenStartAndEnd = async (
 ) => {
   try {
     log.debug(
-      'influxdb entities candlestick findByMarketAndPeriodBetweenStartAndEnd',
+      'influxdb entities ohlc findByMarketAndPeriodBetweenStartAndEnd',
       currencyAKey,
       currencyBKey,
       period,
@@ -42,7 +44,7 @@ export const findByMarketAndPeriodBetweenStartAndEnd = async (
     const endNano = toNanoDate(String(end)).getNanoTime()
 
     const result = await client.query(`
-      SELECT * FROM candlesticks
+      SELECT * FROM ${ENTITY_NAME}
       WHERE
         currencyAKey = '${currencyAKey}' AND
         currencyBKey = '${currencyBKey}' AND
@@ -90,7 +92,7 @@ export const importForMarketAndPeriodBetweenStartAndEnd = async (
 ) => {
   try {
     log.debug(
-      'influxdb entities candlestick importForMarketAndPeriodBetweenStartAndEnd',
+      'influxdb entities ohlc importForMarketAndPeriodBetweenStartAndEnd',
       currencyAKey,
       currencyBKey,
       period,

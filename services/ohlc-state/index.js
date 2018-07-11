@@ -1,15 +1,23 @@
-import 'isomorphic-fetch'
-
-import { getHemeraClient } from './common/hemera/client'
+import { add } from './common/hemera/client'
 import { log } from './common/log'
 
-const markets = {}
+import { getClient } from './common/influxdb/client'
+import {
+  findByMarketAndPeriodBetweenStartAndEnd,
+  importForMarketAndPeriodBetweenStartAndEnd,
+} from './common/influxdb/entities/ohlc'
 
-let hemeraClient
+log.setLevel('debug')
 
 async function start() {
   try {
-    hemeraClient = await getHemeraClient()
+    const influxClient = await getClient()
+
+    await add({ topic: 'OHLC', cmd: 'getOHLC' }, async (options) => {
+      const { key, period, start, end } = options
+
+      return result
+    })
   } catch (error) {
     log.error(error)
   }

@@ -8,19 +8,13 @@ This is my architecture, ever evolving ..
 
 # Links
 
-* NATS: http://nats.docker.localhost
-* NATS Admin: http://nats-admin.docker.localhost
-* EventStore: http://eventstore.docker.local
-* Redis Admin: http://redis-admin.docker.localhost
-* PostgreSQL Admin: http://postgresql-admin.docker.localhost
-* Web: http://docker.localhost
-* InfluxDB Chronograf: http://influxdb-chronograf.docker.localhost
-* STRAPI: http://strapi.docker.localhost
-* GraphQL: http://graphql.docker.localhost
-* GraphiQL: http://graphiql.docker.localhost
-* Web (main app): http://docker.localhost
+* NATS: [http://nats.docker.localhost](http://nats.docker.localhost)
+* NATS Admin: [http://nats-admin.docker.localhost](http://nats-admin.docker.localhost)
+* Redis Admin: [http://redis-admin.docker.localhost](http://redis-admin.docker.localhost)
+* PostgreSQL Admin: [http://postgresql-admin.docker.localhost](http://postgresql-admin.docker.localhost)
+* InfluxDB Chronograf: [http://influxdb-chronograf.docker.localhost](http://influxdb-chronograf.docker.localhost)
+* GraphiQL: [http://graphiql.docker.localhost](http://graphiql.docker.localhost)
+* Web (main app): [http://docker.localhost](http://docker.localhost)
 
 # TODO
-
-* Change the port of NATS to my own managed (non default) port scheme.
-* Change the port of PostgreSQL Admin to my own managed (non default) port scheme.
+* Change ports of all services back to their default ports.

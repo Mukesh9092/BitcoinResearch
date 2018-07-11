@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+chromium-browser http://nats.docker.localhost
+chromium-browser http://nats-admin.docker.localhost
+chromium-browser http://redis-admin.docker.localhost
+chromium-browser http://postgresql-admin.docker.localhost
+chromium-browser http://influxdb-chronograf.docker.localhost
+chromium-browser http://graphiql.docker.localhost
+chromium-browser http://docker.localhost

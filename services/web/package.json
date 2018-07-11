@@ -9,8 +9,8 @@
     "precommit": "lint-staged",
     "test": "jest",
     "test:watch": "jest --watch",
-    "dev": "./common/bin/dev",
-    "dev-inspect": "./common/bin/dev-inspect",
+    "dev": "npm run start",
+    "dev-inspect": "npm run start-inspect",
     "start": "babel-node index.js",
     "start-inspect": "babel-node --inspect-brk=0.0.0.0:9229 index.js"
   },

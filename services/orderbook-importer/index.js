@@ -76,7 +76,7 @@ async function handleWebsocketMessage(message) {
 
 async function openWebsocketConnection(key) {
   const streamName = `${key}@depth`
-  //const url = `wss://stream.binance.com:9443/ws/${streamName}`
+  // const url = `wss://stream.binance.com:9443/ws/${streamName}`
   const url = `wss://stream.binance.com:9443/ws/@depth`
 
   if (websocketConnection) {

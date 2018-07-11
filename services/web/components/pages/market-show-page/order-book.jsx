@@ -41,8 +41,6 @@ export const OrderBookComponent = (props) => {
   return (
     <Query query={orderBookQuery} variables={{ key: marketKey }}>
       {({ loading, error, data }) => {
-        debugger
-
         if (loading) {
           return (
             <Grid container spacing={8}>

@@ -9,16 +9,11 @@ import { OrderBook } from './order-book'
 export default (props) => {
   const { key } = props.match.params
 
-  log.debug({ key })
-
-  /*
-      <Grid item xs={12}>
-        <OHLCChart />
-      </Grid>
-  */
-
   return (
     <Grid container spacing={8}>
+      <Grid item xs={12}>
+        <OHLCChart marketKey={key} />
+      </Grid>
       <Grid item xs={12}>
         <OrderBook marketKey={key} />
       </Grid>
