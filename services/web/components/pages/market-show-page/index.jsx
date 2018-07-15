@@ -14,9 +14,6 @@ export default (props) => {
       <Grid item xs={12}>
         <OHLCChart marketKey={key} />
       </Grid>
-      <Grid item xs={12}>
-        <OrderBook marketKey={key} />
-      </Grid>
     </Grid>
   )
 }

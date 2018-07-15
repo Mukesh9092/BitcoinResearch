@@ -15,4 +15,4 @@ WORKDIR /service
 COPY ./services/nats-admin .
 
 # Run this command to start the application.
-CMD ./common/bin/docker-start
+CMD ./bin/docker-start

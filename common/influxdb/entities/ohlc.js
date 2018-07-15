@@ -7,7 +7,7 @@ import { returnChartData } from '../../poloniex/client'
 
 const ENTITY_NAME = 'ohlc'
 
-export const schema = {
+export const ohlcSchema = {
   measurement: ENTITY_NAME,
   tags: ['currencyAKey', 'currencyBKey', 'period'],
   fields: {
@@ -16,8 +16,6 @@ export const schema = {
     high: FieldType.FLOAT,
     low: FieldType.FLOAT,
     volume: FieldType.FLOAT,
-    quoteVolume: FieldType.FLOAT,
-    weightedAverage: FieldType.FLOAT,
   },
 }
 
@@ -63,7 +61,7 @@ export const findByMarketAndPeriodBetweenStartAndEnd = async (
 const sanitizeAPIChartDataJSON = (a, currencyAKey, currencyBKey, period) => {
   return a.map((x) => {
     return {
-      measurement: schema.measurement,
+      measurement: ohlcSchema.measurement,
       timestamp: x.date * 1000 * 1000 * 1000,
       tags: {
         currencyAKey,
@@ -102,6 +100,8 @@ export const importForMarketAndPeriodBetweenStartAndEnd = async (
 
     const client = await getClient()
 
+    // TODO: Don't fetch data here. It should not happen in the InfluxDB client
+    //       but rather in the controlling service and passed to here.
     const apiResultJSON = await returnChartData(
       currencyAKey,
       currencyBKey,
@@ -110,6 +110,7 @@ export const importForMarketAndPeriodBetweenStartAndEnd = async (
       end / 1000 / 1000 / 1000,
     )
 
+    // TODO: The same for sanitization; it's the service's job.
     const data = sanitizeAPIChartDataJSON(
       apiResultJSON,
       currencyAKey,

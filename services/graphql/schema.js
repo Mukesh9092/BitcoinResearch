@@ -87,7 +87,7 @@ const schema = `
     market: Market
     markets: [Market]
     orderBook(key: String!): OrderBook
-    getOHLC(key: String!, size: String!, from: Date!, to: Date!): [OHLC]
+    getOHLC(key: String!, period: String!, from: Date!, to: Date!): [OHLC]
   }
 
   type OrderBookModifyEvent {

@@ -1,4 +1,4 @@
-import { schema as candlestickSchema } from './entities/candlestick'
+import { ohlcSchema } from './entities/ohlc'
 import { orderBookSchema } from './entities/order-book'
 
-export default [candlestickSchema, orderBookSchema]
+export default [ohlcSchema, orderBookSchema]

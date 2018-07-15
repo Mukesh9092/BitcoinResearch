@@ -16,7 +16,9 @@ async function start() {
     await add({ topic: 'OHLC', cmd: 'getOHLC' }, async (options) => {
       const { key, period, start, end } = options
 
-      return result
+      return []
+
+      // return result
     })
   } catch (error) {
     log.error(error)
