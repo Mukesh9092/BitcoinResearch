@@ -1,0 +1,14 @@
+{
+  "name": "simple-trader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "./common/bin/dev",
+    "dev-inspect": "./common/bin/dev-inspect",
+    "start": "babel-node index.js",
+    "start-inspect": "babel-node --inspect-brk=0.0.0.0:9229 index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
