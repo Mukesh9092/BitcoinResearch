@@ -1,7 +1,7 @@
 import { FieldType } from 'influx'
 
-export const ohlcSchema = {
-  measurement: 'ohlc',
+export const ohlcvSchema = {
+  measurement: 'ohlcv',
   tags: ['baseKey', 'quoteKey', 'period'],
   fields: {
     open: FieldType.FLOAT,

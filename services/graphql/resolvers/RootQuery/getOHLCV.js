@@ -1,22 +1,22 @@
 import { act } from '../../common/hemera/client'
 import { log } from '../../common/log'
 
-export default async function getOHLC(obj, args) {
+export default async function getOHLCV(obj, args) {
   try {
     const { key, period, from, to } = args
 
-    log.debug('getOHLC', key, period, from, to)
+    log.debug('getOHLCV', key, period, from, to)
 
     const result = await act({
-      topic: 'OHLC',
-      cmd: 'getOHLC',
+      topic: 'OHLCV',
+      cmd: 'getOHLCV',
       key,
       period,
       from,
       to,
     })
 
-    log.debug('getOHLC result', result)
+    log.debug('getOHLCV result', result)
 
     return result
   } catch (error) {

@@ -1,4 +1,4 @@
-import { ohlcSchema } from './schemas/ohlc'
+import { ohlcvSchema } from './schemas/ohlcv'
 import { orderBookSchema } from './schemas/order-book'
 
-export default [ohlcSchema, orderBookSchema]
+export default [ohlcvSchema, orderBookSchema]

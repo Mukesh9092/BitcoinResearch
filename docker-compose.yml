@@ -212,17 +212,17 @@ services:
     environment:
       - SERVICE_NAME=orderbook-state
 
-  ohlc-state:
+  ohlcv-state:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     depends_on:
       - nats
     volumes:
-      - ./services/ohlc-state:/service
+      - ./services/ohlcv-state:/service
     env_file: .env
     environment:
-      - SERVICE_NAME=ohlc-state
+      - SERVICE_NAME=ohlcv-state
 
   graphql:
     build:

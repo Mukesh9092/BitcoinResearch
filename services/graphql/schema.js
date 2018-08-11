@@ -72,7 +72,7 @@ const schema = `
     asks: [OrderBookEntry]
   }
 
-  type OHLC {
+  type OHLCV {
     time: Date!
     open: Float!
     high: Float!
@@ -80,12 +80,14 @@ const schema = `
     close: Float!
     volume: Float!
   }
+  
+  type LineIndicator { time: Date! value: Float! } type BandIndicator { time: Date! upper: Float! middle: Float! lower: Float! }
 
   type RootQuery {
     market: Market
     markets: [Market]
     orderBook(key: String!): OrderBook
-    getOHLC(key: String!, period: String!, from: Date!, to: Date!): [OHLC]
+    getOHLCV(key: String!, period: String!, from: Date!, to: Date!): [OHLCV]
   }
 
   type OrderBookModifyEvent {

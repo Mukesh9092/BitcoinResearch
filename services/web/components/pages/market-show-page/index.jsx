@@ -3,7 +3,7 @@ import Grid from 'material-ui/Grid'
 
 import { log } from '../../.././common/log'
 
-import { OHLCChart } from './ohlc-chart'
+import { OHLCVChart } from './ohlcv-chart'
 import { OrderBook } from './order-book'
 
 export default (props) => {
@@ -20,7 +20,7 @@ export default (props) => {
   return (
     <Grid container spacing={8}>
       <Grid item xs={12}>
-        <OHLCChart
+        <OHLCVChart
           marketKey={key}
           period={period}
           from={fromDate}

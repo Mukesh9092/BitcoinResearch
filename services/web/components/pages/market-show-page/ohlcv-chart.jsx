@@ -22,20 +22,20 @@ import { last } from 'react-stockcharts/lib/utils'
 
 import { log } from '../../.././common/log'
 
-import getOHLCQuery from '../../../queries/getOHLC'
+import getOHLCVQuery from '../../../queries/getOHLCV'
 
 const styles = (theme) => {
   return {}
 }
 
-export const OHLCChartDataLoader = (props) => {
+export const OHLCVChartDataLoader = (props) => {
   const { classes, marketKey, period, from, to } = props
 
   console.log(marketKey, period, from, to)
 
   return (
     <Query
-      query={getOHLCQuery}
+      query={getOHLCVQuery}
       variables={{ key: marketKey, period, from, to }}
     >
       {({ loading, error, data }) => {
@@ -52,13 +52,17 @@ export const OHLCChartDataLoader = (props) => {
           )
         }
 
-        const { getOHLC } = data
+        const { getOHLCV } = data
+
+        if (!getOHLCV || !getOHLCV.length) {
+          return <h1>No Data?</h1>
+        }
 
         return (
-          <OHLCChartComponent
-            key={marketKey}
-            type="ohlc"
-            ohlc={getOHLC}
+          <OHLCVChartComponent
+            seriesName={marketKey}
+            type="hybrid"
+            ohlcv={getOHLCV}
             width={800}
             height={600}
             ratio={1}
@@ -69,15 +73,15 @@ export const OHLCChartDataLoader = (props) => {
   )
 }
 
-export const OHLCChartComponent = (props) => {
-  const { key, type, ohlc, width, height, ratio } = props
+export const OHLCVChartComponent = (props) => {
+  const { seriesName, type, ohlcv, width, height, ratio } = props
 
   const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
     (d) => {
       return new Date(d.time)
     },
   )
-  const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(ohlc)
+  const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(ohlcv)
 
   const start = xAccessor(last(data))
   const end = xAccessor(data[Math.max(0, data.length - 150)])
@@ -91,7 +95,7 @@ export const OHLCChartComponent = (props) => {
         width={width}
         margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
         type={type}
-        seriesName={key}
+        seriesName={seriesName}
         data={data}
         xScale={xScale}
         xAccessor={xAccessor}
@@ -198,4 +202,4 @@ export const OHLCChartComponent = (props) => {
   )
 }
 
-export const OHLCChart = withStyles(styles)(OHLCChartDataLoader)
+export const OHLCVChart = withStyles(styles)(OHLCVChartDataLoader)

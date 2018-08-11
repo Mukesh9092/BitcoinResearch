@@ -5,23 +5,23 @@ import { log } from '../../../common/log'
 import { getClient } from '../client'
 import { dateToNanoDate } from '../helpers'
 
-import { ohlcSchema } from '../schemas/ohlc'
+import { ohlcvSchema } from '../schemas/ohlcv'
 
 export async function find(baseKey, quoteKey, period, from, to) {
-  log.debug('influxdb entities ohlc find', baseKey, quoteKey, period, from, to)
+  log.debug('influxdb entities ohlcv find', baseKey, quoteKey, period, from, to)
 
   const client = await getClient()
 
-  log.debug('influxdb entities ohlc find client', client)
+  log.debug('influxdb entities ohlcv find client', client)
 
   const fromNanoTime = dateToNanoDate(new Date(from)).getNanoTime()
   const toNanoTime = dateToNanoDate(new Date(to)).getNanoTime()
 
-  log.debug('influxdb entities ohlc find fromNanoTime', fromNanoTime)
-  log.debug('influxdb entities ohlc find toNanoTime', toNanoTime)
+  log.debug('influxdb entities ohlcv find fromNanoTime', fromNanoTime)
+  log.debug('influxdb entities ohlcv find toNanoTime', toNanoTime)
 
   const result = await client.query(`
-    SELECT * FROM ${ohlcSchema.measurement}
+    SELECT * FROM ${ohlcvSchema.measurement}
     WHERE
       baseKey      = '${baseKey}'    AND
       quoteKey     = '${quoteKey}'   AND
@@ -31,17 +31,17 @@ export async function find(baseKey, quoteKey, period, from, to) {
     ORDER BY time ASC
   `)
 
-  log.debug('influxdb entities ohlc find result', result)
+  log.debug('influxdb entities ohlcv find result', result)
 
   return result
 }
 
 export async function insert(points) {
-  log.debug('influxdb entities ohlc insert', points)
+  log.debug('influxdb entities ohlcv insert', points)
 
   const client = await getClient()
 
-  log.debug('influxdb entities ohlc insert client', client)
+  log.debug('influxdb entities ohlcv insert client', client)
 
   await client.writePoints(points)
 }

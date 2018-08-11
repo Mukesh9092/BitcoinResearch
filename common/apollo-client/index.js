@@ -21,8 +21,9 @@ export function getBrowserApolloClient() {
   })
 
   const client = new ApolloClient({
-    initialState: window.__APOLLO_STATE__,
+    shouldBatch: true,
     link: authLink.concat(httpLink),
+    initialState: window.__APOLLO_STATE__,
     cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
   })
 
@@ -51,8 +52,9 @@ export function getServerApolloClient(options) {
 
   const client = new ApolloClient({
     ssrMode: true,
-    initialState: {},
+    shouldBatch: true,
     link: authLink.concat(httpLink),
+    initialState: {},
     cache: new InMemoryCache(),
   })
 

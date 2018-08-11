@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import createHistory from 'history/createBrowserHistory'
 import { ApolloProvider } from 'react-apollo'
-import { App } from './components/app'
 import { AppContainer } from 'react-hot-loader'
 import { Router } from 'react-router-dom'
 
@@ -10,10 +9,12 @@ import { getBrowserApolloClient } from './common/apollo-client'
 import { log } from './common/log'
 import { isDevelopment } from './common/environment'
 
+import { App } from './components/app'
+
 const history = createHistory()
 const apolloClient = getBrowserApolloClient()
 
-let render = AppComponent => {
+let render = (AppComponent) => {
   ReactDOM.hydrate(
     <ApolloProvider client={apolloClient}>
       <Router history={history}>
@@ -27,7 +28,7 @@ let render = AppComponent => {
 if (isDevelopment()) {
   log.setLevel('debug')
 
-  render = AppComponent => {
+  render = (AppComponent) => {
     ReactDOM.hydrate(
       <AppContainer>
         <ApolloProvider client={apolloClient}>

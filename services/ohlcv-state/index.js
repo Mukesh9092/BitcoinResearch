@@ -3,8 +3,8 @@ import ccxt from 'ccxt'
 import { add } from './common/hemera/client'
 import { log } from './common/log'
 
-import { find, insert } from './common/influxdb/entities/ohlc'
-import { ohlcSchema } from './common/influxdb/schemas/ohlc'
+import { find, insert } from './common/influxdb/entities/ohlcv'
+import { ohlcvSchema } from './common/influxdb/schemas/ohlcv'
 import { dateToNanoDate } from './common/influxdb/helpers'
 
 log.setLevel('debug')
@@ -46,21 +46,21 @@ function getExpectedLengthForPeriod(period, from, to) {
 
   const result = difference / periodToMilliseconds(period)
 
-  log.debug('ohlc-state getExpectedLengthForPeriod', f, t, difference, result)
+  log.debug('ohlcv-state getExpectedLengthForPeriod', f, t, difference, result)
 
   return result
 }
 
 async function importOHLCV(baseKey, quoteKey, period, from, to) {
-  log.debug('ohlc-state importOHLCV', baseKey, quoteKey, period, from, to)
+  log.debug('ohlcv-state importOHLCV', baseKey, quoteKey, period, from, to)
 
   const expectedLength = getExpectedLengthForPeriod(period, from, to)
 
-  log.debug('ohlc-state importOHLCV expectedLength', expectedLength)
+  log.debug('ohlcv-state importOHLCV expectedLength', expectedLength)
 
   const binanceKey = `${baseKey}/${quoteKey}`
 
-  log.debug('ohlc-state importOHLCV binanceKey', binanceKey)
+  log.debug('ohlcv-state importOHLCV binanceKey', binanceKey)
 
   const importedData = await exchange.fetchOHLCV(
     binanceKey,
@@ -69,13 +69,13 @@ async function importOHLCV(baseKey, quoteKey, period, from, to) {
     expectedLength,
   )
 
-  log.debug('ohlc-state importOHLCV importedData', importedData)
+  log.debug('ohlcv-state importOHLCV importedData', importedData)
 
   const points = importedData.map((point) => {
     const [timestamp, open, high, low, close, volume] = point
 
     log.debug(
-      'ohlc-state importOHLCV import map',
+      'ohlcv-state importOHLCV import map',
       timestamp,
       open,
       high,
@@ -85,7 +85,7 @@ async function importOHLCV(baseKey, quoteKey, period, from, to) {
     )
 
     return {
-      measurement: ohlcSchema.measurement,
+      measurement: ohlcvSchema.measurement,
       timestamp: dateToNanoDate(timestamp).getNanoTime(),
       tags: {
         baseKey,
@@ -102,14 +102,14 @@ async function importOHLCV(baseKey, quoteKey, period, from, to) {
     }
   })
 
-  log.debug('ohlc-state importOHLCV import points', points)
+  log.debug('ohlcv-state importOHLCV import points', points)
 
   return points
 }
 
 async function start() {
   try {
-    await add({ topic: 'OHLC', cmd: 'getOHLC' }, async (options) => {
+    await add({ topic: 'OHLCV', cmd: 'getOHLCV' }, async (options) => {
       try {
         const { key, period, from, to } = options
 
@@ -117,11 +117,11 @@ async function start() {
 
         const data = await find(baseKey, quoteKey, period, from, to)
 
-        log.debug('ohlc-state getOHLC data', data)
+        log.debug('ohlcv-state getOHLCV data', data)
 
         const expectedLength = getExpectedLengthForPeriod(period, from, to)
 
-        log.debug('ohlc-state getOHLC expectedLength', data)
+        log.debug('ohlcv-state getOHLCV expectedLength', data)
 
         if (data && data.length === expectedLength) {
           return data
@@ -129,11 +129,11 @@ async function start() {
 
         const points = await importOHLCV(baseKey, quoteKey, period, from, to)
 
-        log.debug('ohlc-state getOHLC import points', points)
+        log.debug('ohlcv-state getOHLCV import points', points)
 
         await insert(points)
 
-        log.debug('ohlc-state getOHLC import imported!')
+        log.debug('ohlcv-state getOHLCV import imported!')
       } catch (error) {
         log.error(error)
       }
