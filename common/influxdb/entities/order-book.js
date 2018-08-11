@@ -2,26 +2,16 @@ import { FieldType, toNanoDate, IPoint } from 'influx'
 
 import { ensureArray } from '../../array'
 import { getInfluxClient } from '../client'
-
-const MEASUREMENT_NAME = 'orderBook'
+import { orderBookSchema } from '../schemas/order-book'
 
 // Convert all OrderBook messages into this schema.
-
-export const orderBookSchema = {
-  measurement: MEASUREMENT_NAME,
-  tags: ['mutationType', 'mutationSide'],
-  fields: {
-    rate: FieldType.FLOAT,
-    amount: FieldType.FLOAT,
-  },
-}
 
 export async function insert(messages) {
   const client = await getInfluxClient()
 
   const iPoints = ensureArray(messages).map((message) => {
     return {
-      measurement: MEASUREMENT_NAME,
+      measurement: orderBookSchema.measurement,
       tags: {
         mutationType: message.mutationType,
         mutationSide: message.mutationSide,

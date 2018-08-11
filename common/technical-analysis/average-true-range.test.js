@@ -1,83 +1,46 @@
 import { averageTrueRange } from './average-true-range'
 
-import { log } from '../log'
-// log.setLevel('debug')
+import testData from './_data'
 
-test('averageTrueRange / Empty Array', () => {
-  const actual = []
-  const expected = NaN
-
-  expect(averageTrueRange(actual)).toEqual(expected)
-})
-
-test('averageTrueRange / One OHLC object', () => {
-  const actual = [
-    {
-      open: 1,
-      high: 2,
-      low: 3,
-      close: 4,
-    },
+test('averageTrueRange', () => {
+  const actual = testData
+  const length = 14
+  const expected = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    1.085714285714287,
+    1.0253061224489808,
+    1.0113556851311964,
+    0.9726874219075395,
+    0.9717811774855726,
+    0.93951109337946,
+    0.9145460152809269,
+    0.9720784427608606,
+    0.945501411135085,
+    0.9058227389111504,
+    0.8654068289889256,
+    0.8550206269182885,
+    0.8618048678526967,
+    0.9023902344346469,
+    0.9686480748321721,
+    0.9608874980584455,
+    0.9615383910542707,
+    0.9499999345503946,
+    0.9521427963682233,
   ]
-  const expected = 4
 
-  expect(averageTrueRange(actual)).toEqual(expected)
-})
-
-test('averageTrueRange / One OHLC object and an input', () => {
-  const actual = [
-    {
-      open: 1,
-      high: 2,
-      low: 3,
-      close: 4,
-    },
-  ]
-  const expected = 3
-
-  expect(averageTrueRange(actual, 'low')).toEqual(expected)
-})
-
-test.only('averageTrueRange / Array of OHLC objects', () => {
-  const actual = [
-    {
-      open: 1,
-      high: 1,
-      low: 1,
-      close: 1,
-    },
-    {
-      open: 2,
-      high: 2,
-      low: 2,
-      close: 2,
-    },
-    {
-      open: 4,
-      high: 4,
-      low: 4,
-      close: 4,
-    },
-    {
-      open: 8,
-      high: 8,
-      low: 8,
-      close: 8,
-    },
-    {
-      open: 16,
-      high: 16,
-      low: 16,
-      close: 16,
-    },
-    {
-      open: 32,
-      high: 32,
-      low: 32,
-      close: 32,
-    },
-  ]
-  const expected = 0.56
-
-  expect(averageTrueRange(actual)).toEqual(expected)
+  expect(averageTrueRange(actual, length)).toEqual(expected)
 })

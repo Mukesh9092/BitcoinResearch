@@ -31,8 +31,13 @@ const styles = (theme) => {
 export const OHLCChartDataLoader = (props) => {
   const { classes, marketKey, period, from, to } = props
 
+  console.log(marketKey, period, from, to)
+
   return (
-    <Query query={getOHLCQuery} variables={{ key: marketKey, period, from, to }}>
+    <Query
+      query={getOHLCQuery}
+      variables={{ key: marketKey, period, from, to }}
+    >
       {({ loading, error, data }) => {
         if (loading) {
           return <h1>LOADING</h1>
@@ -48,22 +53,31 @@ export const OHLCChartDataLoader = (props) => {
         }
 
         const { getOHLC } = data
+
+        return (
+          <OHLCChartComponent
+            key={marketKey}
+            type="ohlc"
+            ohlc={getOHLC}
+            width={800}
+            height={600}
+            ratio={1}
+          />
+        )
       }}
     </Query>
   )
 }
 
 export const OHLCChartComponent = (props) => {
-  const { type, data: initialData, width, ratio } = props
+  const { key, type, ohlc, width, height, ratio } = props
 
   const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
     (d) => {
-      return d.date
+      return new Date(d.time)
     },
   )
-  const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(
-    initialData,
-  )
+  const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(ohlc)
 
   const start = xAccessor(last(data))
   const end = xAccessor(data[Math.max(0, data.length - 150)])
@@ -72,12 +86,12 @@ export const OHLCChartComponent = (props) => {
   return (
     <React.Fragment>
       <ChartCanvas
-        height={400}
+        height={height}
         ratio={ratio}
         width={width}
         margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
         type={type}
-        seriesName="MSFT"
+        seriesName={key}
         data={data}
         xScale={xScale}
         xAccessor={xAccessor}

@@ -1,77 +1,49 @@
 import { exponentialMovingAverage } from './exponential-moving-average'
 
+import testData from './_data'
+
 import { log } from '../log'
-// log.setLevel('debug')
 
-test('exponentialMovingAverage / Empty Array', () => {
-  const actual = []
-  const expected = NaN
-
-  expect(exponentialMovingAverage(actual)).toEqual(expected)
-})
-
-test('exponentialMovingAverage / One OHLC object', () => {
-  const actual = [
-    {
-      open: 1,
-      high: 2,
-      low: 3,
-      close: 4,
-    },
+test('exponentialMovingAverage', () => {
+  const actual = testData
+  const input = 'close'
+  const length = 14
+  const expected = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    48.63901792858947,
+    48.53803020627709,
+    48.589652961335695,
+    48.7110449276735,
+    48.83715529550051,
+    48.69256878652005,
+    48.7613202244527,
+    48.825528206522044,
+    48.94695427555797,
+    49.48302168448994,
+    49.725768361348145,
+    49.947467726578935,
+    50.11513251577712,
+    50.12904480030566,
+    50.43409263884256,
+    50.66249215460634,
+    50.56926411111296,
+    50.25579774655493,
+    50.15016604101611,
+    50.113974558383816,
   ]
-  const expected = 4
 
-  expect(exponentialMovingAverage(actual)).toEqual(expected)
-})
-
-test('exponentialMovingAverage / One OHLC object and an input', () => {
-  const actual = [
-    {
-      open: 1,
-      high: 2,
-      low: 3,
-      close: 4,
-    },
-  ]
-  const expected = 3
-
-  expect(exponentialMovingAverage(actual, 'low')).toEqual(expected)
-})
-
-test('exponentialMovingAverage / Array of OHLC objects', () => {
-  const actual = [
-    {
-      open: 1,
-      high: 1,
-      low: 1,
-      close: 1,
-    },
-    {
-      open: 2,
-      high: 2,
-      low: 2,
-      close: 2,
-    },
-    {
-      open: 3,
-      high: 3,
-      low: 3,
-      close: 3,
-    },
-    {
-      open: 4,
-      high: 4,
-      low: 4,
-      close: 4,
-    },
-    {
-      open: 5,
-      high: 5,
-      low: 5,
-      close: 5,
-    },
-  ]
-  const expected = 2.5925925925925926
-
-  expect(exponentialMovingAverage(actual)).toEqual(expected)
+  expect(exponentialMovingAverage(actual, input, length)).toEqual(expected)
 })

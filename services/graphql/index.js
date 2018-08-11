@@ -30,6 +30,7 @@ expressServiceWithMiddleware(
 
     const graphqlMiddleware = graphqlExpress({
       schema: graphqlSchema,
+      debug: true,
     })
 
     app.use(graphqlMiddleware)

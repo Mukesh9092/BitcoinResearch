@@ -1,18 +1,29 @@
-import { log } from '../log'
-
-import { pluck } from '../array'
+import { mean } from './mean'
 import { trueRange } from './true-range'
 
-// 1     2     3     4     5
-// 0     0.4   0.52  0.616 0.6928
-export function averageTrueRange(array, i = array.length - 1) {
-  if (i === 0) {
-    return trueRange(array[i], array[i])
-  }
+export function averageTrueRange(array, length) {
+  const trueRanges = trueRange(array)
 
-  return (
-    (averageTrueRange(array, i - 1) * (array.length - 1) +
-      trueRange(array[i], array[i - 1])) /
-    array.length
-  )
+  let i = 0
+  const result = array.reduce((m, x) => {
+    // Start at +1 because True Range needs 2 values and returns 1 null.
+    if (i < length + 1) {
+      m.push(null)
+      i += 1
+      return m
+    }
+
+    if (i === length + 1) {
+      m.push(mean(trueRanges.slice(1, i)))
+      i += 1
+      return m
+    }
+
+    // Calculate the rest of the values.
+    m.push((m[i - 1] * (length - 1) + trueRanges[i]) / length)
+    i += 1
+    return m
+  }, [])
+
+  return result
 }

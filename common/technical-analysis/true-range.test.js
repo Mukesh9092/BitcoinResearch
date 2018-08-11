@@ -1,67 +1,45 @@
 import { trueRange } from './true-range'
 
-import { log } from '../log'
+import testData from './_data'
 
-log.setLevel('debug')
+test('trueRange', () => {
+  const actual = testData
+  const expected = [
+    null,
+    0.7800000000000011,
+    0.39000000000000057,
+    0.4000000000000057,
+    0.5700000000000003,
+    3.210000000000001,
+    1.6699999999999946,
+    1.25,
+    1.1800000000000068,
+    1.5399999999999991,
+    0.980000000000004,
+    0.5999999999999943,
+    0.2600000000000051,
+    1.5500000000000043,
+    0.8200000000000003,
+    0.9100000000000037,
+    0.240000000000002,
+    0.8299999999999983,
+    0.46999999999999886,
+    0.9600000000000009,
+    0.519999999999996,
+    0.5899999999999963,
+    1.7199999999999989,
+    0.6000000000000014,
+    0.39000000000000057,
+    0.3400000000000034,
+    0.720000000000006,
+    0.9500000000000028,
+    1.4299999999999997,
+    1.8299999999999983,
+    0.8599999999999994,
+    0.9699999999999989,
+    0.8000000000000043,
+    0.9799999999999969,
+  ]
 
-test('trueRange / Empty array', () => {
-  const previous = {}
-  const current = {}
-  const expected = NaN
-
-  expect(trueRange(previous, current)).toEqual(expected)
-})
-
-test('trueRange / Two OHLC objects where Current High - Current Low is the highest', () => {
-  const previous = {
-    high: 8,
-    close: 5,
-    open: 4,
-    low: 0,
-  }
-  const current = {
-    high: 12,
-    close: 11,
-    open: 10,
-    low: 10,
-  }
-  const expected = 2
-
-  expect(trueRange(previous, current)).toEqual(expected)
-})
-
-test.only('trueRange / Two OHLC objects where Current High - Previous Close is the highest', () => {
-  const previous = {
-    high: 6,
-    close: 3,
-    open: 2,
-    low: 0,
-  }
-  const current = {
-    high: 5,
-    close: 5,
-    open: 4,
-    low: 4,
-  }
-  const expected = 2
-
-  expect(trueRange(previous, current)).toEqual(expected)
-})
-
-test('trueRange / Two OHLC objects where Current Low - Previous Close is the highest', () => {
-  const previous = {
-    high: 7,
-    close: 9,
-    open: 8,
-    low: 4,
-  }
-  const current = {
-    high: 2,
-    close: 2,
-    open: 1,
-    low: 0,
-  }
-  const expected = 2
-
-  expect(trueRange(previous, current)).toEqual(expected)
+  expect(trueRange(actual)).toEqual(expected)
 })

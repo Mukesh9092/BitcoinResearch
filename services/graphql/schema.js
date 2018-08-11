@@ -73,14 +73,12 @@ const schema = `
   }
 
   type OHLC {
-    date: Int!
+    time: Date!
     open: Float!
     high: Float!
     low: Float!
     close: Float!
     volume: Float!
-    quoteVolume: Float!
-    weightedAverage: Float!
   }
 
   type RootQuery {

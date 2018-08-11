@@ -1,25 +1,22 @@
 import { InfluxDB } from 'influx'
 
 import schema from './schema'
+// import { log } from '../log'
 
 const { INFLUXDB_HOST, INFLUXDB_DATABASE, INFLUXDB_PORT } = process.env
 
 let client
 
 export async function getClient() {
-  try {
-    if (client) {
-      return client
-    }
-
-    client = new InfluxDB({
-      host: String(INFLUXDB_HOST),
-      database: String(INFLUXDB_DATABASE),
-      schema,
-    })
-
+  if (client) {
     return client
-  } catch (error) {
-    throw error
   }
+
+  client = new InfluxDB({
+    host: INFLUXDB_HOST,
+    database: INFLUXDB_DATABASE,
+    schema,
+  })
+
+  return client
 }

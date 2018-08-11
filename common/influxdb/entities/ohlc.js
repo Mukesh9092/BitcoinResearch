@@ -2,124 +2,46 @@ import { FieldType, toNanoDate } from 'influx'
 
 import { log } from '../../../common/log'
 
-import getClient from '../client'
-import { returnChartData } from '../../poloniex/client'
+import { getClient } from '../client'
+import { dateToNanoDate } from '../helpers'
 
-const ENTITY_NAME = 'ohlc'
+import { ohlcSchema } from '../schemas/ohlc'
 
-export const ohlcSchema = {
-  measurement: ENTITY_NAME,
-  tags: ['currencyAKey', 'currencyBKey', 'period'],
-  fields: {
-    open: FieldType.FLOAT,
-    close: FieldType.FLOAT,
-    high: FieldType.FLOAT,
-    low: FieldType.FLOAT,
-    volume: FieldType.FLOAT,
-  },
+export async function find(baseKey, quoteKey, period, from, to) {
+  log.debug('influxdb entities ohlc find', baseKey, quoteKey, period, from, to)
+
+  const client = await getClient()
+
+  log.debug('influxdb entities ohlc find client', client)
+
+  const fromNanoTime = dateToNanoDate(new Date(from)).getNanoTime()
+  const toNanoTime = dateToNanoDate(new Date(to)).getNanoTime()
+
+  log.debug('influxdb entities ohlc find fromNanoTime', fromNanoTime)
+  log.debug('influxdb entities ohlc find toNanoTime', toNanoTime)
+
+  const result = await client.query(`
+    SELECT * FROM ${ohlcSchema.measurement}
+    WHERE
+      baseKey      = '${baseKey}'    AND
+      quoteKey     = '${quoteKey}'   AND
+      period       = '${period}'     AND
+      time        >= ${fromNanoTime} AND
+      time        <= ${toNanoTime}
+    ORDER BY time ASC
+  `)
+
+  log.debug('influxdb entities ohlc find result', result)
+
+  return result
 }
 
-export const findByMarketAndPeriodBetweenStartAndEnd = async (
-  currencyAKey,
-  currencyBKey,
-  period,
-  start,
-  end,
-) => {
-  try {
-    log.debug(
-      'influxdb entities ohlc findByMarketAndPeriodBetweenStartAndEnd',
-      currencyAKey,
-      currencyBKey,
-      period,
-      start,
-      end,
-    )
+export async function insert(points) {
+  log.debug('influxdb entities ohlc insert', points)
 
-    const client = await getClient()
+  const client = await getClient()
 
-    const startNano = toNanoDate(String(start)).getNanoTime()
-    const endNano = toNanoDate(String(end)).getNanoTime()
+  log.debug('influxdb entities ohlc insert client', client)
 
-    const result = await client.query(`
-      SELECT * FROM ${ENTITY_NAME}
-      WHERE
-        currencyAKey = '${currencyAKey}' AND
-        currencyBKey = '${currencyBKey}' AND
-        period       = '${period}'       AND
-        time        >= ${startNano}      AND
-        time        <= ${endNano}
-      ORDER BY time ASC
-    `)
-
-    return result
-  } catch (error) {
-    throw error
-  }
-}
-
-const sanitizeAPIChartDataJSON = (a, currencyAKey, currencyBKey, period) => {
-  return a.map((x) => {
-    return {
-      measurement: ohlcSchema.measurement,
-      timestamp: x.date * 1000 * 1000 * 1000,
-      tags: {
-        currencyAKey,
-        currencyBKey,
-        period,
-      },
-      fields: {
-        open: x.open,
-        close: x.close,
-        high: x.high,
-        low: x.low,
-        volume: x.volume,
-        quoteVolume: x.quoteVolume,
-        weightedAverage: x.weightedAverage,
-      },
-    }
-  })
-}
-
-export const importForMarketAndPeriodBetweenStartAndEnd = async (
-  currencyAKey,
-  currencyBKey,
-  period,
-  start,
-  end,
-) => {
-  try {
-    log.debug(
-      'influxdb entities ohlc importForMarketAndPeriodBetweenStartAndEnd',
-      currencyAKey,
-      currencyBKey,
-      period,
-      start,
-      end,
-    )
-
-    const client = await getClient()
-
-    // TODO: Don't fetch data here. It should not happen in the InfluxDB client
-    //       but rather in the controlling service and passed to here.
-    const apiResultJSON = await returnChartData(
-      currencyAKey,
-      currencyBKey,
-      period,
-      start / 1000 / 1000 / 1000,
-      end / 1000 / 1000 / 1000,
-    )
-
-    // TODO: The same for sanitization; it's the service's job.
-    const data = sanitizeAPIChartDataJSON(
-      apiResultJSON,
-      currencyAKey,
-      currencyBKey,
-      period,
-    )
-
-    await client.writePoints(data)
-  } catch (error) {
-    throw error
-  }
+  await client.writePoints(points)
 }

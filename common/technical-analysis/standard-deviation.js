@@ -1,23 +1,46 @@
-import { log } from '../log'
-
 import { mean } from './mean'
 
-export function standardDeviation(array, input = 'close') {
-  const inputValues = array.map((x) => {
-    return x[input]
+import { log } from '../log'
+
+export function standardDeviation(array, input, length) {
+  // log.debug('standardDeviation', array.length, input, length)
+
+  return array.map((x, i) => {
+    // log.debug('standardDeviation map', i, x)
+
+    if (i < length) {
+      // log.debug('standardDeviation map returning null')
+
+      return null
+    }
+
+    const values = array.slice(i - length, i).map((x) => {
+      return x[input]
+    })
+
+    // log.debug('standardDeviation map values', values)
+
+    const mu = mean(values)
+
+    // log.debug('standardDeviation map mu', mu)
+
+    const result = Math.sqrt(
+      values
+        .map((x) => {
+          return (x - mu) ** 2
+        })
+        .reduce((m, x) => {
+          return m + x
+        }, 0) /
+        (values.length - 1),
+    )
+
+    // log.debug('standardDeviation map mu', mu)
+
+    return result
   })
 
-  const mu = mean(inputValues)
+  // log.debug('standardDeviation output', output)
 
-  const result = Math.sqrt(
-    mean(
-      inputValues.map((x) => {
-        return (x - mu) ** 2
-      }),
-    ),
-  )
-
-  return {
-    stddev: result,
-  }
+  return output
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
 import { Navigation } from '../navigation'
 
@@ -13,8 +13,11 @@ export const ApplicationComponent = (props) => {
     <React.Fragment>
       <Navigation />
       <Switch>
-        <Route exact path="/" component={MarketListPage} />
-        <Route path="/market/:key" component={MarketShowPage} />
+        <Route exact path="/">
+          <Redirect to="/markets" />
+        </Route>
+        <Route path="/markets/:key" component={MarketShowPage} />
+        <Route path="/markets" component={MarketListPage} />
         <Route path="/about" component={AboutPage} />
         <Route component={NotFoundPage} />
       </Switch>

@@ -1,24 +1,31 @@
-import ccxt from 'ccxt'
-import tulind from 'tulind'
-import JSONStream from 'JSONStream'
-import { createReadStream, createWriteStream } from 'fs'
+import { createWriteStream } from 'fs'
 
-import { log } from '../../common/log'
+import D3Node from 'd3-node'
+import canvasModule from 'canvas'
+import ccxt from 'ccxt'
+import techan from 'techan'
+import * as d3 from 'd3'
+
+import { simpleMovingAverage } from './common/technical-analysis/simple-moving-average'
+import { exponentialMovingAverage } from './common/technical-analysis/exponential-moving-average'
+import { exponentialMovingAverageCross } from './common/technical-analysis/exponential-moving-average-cross'
+import { bollingerBand } from './common/technical-analysis/bollinger-band'
+import { keltnerChannel } from './common/technical-analysis/keltner-channel'
+import { squeeze } from './common/technical-analysis/squeeze'
+import { strategy } from './common/technical-analysis/strategy'
+import { log } from './common/log'
+import { access, readFile, writeFile } from './common/file-system'
 
 log.setLevel('debug')
 
-// var close = [4,5,6,6,6,5,5,5,6,4];
-//
-// tulind.indicators.sma.indicator([close], [3], (err, results) => {
-//   console.log("Result of sma is:");
-//   console.log(results[0]);
-// });
+// TODO: Correct format
+const parseDate = d3.timeParse('%d-%b-%y')
 
-// Because this API doesn't like linting tools.
+// Because classes should start with an uppercase letter.
 const Binance = ccxt.binance
 
 // How many candles to load
-const DATA_SET_SIZE = 100
+const DATA_SET_SIZE = 1000
 
 // How many candles to load extra in order to calculate the first indicator
 // value correctly.
@@ -28,7 +35,7 @@ const LARGEST_INDICATOR_DATA_SET_SIZE = 20
 const MARKET_SYMBOL = 'ETH/BTC'
 
 // The timeframe to load
-const TIMEFRAME = '1m'
+const TIMEFRAME = '1d'
 
 // Amount of bars to request each update
 const UPDATE_BAR_COUNT = 2
@@ -36,174 +43,357 @@ const UPDATE_BAR_COUNT = 2
 // Interval to request each update at.
 const UPDATE_INTERVAL_MILLISECONDS = 1000 * 2
 
-let smaShort
-const smaShortLength = 7
-
-let smaLong
-const smaLongLength = 20
-
-let emaShort
 const emaShortLength = 7
-
-let emaLong
 const emaLongLength = 20
+const bbLength = 20
+const bbMultiplier = 1.5
+const kcLength = 20
+const kcAtrLength = 14
+const kcAtrMultiplier = 1.5
 
-let exchange
-let ohlcv
-let ohlcvAsArrays
-let resultSet
+function convertToObjectOfArrays(array) {
+  const output = {}
 
-function resolveCallbackWith(fn, ...args) {
-  return new Promise((resolve, reject) => {
-    fn(...args, (error, result) => {
-      if (error) {
-        return reject(error)
-      }
-
-      return resolve(result)
+  array.forEach((x) => {
+    Object.keys(x).forEach((key) => {
+      output[key] = output[key] || []
+      output[key].push(x[key])
     })
   })
+
+  return output
 }
 
-async function getOHLCV() {
-  try {
-    const result = await exchange.fetchOHLCV(
-      MARKET_SYMBOL,
-      TIMEFRAME,
-      undefined,
-      UPDATE_BAR_COUNT,
-    )
-    return ohlcv.slice(UPDATE_BAR_COUNT, ohlcv.length).concat(result)
-  } catch (error) {
-    log.error(error)
+async function getOHLCV(exchange) {
+  // log.debug('getOHLCV', exchange)
+
+  const filePathSymbol = MARKET_SYMBOL.replace('/', '-')
+
+  const filePath = `./ohlcv_input/${filePathSymbol}_${TIMEFRAME}.json`
+
+  // log.debug('getOHLCV filePath', filePath)
+
+  const canAccess = await access(filePath)
+
+  // log.debug('getOHLCV canAccess', canAccess)
+
+  if (canAccess) {
+    const fileContents = await readFile(filePath)
+    const fileContentsAsObject = JSON.parse(fileContents)
+    return fileContentsAsObject
   }
-}
 
-function getOHLCVAsArrays(pairs) {
-  return {
-    open: pairs.map((entry) => {
-      return entry[1]
-    }),
+  const fetchResult = await exchange.fetchOHLCV(
+    MARKET_SYMBOL,
+    TIMEFRAME,
+    undefined,
+    DATA_SET_SIZE + LARGEST_INDICATOR_DATA_SET_SIZE,
+  )
 
-    high: pairs.map((entry) => {
-      return entry[2]
-    }),
+  // log.debug('getOHLCV fetchResult', fetchResult)
 
-    low: pairs.map((entry) => {
-      return entry[3]
-    }),
-
-    close: pairs.map((entry) => {
-      return entry[4]
-    }),
-
-    volume: pairs.map((entry) => {
-      return entry[5]
-    }),
-  }
-}
-
-async function getIndicator(name, ...args) {
-  try {
-    const result = tulind.indicators[name]
-
-    if (!result) {
-      return
+  const convertedFetchResult = fetchResult.map((row) => {
+    return {
+      date: row[0],
+      open: row[1],
+      high: row[2],
+      low: row[3],
+      close: row[4],
+      volume: row[5],
     }
-
-    return (await resolveCallbackWith(result.indicator, ...args))[0]
-  } catch (error) {
-    log.error(error)
-  }
-}
-
-async function updateValues() {
-  ohlcvAsArrays = getOHLCVAsArrays(ohlcv)
-
-  smaShort = await getIndicator('sma', [ohlcvAsArrays.close], [smaShortLength])
-  smaLong = await getIndicator('sma', [ohlcvAsArrays.close], [smaLongLength])
-  emaShort = await getIndicator('ema', [ohlcvAsArrays.close], [emaShortLength])
-  emaLong = await getIndicator('ema', [ohlcvAsArrays.close], [emaLongLength])
-
-  // log.debug('ohlcv', ohlcvAsArrays.close.length)
-  // log.debug('smaShort', smaShort.length)
-  // log.debug('smaLong', smaLong.length)
-  // log.debug('emaShort', emaShort.length)
-  // log.debug('emaLong', emaLong.length)
-
-  resultSet = ohlcv.map((x, i) => {
-    // log.debug('smaShort', ohlcv.length, i, ohlcv[i], smaShort[i])
-    // log.debug('emaShort', smaShort[i])
-
-    // log.debug('smaLong', smaLong[i])
-    // log.debug('emaLong', smaLong[i])
-
-    const output = {
-      timestamp: x[0],
-      open: x[1],
-      high: x[2],
-      low: x[3],
-      close: x[4],
-      volume: x[5],
-    }
-
-    if (i > smaShortLength) {
-      output.smaShort = smaShort[i - smaShortLength]
-    }
-
-    if (i > smaLongLength) {
-      output.smaLong = smaLong[i - smaLongLength]
-    }
-
-    if (i > emaShortLength) {
-      output.emaShort = emaShort[i - emaShortLength]
-    }
-
-    if (i > emaLongLength) {
-      output.emaLong = emaLong[i - emaLongLength]
-    }
-
-    return output
   })
+
+  const convertedFetchResultAsJSON = JSON.stringify(convertedFetchResult)
+
+  await writeFile(filePath, convertedFetchResultAsJSON)
+
+  return convertedFetchResult
+}
+
+async function getIndicators(ohlcv) {
+  const emaShort = exponentialMovingAverage(ohlcv, 'close', emaShortLength)
+  const emaLong = exponentialMovingAverage(ohlcv, 'close', emaLongLength)
+
+  const emaCross = exponentialMovingAverageCross(
+    ohlcv,
+    'close',
+    emaShortLength,
+    emaLongLength,
+  )
+
+  const bb = bollingerBand(ohlcv, 'close', bbLength, bbMultiplier)
+
+  const kc = keltnerChannel(
+    ohlcv,
+    'close',
+    kcLength,
+    kcAtrLength,
+    kcAtrMultiplier,
+  )
+
+  const sq = squeeze(
+    ohlcv,
+    'close',
+    bbLength,
+    bbMultiplier,
+    kcLength,
+    kcAtrLength,
+    kcAtrMultiplier,
+  )
+
+  const strat = strategy(
+    ohlcv,
+    'close',
+    emaShortLength,
+    emaLongLength,
+    bbLength,
+    bbMultiplier,
+    kcLength,
+    kcAtrLength,
+    kcAtrMultiplier,
+  )
+
+  return {
+    emaShort,
+    emaLong,
+    emaCross,
+    strat,
+    bbMiddle: bb.map((x) => {
+      return x[0]
+    }),
+    bbUpper: bb.map((x) => {
+      return x[1]
+    }),
+    bbLower: bb.map((x) => {
+      return x[2]
+    }),
+    kcMiddle: kc.map((x) => {
+      return x[0]
+    }),
+    kcUpper: kc.map((x) => {
+      return x[1]
+    }),
+    kcLower: kc.map((x) => {
+      return x[2]
+    }),
+    squeeze: sq,
+  }
+}
+
+async function saveOutput(object) {
+  // log.debug('saveOutput object', object)
+
+  const filePathSymbol = MARKET_SYMBOL.replace('/', '-')
+
+  // log.debug('saveOutput filePathSymbol', filePathSymbol)
+
+  const filePath = `./ohlcv_output/${filePathSymbol}_${TIMEFRAME}.json`
+
+  // log.debug('saveOutput filePath', filePath)
+
+  const objectJSON = JSON.stringify(object)
+
+  // log.debug('saveOutput objectJSON', objectJSON)
+
+  await writeFile(filePath, objectJSON)
+}
+
+async function saveChartAsHTML(d3n, filePath) {
+  try {
+    await writeFile(filePath, d3n.html())
+  } catch (error) {
+    log.error(error)
+  }
+}
+
+async function saveChartAsPNG(d3n, canvas, filePath) {
+  try {
+    // Draw to canvas instead of SVG
+    // const canvas = d3n.createCanvas(containerWidth, containerHeight)
+    // const context = canvas.getContext('2d')
+
+    const writeStream = createWriteStream(filePath)
+    const writePromise = new Promise((resolve, reject) => {
+      writeStream.on('finish', resolve)
+      writeStream.on('error', reject)
+    })
+
+    canvas.pngStream().pipe(writeStream)
+    await writePromise
+
+    await writeFile(filePath, d3n.html())
+  } catch (error) {
+    log.error(error)
+  }
+}
+
+async function drawChart(data) {
+  try {
+    const filePathSymbol = MARKET_SYMBOL.replace('/', '-')
+    const filePath = `./ohlcv_html/${filePathSymbol}_${TIMEFRAME}.html`
+
+    const styles = `
+      body {
+        font: 10px sans-serif;
+      }
+
+      text {
+        fill: #000;
+      }
+
+      button {
+        position: absolute;
+        right: 20px;
+        top: 440px;
+        display: none;
+      }
+
+      path.candle {
+        stroke: #000000;
+      }
+
+      path.candle.body {
+        stroke-width: 0;
+      }
+
+      path.candle.up {
+        fill: #00AA00;
+        stroke: #00AA00;
+      }
+
+      path.candle.down {
+        fill: #FF0000;
+        stroke: #FF0000;
+      }
+    `
+
+    const d3n = new D3Node({
+      canvasModule,
+      d3Module: d3,
+      styles,
+    })
+
+    const containerWidth = 800
+    const containerHeight = 600
+
+    const margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 50,
+    }
+
+    const chartWidth = containerWidth - margin.left - margin.right
+    const chartHeight = containerHeight - margin.top - margin.bottom
+
+    const x = techan.scale.financetime().range([0, chartWidth])
+    const y = d3.scaleLinear().range([chartHeight, 0])
+
+    const candlestick = techan.plot
+      .candlestick()
+      .xScale(x)
+      .yScale(y)
+
+    const candlestickAccessor = candlestick.accessor()
+
+    const xAxis = d3.axisBottom(x)
+    const yAxis = d3.axisLeft(y)
+
+    const svg = d3n
+      .createSVG(containerWidth, containerHeight)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`)
+
+    svg.append('g').attr('class', 'candlestick')
+
+    svg
+      .append('g')
+      .attr('class', 'x axis')
+      .attr('transform', `translate(0,${chartHeight})`)
+
+    svg
+      .append('g')
+      .attr('class', 'y axis')
+      .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 6)
+      .attr('dy', '.71em')
+      .style('text-anchor', 'end')
+      .text('Price ($)')
+
+    svg.selectAll('g.x.axis').call(xAxis)
+    svg.selectAll('g.y.axis').call(yAxis)
+
+    x.domain(data.map(candlestickAccessor.d))
+    y.domain(techan.scale.plot.ohlc(data, candlestickAccessor).domain())
+
+    svg
+      .selectAll('g.candlestick')
+      .datum(data)
+      .call(candlestick)
+
+    await saveChartAsHTML(d3n, filePath)
+  } catch (error) {
+    log.error(error)
+  }
 }
 
 async function start() {
   try {
-    const inputStream = JSONStream.stringify()
-    const outputStream = createWriteStream(`${__dirname}/output.json`)
+    const exchange = new Binance({ id: 'binance1' })
 
-    inputStream.pipe(outputStream)
-
-    exchange = new Binance({ id: 'binance1' })
-
-    ohlcv = await exchange.fetchOHLCV(
+    const ohlcv = await getOHLCV(
+      exchange,
       MARKET_SYMBOL,
       TIMEFRAME,
-      undefined,
       DATA_SET_SIZE + LARGEST_INDICATOR_DATA_SET_SIZE,
     )
 
-    await updateValues()
+    // log.debug('ohlcv', ohlcv)
 
-    resultSet.forEach((x) => {
-      log.debug('writing', x)
+    const indicators = await getIndicators(ohlcv)
 
-      inputStream.write(x)
+    // log.debug('indicators', indicators)
+
+    const combined = ohlcv.map((row, i) => {
+      const output = {
+        ...row,
+      }
+
+      Object.keys(indicators).forEach((key) => {
+        output[key] = indicators[key][i]
+      })
+
+      return output
     })
+
+    await saveOutput(combined)
+
+    await drawChart(combined)
+
+    /*
+    // Get the indicators based on this data set.
+    const indicators = getIndicators(ohlcv)
 
     setInterval(async () => {
       try {
-        ohlcv = await getOHLCV()
+        const newOHLCV = await exchange.fetchOHLCV(
+          MARKET_SYMBOL,
+          TIMEFRAME,
+          undefined,
+          1,
+        )
 
-        await updateValues()
+        const ohlcv = await getOHLCV()
+
+        await updateValues(ohlcv)
 
         log.debug('writing', resultSet[resultSet.length - 1])
-
-        inputStream.write(resultSet[resultSet.length - 1])
       } catch (error) {
         log.error(error)
       }
     }, UPDATE_INTERVAL_MILLISECONDS)
+    */
   } catch (error) {
     log.error(error)
   }

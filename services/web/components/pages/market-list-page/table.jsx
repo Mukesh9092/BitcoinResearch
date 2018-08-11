@@ -38,10 +38,12 @@ export const TableComponent = (props) => {
         </TableHead>
         <TableBody>
           {data.map((row) => {
+            const key = `${row.base}-${row.quote}`
+
             return (
               <TableRow key={row.key}>
                 <TableCell>
-                  <Link to={`/market/${row.id}`}>{row.id}</Link>
+                  <Link to={`/markets/${key}`}>{key}</Link>
                 </TableCell>
                 <TableCell>{row.base}</TableCell>
                 <TableCell>{row.quote}</TableCell>
