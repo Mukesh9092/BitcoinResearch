@@ -9,10 +9,12 @@ import MaterialTable, {
   TableHead,
   TableRow,
 } from 'material-ui/Table'
+import Typography from '@material-ui/core/Typography'
 
 const styles = (theme) => {
   return {
     root: {
+      ...theme.mixins.gutters(),
       marginTop: theme.spacing.unit,
       width: '100%',
       overflowX: 'auto',
@@ -24,10 +26,18 @@ const styles = (theme) => {
 }
 
 export const TableComponent = (props) => {
-  const { data, classes } = props
+  const { header, data, classes } = props
 
   return (
     <Paper className={classes.root}>
+      <Typography variant="headline" component="h3">
+        {header}
+      </Typography>
+      <Typography component="p">
+        Paper can be used to build surface or other elements for your
+        application.
+      </Typography>
+
       <MaterialTable className={classes.table}>
         <TableHead>
           <TableRow>

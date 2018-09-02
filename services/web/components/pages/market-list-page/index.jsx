@@ -32,6 +32,27 @@ const styles = (theme) => {
   }
 }
 
+function sortMarkets(markets) {
+  return markets
+    .map((m) => {
+      return {
+        ...m,
+        id: `${m.base}_${m.quote}`,
+      }
+    })
+    .sort((a, b) => {
+      if (a.id < b.id) {
+        return -1
+      }
+
+      if (a.id > b.id) {
+        return 1
+      }
+
+      return 0
+    })
+}
+
 export const Component = (props) => {
   const { classes } = props
 
@@ -40,10 +61,7 @@ export const Component = (props) => {
   return (
     <Query query={marketsQuery}>
       {({ loading, error, data }) => {
-        log.debug('after query')
-        log.debug(loading)
-        log.debug(error)
-        log.debug(data)
+        log.debug('after query', loading, error, data)
 
         if (loading) {
           return (
@@ -66,22 +84,12 @@ export const Component = (props) => {
           )
         }
 
-        const { markets } = data
-
-        const filteredMarkets = markets.filter(({ active }) => {
-          return active
+        const binanceMarkets = data.markets.filter((market) => {
+          return market.trader === 'binance'
         })
 
-        const sortedMarkets = filteredMarkets.sort((a, b) => {
-          if (a.id < b.id) {
-            return -1
-          }
-
-          if (a.id > b.id) {
-            return 1
-          }
-
-          return 0
+        const onebrokerMarkets = data.markets.filter((market) => {
+          return market.trader === 'onebroker'
         })
 
         return (
@@ -93,7 +101,7 @@ export const Component = (props) => {
             </Grid>
 
             <Grid item xs={12}>
-              <Table data={sortedMarkets} />
+              <Table header="Binance" data={sortMarkets(binanceMarkets)} />
             </Grid>
           </Grid>
         )

@@ -103,6 +103,55 @@ export const OHLCVChartComponent = (props) => {
         xExtents={xExtents}
       >
         <Chart
+          id={1}
+          yExtents={[
+            (d) => {
+              return [d.high, d.low]
+            },
+          ]}
+          padding={{ top: 40, bottom: 20 }}
+        >
+          <XAxis axisAt="bottom" orient="bottom" />
+          <YAxis
+            axisAt="right"
+            orient="right"
+            ticks={5}
+            tickFormat={format('.8f')}
+          />
+
+          <MouseCoordinateX
+            rectWidth={60}
+            at="bottom"
+            orient="bottom"
+            displayFormat={timeFormat('%H:%M:%S')}
+          />
+          <MouseCoordinateY
+            at="right"
+            orient="right"
+            displayFormat={format('.8f')}
+          />
+
+          <CandlestickSeries />
+
+          <EdgeIndicator
+            itemType="last"
+            orient="right"
+            edgeAt="right"
+            displayFormat={format('.8f')}
+            yAccessor={(d) => {
+              return d.close
+            }}
+            fill={(d) => {
+              return d.close > d.open ? '#6BA583' : '#FF0000'
+            }}
+          />
+
+          <OHLCTooltip
+            origin={[-40, 0]}
+            xDisplayFormat={timeFormat('%Y-%m-%d %H:%M:%S')}
+          />
+        </Chart>
+        <Chart
           id={2}
           yExtents={[
             (d) => {
@@ -152,48 +201,6 @@ export const OHLCVChartComponent = (props) => {
             }}
             displayFormat={format('.4s')}
             fill="#0F0F0F"
-          />
-        </Chart>
-        <Chart
-          id={1}
-          yExtents={[
-            (d) => {
-              return [d.high, d.low]
-            },
-          ]}
-          padding={{ top: 40, bottom: 20 }}
-        >
-          <XAxis axisAt="bottom" orient="bottom" />
-          <YAxis axisAt="right" orient="right" ticks={5} />
-
-          <MouseCoordinateX
-            rectWidth={60}
-            at="bottom"
-            orient="bottom"
-            displayFormat={timeFormat('%H:%M:%S')}
-          />
-          <MouseCoordinateY
-            at="right"
-            orient="right"
-            displayFormat={format('.2f')}
-          />
-
-          <CandlestickSeries />
-          <EdgeIndicator
-            itemType="last"
-            orient="right"
-            edgeAt="right"
-            yAccessor={(d) => {
-              return d.close
-            }}
-            fill={(d) => {
-              return d.close > d.open ? '#6BA583' : '#FF0000'
-            }}
-          />
-
-          <OHLCTooltip
-            origin={[-40, 0]}
-            xDisplayFormat={timeFormat('%Y-%m-%d %H:%M:%S')}
           />
         </Chart>
         <CrossHairCursor />

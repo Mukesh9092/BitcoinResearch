@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+nodemon \
+    -e js,jsx \
+    -V \
+    --delay 2500ms \
+    --watch . \
+    --ignore **/*.json \
+    --ignore node_modules \
+    --exec 'npm run start-inspect'

@@ -1,91 +1,22 @@
 version: '3'
-
-# Ports:
-#   - Application Services: 80xx
-#   - Databases:            81xx
-#   - Dashboards:           82xx
-
 services:
   proxy:
     image: traefik
-    command: -c /dev/null --api --docker --docker.domain=docker.localhost --logLevel=DEBUG
+    command: '-c /dev/null --api --docker --docker.domain=docker.localhost --logLevel=DEBUG'
     ports:
-      - 80:80
-      - 8080:8080
+      - '80:80'
+      - '8080:8080'
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./services/proxy/traefik.toml:/traefik.toml
-      - ./services/proxy/acme.json:/acme.json
-
-
-  nats:
-    image: nats:latest
-    ports:
-      - ${NATS_PORT}:${NATS_PORT}
-      - ${NATS_HTTP_PORT}:${NATS_HTTP_PORT}
-      - ${NATS_CLUSTER_PORT}:${NATS_CLUSTER_PORT}
-    env_file: .env
-    environment:
-      - SERVICE_NAME=nats
-    labels:
-      - traefik.frontend.rule=Host:nats.docker.localhost
-      - traefik.backend=nats
-      - traefik.port=${NATS_HTTP_PORT}
-
-  nats-admin:
-    build:
-      context: .
-      dockerfile: ./services/nats-admin/Dockerfile
-    ports:
-      - ${NATS_ADMIN_PORT}:3000
-    env_file: .env
-    environment:
-      - SERVICE_NAME=nats-admin
-      - SERVICE_EXPOSE_PORT=3000
-    labels:
-      - traefik.frontend.rule=Host:nats-admin.docker.localhost
-      - traefik.backend=nats-admin
-      - traefik.port=3000
-
-
-
-
-  redis:
-    image: redislabs/rejson:latest
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
-    volumes:
-      - ./services/redis:/service
-      - ./services/redis/data:/data
-    env_file: .env
-    environment:
-      - SERVICE_NAME=redis
-      - SERVICE_EXPOSE_PORT=${REDIS_PORT}
-
-  redis-admin:
-    build:
-      context: .
-      dockerfile: ./services/redis-admin/Dockerfile
-    ports:
-      - ${REDIS_ADMIN_PORT}:${REDIS_ADMIN_PORT}
-    volumes:
-      - ./services/redis-admin:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=redis-admin
-      - SERVICE_EXPOSE_PORT=${REDIS_ADMIN_PORT}
-    labels:
-      - traefik.frontend.rule=Host:redis-admin.docker.localhost
-      - traefik.backend=redis-admin
-      - traefik.port=${REDIS_ADMIN_PORT}
-
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './services/proxy/traefik.toml:/traefik.toml'
+      - './services/proxy/acme.json:/acme.json'
 
   postgresql:
-    image: postgres:latest
+    image: 'postgres:latest'
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     volumes:
-      - ./services/postgresql/data:/var/lib/postgresql/data
+      - './services/postgresql/data:/var/lib/postgresql/data'
     env_file: .env
 
   postgresql-admin:
@@ -93,201 +24,46 @@ services:
     depends_on:
       - postgresql
     ports:
-      - ${POSTGRES_ADMIN_PORT}:${POSTGRES_ADMIN_PORT}
+      - '${POSTGRES_ADMIN_PORT}:${POSTGRES_ADMIN_PORT}'
     env_file: .env
     environment:
       - SERVICE_NAME=postgresql-admin
-      - SERVICE_EXPOSE_PORT=${POSTGRES_ADMIN_PORT}
+      - 'SERVICE_EXPOSE_PORT=${POSTGRES_ADMIN_PORT}'
     labels:
-      - traefik.frontend.rule=Host:postgresql-admin.docker.localhost
+      - 'traefik.frontend.rule=Host:postgresql-admin.docker.localhost'
       - traefik.backend=postgresql-admin
-      - traefik.port=${POSTGRES_ADMIN_PORT}
+      - 'traefik.port=${POSTGRES_ADMIN_PORT}'
 
-
-  influxdb:
-    image: influxdb:latest
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
     ports:
-      - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
+      - '${API_PORT}:${API_PORT}'
     volumes:
-      - ./services/influxdb/data:/var/lib/influxdb
-    env_file: .env
-
-  influxdb-chronograf:
-    image: chronograf:latest
-    depends_on:
-      - proxy
-      - influxdb
-    ports:
-      - ${INFLUXDB_CHRONOGRAF_PORT}:${INFLUXDB_CHRONOGRAF_PORT}
-    volumes:
-      - ./services/influxdb-chronograf/data:/var/lib/chronograf
+      - './services/api:/service'
     env_file: .env
     environment:
-      INFLUXDB_URL: http://${INFLUXDB_HOST}:${INFLUXDB_PORT}
-      KAPACITOR_URL: http://${INFLUXDB_KAPACITOR_HOST}:${INFLUXDB_KAPACITOR_PORT}
+      - SERVICE_NAME=api
+      - 'SERVICE_EXPOSE_PORT=${API_PORT}'
     labels:
-      - traefik.frontend.rule=Host:influxdb-chronograf.docker.localhost
-      - traefik.backend=influxdb-chronograf
-      - traefik.port=${INFLUXDB_CHRONOGRAF_PORT}
-
-  influxdb-telegraf:
-    image: telegraf:latest
-    depends_on:
-      - influxdb
-    ports:
-      - ${INFLUXDB_TELEGRAF_STATSD_PORT}:${INFLUXDB_TELEGRAF_STATSD_PORT}/udp
-      - ${INFLUXDB_TELEGRAF_UDP_PORT}:${INFLUXDB_TELEGRAF_UDP_PORT}/udp
-      - ${INFLUXDB_TELEGRAF_TCP_PORT}:${INFLUXDB_TELEGRAF_TCP_PORT}
-    volumes:
-      - ./services/influxdb-telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    env_file: .env
-    labels:
-      - traefik.frontend.rule=Host:influxdb-telegraf.docker.localhost
-      - traefik.backend=influxdb-telegraf
-      - traefik.port=${INFLUXDB_TELEGRAF_TCP_PORT}
-
-  influxdb-kapacitor:
-    image: kapacitor:latest
-    depends_on:
-      - influxdb
-    ports:
-      - ${INFLUXDB_KAPACITOR_PORT}:${INFLUXDB_KAPACITOR_PORT}
-    volumes:
-      - ./services/influxdb-kapacitor/data:/var/lib/kapacitor
-    env_file: .env
-    environment:
-      KAPACITOR_HOSTNAME: ${INFLUXDB_KAPACITOR_HOST}
-      KAPACITOR_INFLUXDB_0_URLS_0: http://${INFLUXDB_HOST}:${INFLUXDB_PORT}
-    labels:
-      - traefik.frontend.rule=Host:influxdb-kapacitor.docker.localhost
-      - traefik.backend=influxdb-kapacitor
-      - traefik.port=${INFLUXDB_KAPACITOR_PORT}
-
-
-  market-importer:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    depends_on:
-      - nats
-    volumes:
-      - ./services/market-importer:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=market-importer
-
-  market-state:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    depends_on:
-      - nats
-    volumes:
-      - ./services/market-state:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=market-state
-
-  orderbook-importer:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    depends_on:
-      - nats
-    volumes:
-      - ./services/orderbook-importer:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=orderbook-importer
-
-  orderbook-state:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    depends_on:
-      - nats
-    volumes:
-      - ./services/orderbook-state:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=orderbook-state
-
-  ohlcv-state:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    depends_on:
-      - nats
-    volumes:
-      - ./services/ohlcv-state:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=ohlcv-state
-
-  graphql:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    ports:
-      - ${API_GRAPHQL_PORT}:${API_GRAPHQL_PORT}
-    volumes:
-      - ./services/graphql:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=graphql
-      - SERVICE_EXPOSE_PORT=${WEB_PORT}
-    labels:
-      - traefik.frontend.rule=Host:graphql.docker.localhost
-      - traefik.backend=graphql
-      - traefik.port=${API_GRAPHQL_PORT}
-
-  graphiql:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    depends_on:
-      - graphql
-    ports:
-      - ${API_GRAPHIQL_PORT}:${API_GRAPHIQL_PORT}
-    volumes:
-      - ./services/graphiql:/service
-    env_file: .env
-    environment:
-      - SERVICE_NAME=graphiql
-      - SERVICE_EXPOSE_PORT=${WEB_PORT}
-    labels:
-      - traefik.frontend.rule=Host:graphiql.docker.localhost
-      - traefik.backend=graphiql
-      - traefik.port=${API_GRAPHIQL_PORT}
+      - 'traefik.frontend.rule=Host:api.docker.localhost'
+      - traefik.backend=api
+      - 'traefik.port=${API_PORT}'
 
   web:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     ports:
-      - ${WEB_PORT}:${WEB_PORT}
+      - '${WEB_PORT}:${WEB_PORT}'
     volumes:
-      - ./services/web:/service
+      - './services/web:/service'
     env_file: .env
     environment:
       - SERVICE_NAME=web
-      - SERVICE_EXPOSE_PORT=${WEB_PORT}
+      - 'SERVICE_EXPOSE_PORT=${WEB_PORT}'
     labels:
-      - traefik.frontend.rule=Host:docker.localhost
+      - 'traefik.frontend.rule=Host:docker.localhost'
       - traefik.backend=web
-      - traefik.port=${WEB_PORT}
-
-
-#  eventstore:
-#    image: eventstore/eventstore
-#    ports:
-#      - ${EVENTSTORE_PORT}:${EVENTSTORE_PORT}
-#      - ${EVENTSTORE_HTTP_PORT}:${EVENTSTORE_HTTP_PORT}
-#    volumes:
-#      - ./services/eventstore/data:/var/lib/eventstore
-#      - ./services/eventstore/logs:/var/log/eventstore
-#    env_file: .env
-#    labels:
-#      - traefik.frontend.rule=Host:eventstore.docker.localhost
-#      - traefik.backend=eventstore
-#      - traefik.port=${EVENTSTORE_HTTP_PORT}
+      - 'traefik.port=${WEB_PORT}'

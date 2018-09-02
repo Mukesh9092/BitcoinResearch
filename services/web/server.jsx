@@ -1,23 +1,26 @@
-import _ from 'lodash'
 import React from 'react'
 import ReactDOM from 'react-dom/server'
+import _ from 'lodash'
 import createHistory from 'history/createMemoryHistory'
-import { getDataFromTree, ApolloProvider } from 'react-apollo'
-// import { Provider } from 'react-redux'
 import { StaticRouter } from 'react-router-dom'
+import { getDataFromTree, ApolloProvider } from 'react-apollo'
 
 import { getServerApolloClient } from './common/apollo-client'
+import { log } from './common/log'
 
 import webpackConfig from './webpack.config'
-
 import { App } from './components/app'
+
+log.setLevel('debug')
 
 const PUBLIC_ASSET_PATH = webpackConfig[0].output.publicPath
 
 function getClientAssets(res) {
   const webpackStats = res.locals.webpackStats.toJson()
 
-  const [clientStats] = webpackStats.children.filter(x => x.name === 'client')
+  const [clientStats] = webpackStats.children.filter((x) => {
+    return x.name === 'client'
+  })
 
   return clientStats.assetsByChunkName
 }
@@ -26,8 +29,12 @@ function getClientStyles(assets) {
   return _(assets)
     .values()
     .flatten()
-    .filter(path => path.endsWith('.css'))
-    .map(path => `<link rel="stylesheet" href="${PUBLIC_ASSET_PATH}${path}" />`)
+    .filter((path) => {
+      return path.endsWith('.css')
+    })
+    .map((path) => {
+      return `<link rel="stylesheet" href="${PUBLIC_ASSET_PATH}${path}" />`
+    })
     .join('\n')
 }
 
@@ -35,44 +42,50 @@ function getClientScripts(assets) {
   return _(assets)
     .values()
     .flatten()
-    .filter(path => path.endsWith('.js'))
-    .map(path => `<script src="${PUBLIC_ASSET_PATH}${path}" /></script>`)
+    .filter((path) => {
+      return path.endsWith('.js')
+    })
+    .map((path) => {
+      return `<script src="${PUBLIC_ASSET_PATH}${path}" /></script>`
+    })
     .join('\n')
 }
 
-export default () => async (req, res, next) => {
-  try {
-    const apolloClient = getServerApolloClient({ headers: req.headers })
+export default () => {
+  return async (req, res, next) => {
+    try {
+      const apolloClient = getServerApolloClient({ headers: req.headers })
 
-    const history = createHistory({ initialEntries: [req.path] })
-    const renderContext = {}
-    const appComponent = (
-      <ApolloProvider client={apolloClient}>
-        <StaticRouter location={req.url} context={renderContext}>
-          <App history={history} />
-        </StaticRouter>
-      </ApolloProvider>
-    )
+      const history = createHistory({ initialEntries: [req.path] })
+      const renderContext = {}
+      const appComponent = (
+        <ApolloProvider client={apolloClient}>
+          <StaticRouter location={req.url} context={renderContext}>
+            <App history={history} />
+          </StaticRouter>
+        </ApolloProvider>
+      )
 
-    await getDataFromTree(appComponent)
-    const initialState = apolloClient.cache.extract()
-    const app = ReactDOM.renderToString(appComponent)
+      await getDataFromTree(appComponent)
 
-    if (renderContext.url) {
-      res.writeHead(302, {
-        Location: renderContext.url,
-      })
-      res.end()
-      return
-    }
+      const initialState = apolloClient.cache.extract()
+      const app = ReactDOM.renderToString(appComponent)
 
-    const title = 'Title'
+      if (renderContext.url) {
+        res.writeHead(302, {
+          Location: renderContext.url,
+        })
+        res.end()
+        return
+      }
 
-    const clientAssets = getClientAssets(res)
-    const styles = getClientStyles(clientAssets)
-    const scripts = getClientScripts(clientAssets)
+      const title = 'Title'
 
-    const html = `
+      const clientAssets = getClientAssets(res)
+      const styles = getClientStyles(clientAssets)
+      const scripts = getClientScripts(clientAssets)
+
+      const html = `
       <!doctype html>
         <html>
           <head>
@@ -93,10 +106,15 @@ export default () => async (req, res, next) => {
             ${scripts}
           </body>
         </html>
-    `
+      `
 
-    res.send(html)
-  } catch (error) {
-    next(error)
+      log.debug(6)
+
+      res.send(html)
+
+      log.debug(7)
+    } catch (error) {
+      next(error)
+    }
   }
 }
