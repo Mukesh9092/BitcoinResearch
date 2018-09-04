@@ -33,10 +33,10 @@ export function getBrowserApolloClient() {
 export function getServerApolloClient(options) {
   const { headers } = options
 
-  const { API_HOST, API_PORT } = process.env
+  const { WEB_HOST, WEB_PORT } = process.env
 
   const httpLink = new HttpLink({
-    uri: `http://${API_HOST}:${API_PORT}/graphql`,
+    uri: `http://${WEB_HOST}:${WEB_PORT}/graphql`,
   })
 
   const authLink = setContext((_, props) => {

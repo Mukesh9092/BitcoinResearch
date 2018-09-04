@@ -1,27 +1,31 @@
 import React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
-
 import { Navigation } from '../navigation'
 
-import AboutPage from '../pages/about-page'
-import MarketListPage from '../pages/market-list-page'
-import MarketShowPage from '../pages/market-show-page'
-import NotFoundPage from '../pages/not-found-page'
+// import MarketListPage from '../pages/market-list-page'
+// import AboutPage from '../pages/about-page'
+// import NotFoundPage from '../pages/not-found-page'
+// import MarketShowPage from '../pages/market-show-page'
 
-export const ApplicationComponent = (props) => {
+import s from './index.css'
+
+console.log('S', s)
+
+export const ApplicationComponent = () => {
   return (
-    <React.Fragment>
+    <div className="application">
       <Navigation />
-      <Switch>
-        <Route exact path="/">
-          <Redirect to="/markets" />
-        </Route>
-        <Route path="/markets/:key" component={MarketShowPage} />
-        <Route path="/markets" component={MarketListPage} />
-        <Route path="/about" component={AboutPage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-    </React.Fragment>
+      LOL
+      {/* <Switch> */}
+      {/*   <Route exact path="/"> */}
+      {/*     <Redirect to="/markets" /> */}
+      {/*   </Route> */}
+      {/*   <Route path="/markets/:key" component={MarketShowPage} /> */}
+      {/*   <Route path="/markets" component={MarketListPage} /> */}
+      {/*   <Route path="/about" component={AboutPage} /> */}
+      {/*   <Route component={NotFoundPage} /> */}
+      {/* </Switch> */}
+    </div>
   )
 }
 

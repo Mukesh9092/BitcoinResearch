@@ -1,45 +1,75 @@
+const util = require('util')
+
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 const webpack = require('webpack')
 
 const isDevelopment = require('./common/environment/isDevelopment').default
-const log = require('./common/log').log
 
 const base = {
   mode: isDevelopment() ? 'development' : 'production',
-  devtool: 'inline-cheap-source-map',
   output: {
-    chunkFilename: '[name].js',
-    filename: '[name].js',
+    filename: isDevelopment() ? '[name].js' : '[name].[hash].js',
+    chunkFilename: isDevelopment() ? '[id].js' : '[id].[hash].js',
     path: `${__dirname}/.hmr`,
+    // TODO: Get this from ENV var STATIC_ASSET_PATH
     publicPath: '/static/',
   },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       styles: {
+  //         name: 'styles',
+  //         test: /\.css$/,
+  //         chunks: 'all',
+  //         enforce: true,
+  //       },
+  //     },
+  //   },
+  // },
+  plugins: [new WriteFilePlugin()],
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: 'babel-loader',
+        use: [{ loader: 'babel-loader' }],
       },
       {
-        test: /\.css$/,
-        use: [{ loader: 'css-loader', options: { importLoaders: 1 } }],
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        use: [{ loader: 'url-loader' }],
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader',
+        test: /\.(sa|sc|c)ss$/,
+        // use: isDevelopment()
+        //   ? ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
+        //   : [
+        //       'file-loader',
+        //       'extract-loader',
+        //       'css-loader',
+        //       'postcss-loader',
+        //       'sass-loader',
+        //     ],
+        use: [
+          'file-loader',
+          'extract-loader',
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
+        ],
       },
     ],
   },
-  resolve: {
-    extensions: ['.js', '.jsx', '.css'],
-  },
-  plugins: [new WriteFilePlugin()],
 }
 
 const client = {
   ...base,
   name: 'client',
   target: 'web',
+  devtool: 'inline-cheap-source-map',
   entry: {
     client: [
       'react-hot-loader/patch',
@@ -48,12 +78,17 @@ const client = {
     ],
   },
   plugins: base.plugins.concat([new webpack.HotModuleReplacementPlugin()]),
+  // module: {
+  //   ...base.module,
+  //   rules: base.module.rules.concat([]),
+  // },
 }
 
 const server = {
   ...base,
   name: 'server',
   target: 'node',
+  devtool: 'source-map',
   entry: {
     server: [`${__dirname}/server.jsx`],
   },
@@ -61,10 +96,14 @@ const server = {
     ...base.output,
     libraryTarget: 'commonjs2',
   },
+  // module: {
+  //   ...base.module,
+  //   rules: base.module.rules.concat([]),
+  // },
 }
 
 const config = [client, server]
 
-log.debug({ config })
+console.log(util.inspect(config, false, null))
 
 module.exports = config

@@ -1,6 +1,6 @@
 import ccxt from 'ccxt'
 
-import { getKnexClient } from '../../database/knex-client'
+import { getKnexClient } from '../knex-client'
 import { log } from '../../log'
 
 const Binance = ccxt.binance
@@ -60,16 +60,16 @@ export function sanitizeOneBroker(markets) {
 
 export async function importTrader(name, exchange, sanitizer) {
   try {
-    log.debug('importTrader', name, exchange)
+    // log.debug('importTrader', name, exchange)
 
     const knexClient = getKnexClient()
     const markets = await exchange.loadMarkets()
 
-    log.debug('importTrader markets', Object.keys(markets).length)
+    // log.debug('importTrader markets', Object.keys(markets).length)
 
     const sanitizedMarkets = sanitizer(markets)
 
-    log.debug('importTrader sanitizedMarkets.length', sanitizedMarkets.length)
+    // log.debug('importTrader sanitizedMarkets.length', sanitizedMarkets.length)
 
     await knexClient('market').insert(sanitizedMarkets)
   } catch (error) {

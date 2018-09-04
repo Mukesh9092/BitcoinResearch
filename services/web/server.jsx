@@ -1,9 +1,13 @@
+// Ignore styles on the server side.
+// import 'ignore-styles'
+
 import React from 'react'
 import ReactDOM from 'react-dom/server'
 import _ from 'lodash'
 import createHistory from 'history/createMemoryHistory'
-import { StaticRouter } from 'react-router-dom'
 import { getDataFromTree, ApolloProvider } from 'react-apollo'
+// Specificly don't use StaticRouter so we can override history
+import { Router } from 'react-router-dom'
 
 import { getServerApolloClient } from './common/apollo-client'
 import { log } from './common/log'
@@ -13,16 +17,26 @@ import { App } from './components/app'
 
 log.setLevel('debug')
 
-const PUBLIC_ASSET_PATH = webpackConfig[0].output.publicPath
+// const { PUBLIC_ASSET_PATH } = process.env
+
+const PUBLIC_ASSET_PATH = '/static/'
 
 function getClientAssets(res) {
-  const webpackStats = res.locals.webpackStats.toJson()
+  log.debug('getClientAssets')
+  log.debug('getClientAssets res.locals', res.locals)
 
+  if (!res.locals.webpackStats) {
+    return {}
+  }
+
+  const webpackStats = res.locals.webpackStats.toJson()
   const [clientStats] = webpackStats.children.filter((x) => {
     return x.name === 'client'
   })
 
-  return clientStats.assetsByChunkName
+  const { assetsByChunkName } = clientStats
+
+  return assetsByChunkName
 }
 
 function getClientStyles(assets) {
@@ -54,52 +68,49 @@ function getClientScripts(assets) {
 export default () => {
   return async (req, res, next) => {
     try {
-      const apolloClient = getServerApolloClient({ headers: req.headers })
+      console.log(1)
+      console.log(1.1, req.url)
+      console.log(1.2, res.locals)
 
-      const history = createHistory({ initialEntries: [req.path] })
-      const renderContext = {}
+      const apolloClient = getServerApolloClient({ headers: req.headers })
+      const reactHistory = createHistory({ initialEntries: [req.path] })
+      const context = {}
       const appComponent = (
         <ApolloProvider client={apolloClient}>
-          <StaticRouter location={req.url} context={renderContext}>
-            <App history={history} />
-          </StaticRouter>
+          <Router history={reactHistory} location={req.url} context={context}>
+            <App history={reactHistory} />
+          </Router>
         </ApolloProvider>
       )
 
+      console.log(2)
+
       await getDataFromTree(appComponent)
-
       const initialState = apolloClient.cache.extract()
-      const app = ReactDOM.renderToString(appComponent)
+      const apolloScript = `
+        <script>
+          window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(
+            /</g,
+            '\\u003c',
+          )}
+        </script>
+      `
 
-      if (renderContext.url) {
-        res.writeHead(302, {
-          Location: renderContext.url,
-        })
-        res.end()
-        return
-      }
+      console.log(3)
 
       const title = 'Title'
-
       const clientAssets = getClientAssets(res)
       const styles = getClientStyles(clientAssets)
       const scripts = getClientScripts(clientAssets)
-
+      const app = ReactDOM.renderToString(appComponent)
       const html = `
-      <!doctype html>
+        <!doctype html>
         <html>
           <head>
             <meta charset="utf-8">
             <title>${title}</title>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
             ${styles}
-            <script>
-              window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(
-                /</g,
-                '\\u003c',
-              )}
-            </script>
+            ${apolloScript}
           </head>
           <body>
             <div id="root">${app}</div>
@@ -108,13 +119,19 @@ export default () => {
         </html>
       `
 
-      log.debug(6)
+      console.log(4)
 
-      res.send(html)
-
-      log.debug(7)
-    } catch (error) {
-      next(error)
+      if (context.url) {
+        res.writeHead(302, {
+          Location: context.url,
+        })
+        res.end()
+      } else {
+        res.write(html)
+        res.end()
+      }
+    } catch (err) {
+      next(err)
     }
   }
 }

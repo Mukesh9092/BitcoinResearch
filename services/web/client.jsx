@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import createHistory from 'history/createBrowserHistory'
 import { ApolloProvider } from 'react-apollo'
 import { AppContainer } from 'react-hot-loader'
-import { Router } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import { getBrowserApolloClient } from './common/apollo-client'
 import { log } from './common/log'
@@ -11,17 +11,19 @@ import { isDevelopment } from './common/environment'
 
 import { App } from './components/app'
 
-const history = createHistory()
+const reactHistory = createHistory()
 const apolloClient = getBrowserApolloClient()
+
+const rootElement = document.getElementById('root')
 
 let render = (AppComponent) => {
   ReactDOM.hydrate(
     <ApolloProvider client={apolloClient}>
-      <Router history={history}>
-        <AppComponent history={history} />
+      <Router history={reactHistory}>
+        <AppComponent history={reactHistory} />
       </Router>
     </ApolloProvider>,
-    document.getElementById('root'),
+    rootElement,
   )
 }
 
@@ -32,12 +34,12 @@ if (isDevelopment()) {
     ReactDOM.hydrate(
       <AppContainer>
         <ApolloProvider client={apolloClient}>
-          <Router history={history}>
-            <AppComponent history={history} />
+          <Router history={reactHistory}>
+            <AppComponent history={reactHistory} />
           </Router>
         </ApolloProvider>
       </AppContainer>,
-      document.getElementById('root'),
+      rootElement,
     )
   }
 

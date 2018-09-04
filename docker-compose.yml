@@ -34,23 +34,6 @@ services:
       - traefik.backend=postgresql-admin
       - 'traefik.port=${POSTGRES_ADMIN_PORT}'
 
-  api:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    ports:
-      - '${API_PORT}:${API_PORT}'
-    volumes:
-      - './services/api:/service'
-    env_file: .env
-    environment:
-      - SERVICE_NAME=api
-      - 'SERVICE_EXPOSE_PORT=${API_PORT}'
-    labels:
-      - 'traefik.frontend.rule=Host:api.docker.localhost'
-      - traefik.backend=api
-      - 'traefik.port=${API_PORT}'
-
   web:
     build:
       context: .
