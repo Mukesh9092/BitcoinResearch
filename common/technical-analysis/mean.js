@@ -1,8 +1,10 @@
-import { log } from '../log'
+import * as math from 'mathjs'
 
-export function mean(array) {
-  const sum = array.reduce((x, y) => {
-    return x + y
-  }, 0)
-  return sum / array.length
+export const mean = (array, precision) => {
+  return Number(
+    math.format(math.eval(`${math.sum(...array)} / ${array.length}`), {
+      notation: 'fixed',
+      precision,
+    }),
+  )
 }

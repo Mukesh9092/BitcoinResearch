@@ -1,40 +1,60 @@
+import * as math from 'mathjs'
+
 import { exponentialMovingAverage } from './exponential-moving-average'
 import { averageTrueRange } from './average-true-range'
 
 import { log } from '../log'
 
-export function keltnerChannel(array, input, length, atrLength, atrMultiplier) {
+export function keltnerChannel(
+  array,
+  precision,
+  input,
+  length,
+  atrLength,
+  atrMultiplier,
+) {
   const exponentialMovingAverages = exponentialMovingAverage(
     array,
+    precision,
     input,
     length,
   )
 
-  const averageTrueRanges = averageTrueRange(array, atrLength)
+  const averageTrueRanges = averageTrueRange(array, precision, atrLength)
 
-  // log.debug('keltnerChannel averageTrueRanges', averageTrueRanges)
-
-  return array.map((x, i) => {
-    // log.debug('keltnerChannel map', i, length)
-
+  const result = array.map((x, i) => {
     if (i < length) {
       return [null, null, null]
     }
 
-    const ma = exponentialMovingAverages[i]
-
-    // log.debug('keltnerChannel map ma', ma)
-
+    const ema = exponentialMovingAverages[i]
     const atr = averageTrueRanges[i]
 
-    // log.debug('keltnerChannel map atr', atr)
+    const upper = math.eval(`${ema} + ${atr} * ${atrMultiplier}`)
+    const middle = math.eval(exponentialMovingAverages[i])
+    const lower = math.eval(`${ema} - ${atr} * ${atrMultiplier}`)
 
-    const upper = ma + atr * atrMultiplier
-    const lower = ma - atr * atrMultiplier
-
-    // log.debug('keltnerChannel map upper', upper)
-    // log.debug('keltnerChannel map lower', lower)
-
-    return [ma, upper, lower]
+    return [
+      Number(
+        math.format(upper, {
+          notation: 'fixed',
+          precision,
+        }),
+      ),
+      Number(
+        math.format(middle, {
+          notation: 'fixed',
+          precision,
+        }),
+      ),
+      Number(
+        math.format(lower, {
+          notation: 'fixed',
+          precision,
+        }),
+      ),
+    ]
   })
+
+  return result
 }

@@ -1,10 +1,17 @@
+import * as math from 'mathjs'
+
 import { squeeze } from './squeeze'
-import { exponentialMovingAverageCross } from './exponential-moving-average-cross.js'
+import { exponentialMovingAverageCross } from './exponential-moving-average-cross'
 
 import { log } from '../log'
 
+function isBoolean(x) {
+  return x === true || x === false
+}
+
 export function strategy(
   array,
+  precision,
   input,
   emaShortLength,
   emaLongLength,
@@ -16,6 +23,7 @@ export function strategy(
 ) {
   const sq = squeeze(
     array,
+    precision,
     input,
     bbLength,
     bbMultiplier,
@@ -26,47 +34,31 @@ export function strategy(
 
   const emaCross = exponentialMovingAverageCross(
     array,
+    precision,
     input,
     emaShortLength,
     emaLongLength,
   )
 
-  return array.map((x, i) => {
+  const result = []
+
+  for (let i = 0, l = array.length; i < l; i += 1) {
     if (i === 0) {
-      return null
+      result.push(false)
+    } else {
+      const squeezeCurrent = sq[i]
+      const emaCrossCurrent = emaCross[i]
+
+      if (
+        typeof squeezeCurrent !== 'boolean' ||
+        typeof emaCrossCurrent !== 'boolean'
+      ) {
+        result.push(false)
+      } else {
+        result.push(!squeezeCurrent || emaCrossCurrent)
+      }
     }
+  }
 
-    const squeezePrevious = sq[i - 1]
-    const squeezeCurrent = sq[i]
-
-    const emaCrossPrevious = emaCross[i - 1]
-    const emaCrossCurrent = emaCross[i]
-
-    if (
-      !squeezePrevious ||
-      !squeezeCurrent ||
-      !emaCrossPrevious ||
-      !emaCrossCurrent
-    ) {
-      return null
-    }
-
-    if (squeezePrevious === squeezeCurrent) {
-      return null
-    }
-
-    if (emaCrossPrevious === emaCrossCurrent) {
-      return null
-    }
-
-    if (squeezeCurrent === false && emaCrossCurrent === true) {
-      return true
-    }
-
-    if (emaCrossCurrent === false) {
-      return false
-    }
-
-    return '???'
-  })
+  return result
 }

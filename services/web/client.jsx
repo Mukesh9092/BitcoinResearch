@@ -19,7 +19,7 @@ const rootElement = document.getElementById('root')
 let render = (AppComponent) => {
   ReactDOM.hydrate(
     <ApolloProvider client={apolloClient}>
-      <Router history={reactHistory}>
+      <Router>
         <AppComponent history={reactHistory} />
       </Router>
     </ApolloProvider>,
@@ -34,7 +34,7 @@ if (isDevelopment()) {
     ReactDOM.hydrate(
       <AppContainer>
         <ApolloProvider client={apolloClient}>
-          <Router history={reactHistory}>
+          <Router>
             <AppComponent history={reactHistory} />
           </Router>
         </ApolloProvider>

@@ -7,7 +7,7 @@ import { Navigation } from '../navigation'
 // import NotFoundPage from '../pages/not-found-page'
 // import MarketShowPage from '../pages/market-show-page'
 
-import s from './index.css'
+import s from './index.scss'
 
 console.log('S', s)
 
@@ -15,7 +15,7 @@ export const ApplicationComponent = () => {
   return (
     <div className="application">
       <Navigation />
-      LOL
+      LOL12345
       {/* <Switch> */}
       {/*   <Route exact path="/"> */}
       {/*     <Redirect to="/markets" /> */}

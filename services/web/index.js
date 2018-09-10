@@ -94,9 +94,9 @@ unhandledError((error) => {
 })
 
 // TODO: Turn back on!
-// setInterval(() => {
-//   return importMarkets(apiKeys)
-// }, ONE_DAY_IN_MILLISECONDS)
-// importMarkets(apiKeys)
+setInterval(() => {
+  return importMarkets(apiKeys)
+}, ONE_DAY_IN_MILLISECONDS)
+importMarkets(apiKeys)
 
 unhandledError(log.debug)

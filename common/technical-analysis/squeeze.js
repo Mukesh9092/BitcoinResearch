@@ -5,6 +5,7 @@ import { log } from '../log'
 
 export function squeeze(
   array,
+  precision,
   input,
   bbLength,
   bbMultiplier,
@@ -12,9 +13,10 @@ export function squeeze(
   kcAtrLength,
   kcAtrMultiplier,
 ) {
-  const bb = bollingerBand(array, input, bbLength, bbMultiplier)
+  const bb = bollingerBand(array, precision, input, bbLength, bbMultiplier)
   const kc = keltnerChannel(
     array,
+    precision,
     input,
     kcLength,
     kcAtrLength,

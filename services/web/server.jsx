@@ -22,8 +22,7 @@ log.setLevel('debug')
 const PUBLIC_ASSET_PATH = '/static/'
 
 function getClientAssets(res) {
-  log.debug('getClientAssets')
-  log.debug('getClientAssets res.locals', res.locals)
+  // log.debug('getClientAssets')
 
   if (!res.locals.webpackStats) {
     return {}
@@ -40,6 +39,13 @@ function getClientAssets(res) {
 }
 
 function getClientStyles(assets) {
+  log.debug(
+    'getClientStyles',
+    _(assets)
+      .values()
+      .flatten(),
+  )
+
   return _(assets)
     .values()
     .flatten()
@@ -99,9 +105,15 @@ export default () => {
       console.log(3)
 
       const title = 'Title'
+
       const clientAssets = getClientAssets(res)
       const styles = getClientStyles(clientAssets)
       const scripts = getClientScripts(clientAssets)
+
+      log.debug('clientAssets', clientAssets)
+      log.debug('styles', styles)
+      log.debug('scripts', scripts)
+
       const app = ReactDOM.renderToString(appComponent)
       const html = `
         <!doctype html>

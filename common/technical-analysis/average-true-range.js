@@ -1,29 +1,38 @@
-import { mean } from './mean'
+import * as math from 'mathjs'
+
 import { trueRange } from './true-range'
 
-export function averageTrueRange(array, length) {
-  const trueRanges = trueRange(array)
+export function averageTrueRange(array, precision, length) {
+  const trueRanges = trueRange(array, precision)
+  const result = []
 
-  let i = 0
-  const result = array.reduce((m, x) => {
-    // Start at +1 because True Range needs 2 values and returns 1 null.
+  for (let i = 0, l = array.length; i < l; i += 1) {
     if (i < length + 1) {
-      m.push(null)
-      i += 1
-      return m
-    }
+      result.push(null)
+    } else if (i === length + 1) {
+      result.push(
+        Number(
+          math.format(math.mean(trueRanges.slice(1, i)), {
+            notation: 'fixed',
+            precision,
+          }),
+        ),
+      )
+    } else {
+      const calculation = math.eval(
+        `(${result[i - 1]} * (${length} - 1) + ${trueRanges[i]}) / ${length}`,
+      )
 
-    if (i === length + 1) {
-      m.push(mean(trueRanges.slice(1, i)))
-      i += 1
-      return m
-    }
+      const formatted = Number(
+        math.format(calculation, {
+          notation: 'fixed',
+          precision,
+        }),
+      )
 
-    // Calculate the rest of the values.
-    m.push((m[i - 1] * (length - 1) + trueRanges[i]) / length)
-    i += 1
-    return m
-  }, [])
+      result.push(formatted)
+    }
+  }
 
   return result
 }

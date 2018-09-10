@@ -1,15 +1,26 @@
-import { mean } from './mean'
+import * as math from 'mathjs'
 
-export function simpleMovingAverage(array, input, length) {
+export function simpleMovingAverage(array, precision, input, length) {
   const values = array.map((x) => {
     return x[input]
   })
 
-  return values.map((x, i) => {
-    if (i < length) {
-      return null
-    }
+  const result = []
 
-    return mean(values.slice(i - length, i))
-  })
+  for (let i = 0, l = values.length; i < l; i += 1) {
+    if (i < length) {
+      result.push(null)
+    } else {
+      result.push(
+        Number(
+          math.format(math.mean(values.slice(i - length, i)), {
+          notation: 'fixed',
+            precision,
+          }),
+        ),
+      )
+    }
+  }
+
+  return result
 }

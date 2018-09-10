@@ -27,3 +27,17 @@ export function sleep(ms) {
     return setTimeout(resolve, ms)
   })
 }
+
+export function allSerially(a) {
+  return a.reduce((promiseChain, currentTask) => {
+    return promiseChain.then((chainResults) => currentTask.then((currentResult) => [...chainResults, currentResult]))
+  }, Promise.resolve([]))
+}
+
+export async function allSerially1(a) {
+  return a.reduce(async (m, v) => {
+    const mResult = await m
+    const vResult = await v
+    return [...mResult, vResult]
+  }, Promise.resolve([]))
+}

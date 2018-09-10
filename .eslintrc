@@ -2,7 +2,7 @@
   "extends": ["airbnb", "plugin:prettier/recommended"],
   "plugins": ["jest"],
   "rules": {
-    "arrow-body-style": ["error", "always"],
+    "arrow-body-style": ["error", "as-needed"],
     "arrow-parens": ["error", "always"],
     "consistent-return": 0,
     "import/prefer-default-export": 0,
