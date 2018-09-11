@@ -7,9 +7,9 @@ import { Navigation } from '../navigation'
 // import NotFoundPage from '../pages/not-found-page'
 // import MarketShowPage from '../pages/market-show-page'
 
-import s from './index.scss'
+// import s from './index.module'
 
-console.log('S', s)
+// console.log('S', s)
 
 export const ApplicationComponent = () => {
   return (

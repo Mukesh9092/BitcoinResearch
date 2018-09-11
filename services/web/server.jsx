@@ -8,6 +8,7 @@ import createHistory from 'history/createMemoryHistory'
 import { getDataFromTree, ApolloProvider } from 'react-apollo'
 // Specificly don't use StaticRouter so we can override history
 import { Router } from 'react-router-dom'
+import fetch from 'cross-fetch'
 
 import { getServerApolloClient } from './common/apollo-client'
 import { log } from './common/log'
@@ -15,14 +16,14 @@ import { log } from './common/log'
 import webpackConfig from './webpack.config'
 import { App } from './components/app'
 
+global.fetch = fetch
 log.setLevel('debug')
 
 // const { PUBLIC_ASSET_PATH } = process.env
-
-const PUBLIC_ASSET_PATH = '/static/'
+const PUBLIC_ASSET_PATH = '/static'
 
 function getClientAssets(res) {
-  // log.debug('getClientAssets')
+  log.debug('##### getClientAssets', res.locals)
 
   if (!res.locals.webpackStats) {
     return {}
@@ -66,18 +67,16 @@ function getClientScripts(assets) {
       return path.endsWith('.js')
     })
     .map((path) => {
-      return `<script src="${PUBLIC_ASSET_PATH}${path}" /></script>`
+      return `<script src="${PUBLIC_ASSET_PATH}/${path}" /></script>`
     })
     .join('\n')
 }
 
 export default () => {
   return async (req, res, next) => {
-    try {
-      console.log(1)
-      console.log(1.1, req.url)
-      console.log(1.2, res.locals)
+    log.debug('server req', req.url)
 
+    try {
       const apolloClient = getServerApolloClient({ headers: req.headers })
       const reactHistory = createHistory({ initialEntries: [req.path] })
       const context = {}
@@ -88,8 +87,6 @@ export default () => {
           </Router>
         </ApolloProvider>
       )
-
-      console.log(2)
 
       await getDataFromTree(appComponent)
       const initialState = apolloClient.cache.extract()
@@ -102,17 +99,15 @@ export default () => {
         </script>
       `
 
-      console.log(3)
-
       const title = 'Title'
 
       const clientAssets = getClientAssets(res)
       const styles = getClientStyles(clientAssets)
       const scripts = getClientScripts(clientAssets)
 
-      log.debug('clientAssets', clientAssets)
-      log.debug('styles', styles)
-      log.debug('scripts', scripts)
+      log.debug('server clientAssets', clientAssets)
+      log.debug('server styles', styles)
+      log.debug('server scripts', scripts)
 
       const app = ReactDOM.renderToString(appComponent)
       const html = `
@@ -130,8 +125,6 @@ export default () => {
           </body>
         </html>
       `
-
-      console.log(4)
 
       if (context.url) {
         res.writeHead(302, {

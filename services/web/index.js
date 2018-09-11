@@ -22,7 +22,8 @@ import schema from './schema'
 import serverRendererMiddleware from './server'
 import webpackConfig from './webpack.config'
 
-const CLIENT_ASSETS_DIR = join(__dirname, './.hmr')
+const CLIENT_ASSETS_DIR = join(__dirname, '.hmr')
+const PUBLIC_DIR_PATH = join(__dirname, 'public')
 const ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24
 const { WEB_HOST, WEB_PORT, PUBLIC_ASSET_PATH } = process.env
 
@@ -31,7 +32,7 @@ log.setLevel('debug')
 expressServiceWithMiddleware(
   async (app) => {
     try {
-      log.debug('isDevelopment', isDevelopment())
+      // log.debug('index isDevelopment', isDevelopment())
 
       const apolloServer = new ApolloServer({
         typeDefs: schema,
@@ -39,23 +40,27 @@ expressServiceWithMiddleware(
           RootQuery,
         },
       })
+      // log.debug('index apolloServer?', !!apolloServer)
 
       genericExpressService(app)
       loggerMiddleware(app)
 
-      // app.use(faviconMiddleware(`${PUBLIC_ASSET_PATH}/favicon.ico`))
+      app.use(staticMiddleware(CLIENT_ASSETS_DIR, PUBLIC_ASSET_PATH))
+      app.use(staticMiddleware(PUBLIC_DIR_PATH, PUBLIC_ASSET_PATH))
+      app.use(faviconMiddleware(`${PUBLIC_DIR_PATH}/favicon.ico`))
 
       apolloServer.applyMiddleware({ app, path: '/graphql' })
-      // app.use(
-      //   '/graphiql',
-      //   graphiqlExpress({
-      //     endpointURL: '/graphql',
-      //   }),
-      // )
+      // app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
       const compiler = webpack(webpackConfig)
+      // log.debug('index webpack compiler?', !!compiler)
 
+      // Webpack middleware MUST precede serverRendererMiddleware for correct
+      // collection of assets. There is also another way supposedly that uses a
+      // JSON manifest file.
       if (isDevelopment()) {
+        // log.debug('index webpack in development')
+
         app.use(
           webpackDevMiddleware(compiler, {
             logLevel: 'debug',
@@ -73,7 +78,6 @@ expressServiceWithMiddleware(
         )
       }
 
-      app.use(staticMiddleware(CLIENT_ASSETS_DIR, PUBLIC_ASSET_PATH))
       app.use(serverRendererMiddleware())
 
       await new Promise((resolve) => {
