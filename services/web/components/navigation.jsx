@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom'
 //
 // console.log('navigation styles', styles)
 
-export const NavigationComponent = () => {
-  return (
-    <div className="derp">
-      <Link to="/">Home</Link>
-      <Link to="/about">About</Link>
-    </div>
-  )
-}
+export const NavigationComponent = () => (
+  // some change
+
+  <div className="derp">
+    <Link to="/">Home</Link>
+    <Link to="/about">About</Link>
+  </div>
+)
 
 export const Navigation = NavigationComponent
