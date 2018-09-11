@@ -1,32 +1,34 @@
 import React from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { css } from 'emotion'
+import { hot } from 'react-hot-loader'
+
 import { Navigation } from '../navigation'
+// import { Redirect, Route, Switch } from 'react-router-dom'
 
 // import MarketListPage from '../pages/market-list-page'
 // import AboutPage from '../pages/about-page'
 // import NotFoundPage from '../pages/not-found-page'
 // import MarketShowPage from '../pages/market-show-page'
 
-// import s from './index.module'
+const className = css`
+  background-color: #00ff00;
+`
 
-// console.log('S', s)
+export const ApplicationComponent = () => (
+  <div className={className}>
+    <Navigation />
+    <div>Content</div>
+  </div>
+)
 
-export const ApplicationComponent = () => {
-  return (
-    <div className="application">
-      <Navigation />
-      LOL12345
-      {/* <Switch> */}
-      {/*   <Route exact path="/"> */}
-      {/*     <Redirect to="/markets" /> */}
-      {/*   </Route> */}
-      {/*   <Route path="/markets/:key" component={MarketShowPage} /> */}
-      {/*   <Route path="/markets" component={MarketListPage} /> */}
-      {/*   <Route path="/about" component={AboutPage} /> */}
-      {/*   <Route component={NotFoundPage} /> */}
-      {/* </Switch> */}
-    </div>
-  )
-}
+export const App = hot(module)(ApplicationComponent)
 
-export const App = ApplicationComponent
+//   <Switch>
+//   <Route exact path="/">
+//   <Redirect to="/markets" />
+//   </Route>
+// <Route path="/markets/:key" component={MarketShowPage} />
+// <Route path="/markets" component={MarketListPage} />
+// <Route path="/about" component={AboutPage} />
+// <Route component={NotFoundPage} />
+// </Switch>

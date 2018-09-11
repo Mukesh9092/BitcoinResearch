@@ -11,17 +11,33 @@ const levels = {
   debug: 3,
 }
 
+function logOutput(line) {
+  const input = line
+  // const outputter = (process && process.stdout && process.stdout.write) || console.log
+  const outputter = console.log
+
+  outputter(input)
+}
+
+function logError(error) {
+  const input = error.stack || error.message || error
+  // const outputter = (process && process.stdout && process.stdout.write) || console.log
+  const outputter = console.log
+
+  outputter(input)
+}
+
 function errorLogger(error) {
   try {
-    const message = JSON.stringify({
-      timestamp: new Date(),
-      level,
-      error: error.stack || error.message || error,
-    })
-    const line = `${message}\n`
-    process.stdout.write(line)
-  } catch (e) {
-    process.stderr.write(e.stack || e.message || e)
+    logOutput(
+      JSON.stringify({
+        timestamp: new Date(),
+        level,
+        error: error.stack || error.message || error,
+      }),
+    )
+  } catch (error) {
+    logError(error)
   }
 }
 
@@ -32,8 +48,7 @@ function defaultLogger(...args) {
       level,
       data: args.length > 1 ? args : args[0],
     })
-    const line = `${message}\n`
-    process.stdout.write(line)
+    logOutput(message)
   } catch (error) {
     errorLogger(error)
   }

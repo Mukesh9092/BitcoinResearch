@@ -2,18 +2,18 @@
 // import 'ignore-styles'
 
 import React from 'react'
-import ReactDOM from 'react-dom/server'
 import _ from 'lodash'
 import createHistory from 'history/createMemoryHistory'
-import { getDataFromTree, ApolloProvider } from 'react-apollo'
-// Specificly don't use StaticRouter so we can override history
-import { Router } from 'react-router-dom'
 import fetch from 'cross-fetch'
+import { Router } from 'react-router-dom' // Specificly don't use StaticRouter so we can override history
+import { extractCritical } from 'emotion-server'
+import { getDataFromTree, ApolloProvider } from 'react-apollo'
+import { renderToString } from 'react-dom/server'
 
 import { getServerApolloClient } from './common/apollo-client'
 import { log } from './common/log'
 
-import webpackConfig from './webpack.config'
+// import webpackConfig from './webpack.config'
 import { App } from './components/app'
 
 global.fetch = fetch
@@ -23,16 +23,14 @@ log.setLevel('debug')
 const PUBLIC_ASSET_PATH = '/static'
 
 function getClientAssets(res) {
-  log.debug('##### getClientAssets', res.locals)
+  log.debug('getClientAssets res.locals.webpackStats?', res.locals.webpackStats)
 
   if (!res.locals.webpackStats) {
     return {}
   }
 
   const webpackStats = res.locals.webpackStats.toJson()
-  const [clientStats] = webpackStats.children.filter((x) => {
-    return x.name === 'client'
-  })
+  const [clientStats] = webpackStats.children.filter((x) => x.name === 'client')
 
   const { assetsByChunkName } = clientStats
 
@@ -40,22 +38,11 @@ function getClientAssets(res) {
 }
 
 function getClientStyles(assets) {
-  log.debug(
-    'getClientStyles',
-    _(assets)
-      .values()
-      .flatten(),
-  )
-
   return _(assets)
     .values()
     .flatten()
-    .filter((path) => {
-      return path.endsWith('.css')
-    })
-    .map((path) => {
-      return `<link rel="stylesheet" href="${PUBLIC_ASSET_PATH}${path}" />`
-    })
+    .filter((path) => path.endsWith('.css'))
+    .map((path) => `<link rel="stylesheet" href="${PUBLIC_ASSET_PATH}/${path}" />`)
     .join('\n')
 }
 
@@ -63,80 +50,76 @@ function getClientScripts(assets) {
   return _(assets)
     .values()
     .flatten()
-    .filter((path) => {
-      return path.endsWith('.js')
-    })
-    .map((path) => {
-      return `<script src="${PUBLIC_ASSET_PATH}/${path}" /></script>`
-    })
+    .filter((path) => path.endsWith('.js'))
+    .map((path) => `<script src="${PUBLIC_ASSET_PATH}/${path}" /></script>`)
     .join('\n')
 }
 
-export default () => {
-  return async (req, res, next) => {
-    log.debug('server req', req.url)
+export default () => async (req, res, next) => {
+  log.debug('server req', req.url)
 
-    try {
-      const apolloClient = getServerApolloClient({ headers: req.headers })
-      const reactHistory = createHistory({ initialEntries: [req.path] })
-      const context = {}
-      const appComponent = (
-        <ApolloProvider client={apolloClient}>
-          <Router history={reactHistory} location={req.url} context={context}>
-            <App history={reactHistory} />
-          </Router>
-        </ApolloProvider>
-      )
+  try {
+    const apolloClient = getServerApolloClient({ headers: req.headers })
+    const reactHistory = createHistory({ initialEntries: [req.path] })
+    const context = {}
+    const appComponent = (
+      <ApolloProvider client={apolloClient}>
+        <Router history={reactHistory} location={req.url} context={context}>
+          <App history={reactHistory} />
+        </Router>
+      </ApolloProvider>
+    )
 
-      await getDataFromTree(appComponent)
-      const initialState = apolloClient.cache.extract()
-      const apolloScript = `
-        <script>
-          window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(
-            /</g,
-            '\\u003c',
-          )}
-        </script>
-      `
+    const title = 'Title'
 
-      const title = 'Title'
+    const clientAssets = getClientAssets(res)
+    const styles = getClientStyles(clientAssets)
+    const scripts = getClientScripts(clientAssets)
 
-      const clientAssets = getClientAssets(res)
-      const styles = getClientStyles(clientAssets)
-      const scripts = getClientScripts(clientAssets)
+    log.debug('server clientAssets', clientAssets)
+    log.debug('server styles', styles)
+    log.debug('server scripts', scripts)
 
-      log.debug('server clientAssets', clientAssets)
-      log.debug('server styles', styles)
-      log.debug('server scripts', scripts)
+    const appString = renderToString(appComponent)
+    const appCritical = extractCritical(appString)
 
-      const app = ReactDOM.renderToString(appComponent)
-      const html = `
+    log.debug('server appString', appString)
+    log.debug('server appCritical', appCritical)
+
+    await getDataFromTree(appComponent)
+    const initialState = apolloClient.cache.extract()
+
+    log.debug('server initialState', initialState)
+
+    const html = `
         <!doctype html>
         <html>
           <head>
             <meta charset="utf-8">
             <title>${title}</title>
+            <style>${appCritical.css}</style>
             ${styles}
-            ${apolloScript}
+            <script>
+              window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')}
+            </script>
           </head>
           <body>
-            <div id="root">${app}</div>
+            <div id="root">${appCritical.html}</div>
             ${scripts}
           </body>
         </html>
       `
 
-      if (context.url) {
-        res.writeHead(302, {
-          Location: context.url,
-        })
-        res.end()
-      } else {
-        res.write(html)
-        res.end()
-      }
-    } catch (err) {
-      next(err)
+    if (context.url) {
+      res.writeHead(302, {
+        Location: context.url,
+      })
+      res.end()
+    } else {
+      res.write(html)
+      res.end()
     }
+  } catch (err) {
+    next(err)
   }
 }

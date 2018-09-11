@@ -45,12 +45,14 @@ expressServiceWithMiddleware(
       genericExpressService(app)
       loggerMiddleware(app)
 
-      app.use(staticMiddleware(CLIENT_ASSETS_DIR, PUBLIC_ASSET_PATH))
-      app.use(staticMiddleware(PUBLIC_DIR_PATH, PUBLIC_ASSET_PATH))
+      app.use(PUBLIC_ASSET_PATH, staticMiddleware(CLIENT_ASSETS_DIR))
+      app.use(PUBLIC_ASSET_PATH, staticMiddleware(PUBLIC_DIR_PATH))
       app.use(faviconMiddleware(`${PUBLIC_DIR_PATH}/favicon.ico`))
 
       apolloServer.applyMiddleware({ app, path: '/graphql' })
       // app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
+
+      // log.debug(`index apolloServerMiddleware /graphql`)
 
       const compiler = webpack(webpackConfig)
       // log.debug('index webpack compiler?', !!compiler)
@@ -98,9 +100,7 @@ unhandledError((error) => {
 })
 
 // TODO: Turn back on!
-setInterval(() => {
-  return importMarkets(apiKeys)
-}, ONE_DAY_IN_MILLISECONDS)
-importMarkets(apiKeys)
+// setInterval(() => importMarkets(apiKeys), ONE_DAY_IN_MILLISECONDS)
+// importMarkets(apiKeys)
 
 unhandledError(log.debug)
