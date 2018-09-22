@@ -12,9 +12,9 @@ import { renderToString } from 'react-dom/server'
 
 import { getServerApolloClient } from './common/apollo-client'
 import { log } from './common/log'
-
-// import webpackConfig from './webpack.config'
+import { readFile } from './common/file-system'
 import { App } from './components/app'
+// import webpackConfig from './webpack.config'
 
 global.fetch = fetch
 log.setLevel('debug')
@@ -76,7 +76,6 @@ export default () => async (req, res, next) => {
     const styles = getClientStyles(clientAssets)
     const scripts = getClientScripts(clientAssets)
 
-    log.debug('server clientAssets', clientAssets)
     log.debug('server styles', styles)
     log.debug('server scripts', scripts)
 
@@ -91,12 +90,18 @@ export default () => async (req, res, next) => {
 
     log.debug('server initialState', initialState)
 
+    const reactTableCSS = await readFile('./node_modules/react-table/react-table.css')
+
+    log.debug('server reactTableCss', reactTableCSS)
+
+
     const html = `
         <!doctype html>
         <html>
           <head>
             <meta charset="utf-8">
             <title>${title}</title>
+            <style>${reactTableCSS}</style>
             <style>${appCritical.css}</style>
             ${styles}
             <script>

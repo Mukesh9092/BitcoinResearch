@@ -261,6 +261,8 @@ async function start() {
     const markets = await exchange.loadMarkets()
     const marketSymbols = Object.keys(markets)
 
+    const output = []
+
     for (let marketSymbol of marketSymbols) {
       const combined = await getMarketData(exchange, marketSymbol)
 

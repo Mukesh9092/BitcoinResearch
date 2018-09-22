@@ -17,7 +17,6 @@ import {
 
 import { discontinuousTimeScaleProvider } from 'react-stockcharts/lib/scale'
 import { OHLCTooltip } from 'react-stockcharts/lib/tooltip'
-import { fitWidth } from 'react-stockcharts/lib/helper'
 import { last } from 'react-stockcharts/lib/utils'
 
 import getOHLCVQuery from '../../../queries/getOHLCV'
@@ -27,10 +26,12 @@ const styles = (theme) => {
 }
 
 export const OHLCVChartDataLoader = (props) => {
-  const { classes, marketKey, period, from, to } = props
+  const { classes, trader, base, quote, period, from, to } = props
+
+  console.log('YO', { trader, base, quote, period, from, to })
 
   return (
-    <Query query={getOHLCVQuery} variables={{ key: marketKey, period, from, to }}>
+    <Query query={getOHLCVQuery} variables={{ trader, base, quote, period, from, to }}>
       {({ loading, error, data }) => {
         if (loading) {
           return <h1>LOADING</h1>
@@ -53,7 +54,7 @@ export const OHLCVChartDataLoader = (props) => {
 
         return (
           <OHLCVChartComponent
-            seriesName={marketKey}
+            seriesName={`${base}/${quote}`}
             type="hybrid"
             ohlcv={getOHLCV}
             width={800}
@@ -69,7 +70,7 @@ export const OHLCVChartDataLoader = (props) => {
 export const OHLCVChartComponent = (props) => {
   const { seriesName, type, ohlcv, width, height, ratio } = props
 
-  const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor((d) => new Date(d.datetime))
+  const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor((d) => new Date(d.time))
   const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(ohlcv)
 
   const start = xAccessor(last(data))
@@ -91,7 +92,11 @@ export const OHLCVChartComponent = (props) => {
         displayXAccessor={displayXAccessor}
         xExtents={xExtents}
       >
-        <Chart id={1} yExtents={[(d) => [d.high, d.low]]} padding={{ top: 40, bottom: 20 }}>
+        <Chart
+          id={1}
+          yExtents={[(d) => [d.high, d.low]]}
+          padding={{ top: 40, bottom: 20 }}
+        >
           <XAxis axisAt="bottom" orient="bottom" />
           <YAxis axisAt="right" orient="right" ticks={5} tickFormat={format('.8f')} />
 
@@ -105,32 +110,61 @@ export const OHLCVChartComponent = (props) => {
             orient="right"
             edgeAt="right"
             displayFormat={format('.8f')}
-            yAccessor={(d) => d.close}
-            fill={(d) => (d.close > d.open ? '#6BA583' : '#FF0000')}
+            yAccessor={(d) => {
+              return d.close
+            }}
+            fill={(d) => {
+              return d.close > d.open ? '#6BA583' : '#FF0000'
+            }}
           />
 
           <OHLCTooltip origin={[-40, 0]} xDisplayFormat={timeFormat('%Y-%m-%d %H:%M:%S')} />
         </Chart>
-        <Chart id={2} yExtents={[(d) => d.volume]} height={150} origin={(w, h) => [0, h - 150]}>
+        <Chart
+          id={2}
+          yExtents={[
+            (d) => {
+              return d.volume
+            },
+          ]}
+          height={150}
+          origin={(w, h) => {
+            return [0, h - 150]
+          }}
+        >
           <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format('.2s')} />
 
           <MouseCoordinateY at="left" orient="left" displayFormat={format('.4s')} />
 
-          <BarSeries yAccessor={(d) => d.volume} fill={(d) => (d.close > d.open ? '#6BA583' : '#FF0000')} />
+          <BarSeries
+            yAccessor={(d) => {
+              return d.volume
+            }}
+            fill={(d) => {
+              return d.close > d.open ? '#6BA583' : '#FF0000'
+            }}
+          />
 
-          <CurrentCoordinate yAccessor={(d) => d.volume} fill="#9B0A47" />
+          <CurrentCoordinate
+            yAccessor={(d) => {
+              return d.volume
+            }}
+            fill="#9B0A47"
+          />
 
           <EdgeIndicator
             itemType="last"
             orient="right"
             edgeAt="right"
-            yAccessor={(d) => d.volume}
+            yAccessor={(d) => {
+              return d.volume
+            }}
             displayFormat={format('.4s')}
             fill="#0F0F0F"
           />
         </Chart>
         <CrossHairCursor />
-      </ChartCanvas>
+      </ChartCanvas>{' '}
     </React.Fragment>
   )
 }

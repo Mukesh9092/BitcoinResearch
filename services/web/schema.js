@@ -22,39 +22,39 @@ const schema = `
   }
 
   type OHLCV {
-    time: Date!
+    timestamp: Date!
     open: Float!
     high: Float!
     low: Float!
     close: Float!
-    volume: Float!
+    volume: Float
   }
 
   type PointIndicator {
-    time: Date!
+    timestamp: Date!
     value: Float!
   }
 
   type LineIndicator {
-    time: Date!
+    timestamp: Date!
     value: Float!
   }
 
   type BandIndicator {
-    time: Date!
+    timestamp: Date!
     upper: Float!
     middle: Float!
     lower: Float!
   }
 
-  union Indicator = PointIndicator | LineIndicator | BandIndicator
-
   type RootQuery {
     market: Market
     markets: [Market]
     orderBook(key: String!): OrderBook
-    getOHLCV(key: String!, period: String!, from: Date!, to: Date!): [OHLCV]
-    getIndicator(name: String, key: String!, period: String!, from: Date!, to: Date!): [Indicator]
+    getOHLCV(trader: String!, base: String!, quote: String!, period: String!, from: Date!, to: Date!): [OHLCV]
+    getPointIndicator(trader: String!, name: String!, base: String!, quote: String!, period: String!, from: Date!, to: Date!): [PointIndicator]
+    getLineIndicator(trader: String!, name: String!, base: String!, quote: String!, period: String!, from: Date!, to: Date!): [LineIndicator]
+    getBandIndicator(trader: String!, name: String!, base: String!, quote: String!, period: String!, from: Date!, to: Date!): [BandIndicator]
   }
 
   type OrderBookModifyEvent {

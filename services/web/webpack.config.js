@@ -133,6 +133,11 @@ const getModuleRules = (isServer) => {
     use: [{ loader: 'file-loader' }],
   })
 
+  output.push({
+    test: /\.css$/,
+    use: [{ loader: 'style-loader' }],
+  })
+
   // output.push(getStyleModuleRules(isServer))
 
   return output

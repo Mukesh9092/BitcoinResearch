@@ -1,9 +1,9 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  query getOHLCV($key: String!, $period: String!, $from: Date!, $to: Date!) {
-    getOHLCV(key: $key, period: $period, from: $from, to: $to) {
-      time
+  query getOHLCV($trader: String!, $base: String!, $quote: String!, $period: String!, $from: Date!, $to: Date!) {
+    getOHLCV(trader: $trader, base: $base, quote: $quote, period: $period, from: $from, to: $to) {
+      timestamp
       open
       high
       low

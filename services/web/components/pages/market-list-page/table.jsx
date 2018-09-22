@@ -1,69 +1,96 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { css } from 'emotion'
 
-import { withStyles } from 'material-ui/styles'
-import Paper from 'material-ui/Paper'
-import MaterialTable, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from 'material-ui/Table'
-import Typography from '@material-ui/core/Typography'
+import ReactTable from 'react-table'
+import treeTableHOC from 'react-table/lib/hoc/treeTable'
 
-const styles = (theme) => {
-  return {
-    root: {
-      ...theme.mixins.gutters(),
-      marginTop: theme.spacing.unit,
-      width: '100%',
-      overflowX: 'auto',
-    },
-    table: {
-      minWidth: 700,
-    },
-  }
+import { OHLCVChart } from './ohlcv-chart'
+
+const TreeTable = treeTableHOC(ReactTable)
+
+const containerClassName = css`
+  padding: 50px;
+  background-color: #fefefe;
+`
+
+const tableClassName = css`
+  width: 100%;
+`
+
+function getTdProps(state, ri, ci) {
+  console.log('getTdProps???', { state, ri, ci })
+  return {}
 }
 
 export const TableComponent = (props) => {
   const { header, data, classes } = props
 
   return (
-    <Paper className={classes.root}>
-      <Typography variant="headline" component="h3">
-        {header}
-      </Typography>
-      <Typography component="p">
-        Paper can be used to build surface or other elements for your
-        application.
-      </Typography>
+    <div className={containerClassName}>
+      <h3>{header}</h3>
 
-      <MaterialTable className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>#</TableCell>
-            <TableCell>From</TableCell>
-            <TableCell>To</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row) => {
-            const key = `${row.base}-${row.quote}`
+      <TreeTable
+        filterable
+        defaultFilterMethod={(filter, row, column) => {
+          // TODO: Explain this one to myself.
+          const id = filter.pivotId || filter.id
+          return row[id] !== undefined
+            ? String(row[id])
+                .toLowerCase()
+                .includes(filter.value.toLowerCase())
+            : true
+        }}
+        data={data}
+        defaultPageSize={10}
+        // pivotBy={['trader', 'category']}
+        columns={[
+          {
+            Header: 'Trader',
+            accessor: 'trader',
+          },
+          {
+            Header: 'Category',
+            accessor: 'category',
+          },
+          {
+            Header: 'Type',
+            accessor: 'type',
+          },
+          {
+            Header: 'Base',
+            accessor: 'base',
+          },
+          {
+            Header: 'Quote',
+            accessor: 'quote',
+          },
+        ]}
+        SubComponent={(row) => {
+          const period = '1h'
+          const to = new Date()
+          const from = new Date(to.getTime() - 7 * 24 * 60 * 60 * 1000)
+          const fromDate = from.toISOString()
+          const toDate = to.toISOString()
 
-            return (
-              <TableRow key={row.key}>
-                <TableCell>
-                  <Link to={`/markets/${key}`}>{key}</Link>
-                </TableCell>
-                <TableCell>{row.base}</TableCell>
-                <TableCell>{row.quote}</TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </MaterialTable>
-    </Paper>
+          const { trader, base, quote } = row.original
+
+          return (
+            <OHLCVChart
+              trader={trader}
+              base={base}
+              quote={quote}
+              period={period}
+              from={fromDate}
+              to={toDate}
+            />
+          )
+        }}
+      />
+    </div>
   )
 }
 
-export const Table = withStyles(styles)(TableComponent)
+export const Table = TableComponent
+
+// base quote trader category type

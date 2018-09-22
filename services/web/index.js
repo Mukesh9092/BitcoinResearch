@@ -12,7 +12,7 @@ import { static as staticMiddleware } from 'express'
 import expressServiceWithMiddleware from './common/middleware/expressServiceWith'
 import genericExpressService from './common/middleware/genericExpressService'
 import loggerMiddleware from './common/middleware/logger'
-import { importMarkets } from './common/database/repositories/market'
+import { importMarkets, importOHLCV } from './common/database/repositories/market'
 import { isDevelopment } from './common/environment'
 import { log } from './common/log'
 
@@ -99,8 +99,12 @@ unhandledError((error) => {
   log.error(error)
 })
 
-// TODO: Turn back on!
-// setInterval(() => importMarkets(apiKeys), ONE_DAY_IN_MILLISECONDS)
-// importMarkets(apiKeys)
+const importData = async (apiKeys) => {
+  await importMarkets(apiKeys)
+  await importOHLCV(apiKeys)
+}
+
+setInterval(() => importData(apiKeys), ONE_DAY_IN_MILLISECONDS)
+importData(apiKeys)
 
 unhandledError(log.debug)

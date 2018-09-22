@@ -6,21 +6,15 @@ import { css } from 'emotion'
 //
 // console.log('navigation styles', styles)
 
-const containerClassName = css`
-  background-color: #00ff00;
-`
-
-const linkClassName = css`
-  display: block;
-  background-color: #0000ff;
-`
+const containerClassName = css``
+const linkClassName = css``
 
 export const NavigationComponent = () => (
   // some change
 
   <div className={containerClassName}>
-    <Link className={linkClassName} to="/">
-      Home
+    <Link className={linkClassName} to="/markets">
+      Markets
     </Link>
     <Link className={linkClassName} to="/about">
       About

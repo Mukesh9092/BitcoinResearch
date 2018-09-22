@@ -12,7 +12,9 @@
     "dev": "npm run start",
     "dev-inspect": "npm run start-inspect",
     "start": "babel-node index.js",
-    "start-inspect": "babel-node --inspect-brk=0.0.0.0:9229 index.js"
+    "start-inspect": "babel-node --inspect-brk=0.0.0.0:9229 index.js",
+    "db-migrate-rollback": "knex migrate:rollback",
+    "db-migrate-latest": "knex migrate:latest"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -79,6 +81,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-stockcharts": "^0.7.8",
+    "react-table": "^6.8.6",
     "react-virtualized": "^9.20.1",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
