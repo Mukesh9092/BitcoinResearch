@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+npx rimraf dist
+npm run generate-imported-component
+
+npx parcel serve \
+  --port $WEB_PORT \
+  --hmr-port $WEB_HMR_PORT \
+  --log-level 4 \
+  src/app/index.html

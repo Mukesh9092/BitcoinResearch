@@ -34,18 +34,37 @@ services:
       - traefik.backend=postgresql-admin
       - 'traefik.port=${POSTGRES_ADMIN_PORT}'
 
+  graphql:
+    image: prismagraphql/prisma:1.14
+    ports:
+    - '${GRAPHQL_PORT}:${GRAPHQL_PORT}'
+    environment:
+      PRISMA_CONFIG: |
+        port: ${GRAPHQL_PORT}
+        # uncomment the next line and provide the env var
+        # PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+        # managementApiSecret: my-secret
+        databases:
+          default:
+            connector: postgres
+            host: ${POSTGRES_HOST}
+            port: ${POSTGRES_PORT}
+            user: ${POSTGRES_USER}
+            password: ${POSTGRES_PASSWORD}
+            migrations: true
+    labels:
+      - 'traefik.frontend.rule=Host:graphql.docker.localhost'
+      - traefik.backend=graphql
+      - 'traefik.port=${GRAPHQL_PORT}'
+
   web:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
+    build: services/web
     ports:
       - '${WEB_PORT}:${WEB_PORT}'
+      - '${WEB_HMR_PORT}:${WEB_HMR_PORT}'
     volumes:
       - './services/web:/service'
     env_file: .env
-    environment:
-      - SERVICE_NAME=web
-      - 'SERVICE_EXPOSE_PORT=${WEB_PORT}'
     labels:
       - 'traefik.frontend.rule=Host:docker.localhost'
       - traefik.backend=web

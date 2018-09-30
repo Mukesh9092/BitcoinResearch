@@ -1,0 +1,37 @@
+type User {
+    id: ID! @unique
+    name: String!
+    dashboard: Dashboard @relation(name: "UserDashboard" onDelete: CASCADE)
+}
+
+type Dashboard {
+    id: ID! @unique
+    user: User! @relation(name: "UserDashboard")
+    charts: [Chart!]! @relation(name: "DashboardCharts" onDelete: CASCADE)
+}
+
+type Chart {
+    id: ID! @unique
+    dashboard: Dashboard @relation(name: "DashboardCharts")
+    market: Market @relation(name: "ChartMarket")
+    startTime: DateTime!
+    endTime: DateTime!
+}
+
+type Market {
+    id: ID! @unique
+    trader: String!
+    base: String!
+    quote: String!
+    category: String!
+    type: String!
+}
+
+type OHLCV {
+    timestamp: DateTime!
+    open: Float!
+    high: Float!
+    low: Float!
+    close: Float!
+    volume: Float
+}
