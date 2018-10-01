@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+./node_modules/.bin/nodemon \
+  -w src \
+  -w common \
+  --exec "babel-node src/server"

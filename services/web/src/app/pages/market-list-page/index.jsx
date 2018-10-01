@@ -1,7 +1,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 
-import marketsQuery from '../../queries/markets'
+import marketsQuery from '../../../../common/domain/queries/markets'
 
 import * as styles from './index.scss'
 import { Table } from './table'

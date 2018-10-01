@@ -1,0 +1,45 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Tom Wieland <tom.wieland@gmail.com>",
+  "license": "PUBLIC DOMAIN",
+  "scripts": {
+    "dev": "./bin/dev",
+    "start": "./bin/start"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "graphql": "^14.0.2",
+    "graphql-tag": "^2.9.2",
+    "morgan": "^1.9.1",
+    "serve-favicon": "^2.5.0",
+    "unhandled-error": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-decorators": "^7.1.2",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "eslint": "^5.5.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.2",
+    "nodemon": "^1.18.4",
+    "prettier": "^1.14.2"
+  }
+}

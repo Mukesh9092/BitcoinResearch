@@ -57,6 +57,18 @@ services:
       - traefik.backend=graphql
       - 'traefik.port=${GRAPHQL_PORT}'
 
+  api:
+    build: services/api
+    ports:
+    - '${API_PORT}:${API_PORT}'
+    volumes:
+    - './services/api:/service'
+    env_file: .env
+    labels:
+    - 'traefik.frontend.rule=Host:api.docker.localhost'
+    - traefik.backend=api
+    - 'traefik.port=${API_PORT}'
+
   web:
     build: services/web
     ports:

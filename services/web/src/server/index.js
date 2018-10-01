@@ -6,10 +6,10 @@ import faviconMiddleware from 'serve-favicon'
 import unhandledError from 'unhandled-error'
 import { static as staticMiddleware } from 'express'
 
-import expressServiceWithMiddleware from './middleware/expressServiceWith'
-import genericExpressService from './middleware/genericExpressService'
-import loggerMiddleware from './middleware/logger'
-import { isDevelopment } from '../lib/environment'
+import expressServiceWithMiddleware from '../../common/express/middleware/expressServiceWith'
+import genericExpressService from '../../common/express/middleware/genericExpressService'
+import loggerMiddleware from '../../common/express/middleware/logger'
+import { isDevelopment } from '../../common/environment'
 import middleware from './middleware'
 
 const { WEB_HOST, WEB_PORT } = process.env
