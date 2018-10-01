@@ -5,7 +5,7 @@ export const TableComponent = (props) => {
   const { header, data } = props
 
   return (
-    <div>
+    <div className="table">
       <h3>{header}</h3>
 
       <table>

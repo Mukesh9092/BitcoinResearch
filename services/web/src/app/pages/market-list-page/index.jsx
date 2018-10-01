@@ -1,22 +1,18 @@
 import React from 'react'
 import { Query } from 'react-apollo'
-import { css } from 'emotion'
 
 import marketsQuery from '../../queries/markets'
 
+import * as styles from './index.scss'
 import { Table } from './table'
 
-const containerClassName = css``
-const loaderClassName = css``
-const errorClassName = css``
-
 export const Component = () => (
-  <div className={containerClassName}>
+  <div className={styles.marketListPage}>
     <Query query={marketsQuery}>
       {({ loading, error, data }) => {
         if (loading) {
           return (
-            <div className={loaderClassName}>
+            <div className={styles.loader}>
               <h1>Loading</h1>
             </div>
           )
@@ -24,7 +20,7 @@ export const Component = () => (
 
         if (error) {
           return (
-            <div className={errorClassName}>
+            <div className={styles.error}>
               <h1>Error</h1>
               <pre>{JSON.stringify(error)}</pre>
             </div>

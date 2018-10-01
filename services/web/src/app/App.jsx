@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { hot } from 'react-hot-loader'
 
+import * as styles from './App.scss'
 import { Navigation } from './navigation'
 
 const MarketListPage = importedComponent(() => import('./pages/market-list-page'))
@@ -12,7 +13,7 @@ const NotFoundPage = importedComponent(() => import('./pages/not-found-page'))
 
 const App = () => {
   return (
-    <div>
+    <div className={styles.application}>
       <Helmet defaultTitle="Hello World!">
         <meta charSet="utf-8" />
       </Helmet>
