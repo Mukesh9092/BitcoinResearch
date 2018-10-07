@@ -8,12 +8,12 @@ EXPOSE 9229
 RUN mkdir -p /service
 WORKDIR /service
 
+# In development, rely on volume
 # Install dependencies.
-COPY package.json .
-RUN npm install
-
+#COPY package.json .
+#RUN npm install
 # Copy all files into container.
-COPY . .
+#COPY . .
 
 # Run this command to start the application.
 CMD npm run dev

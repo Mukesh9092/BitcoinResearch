@@ -6,4 +6,7 @@ html {
 
 .application {
   background-color: #eeeeee;
+
+  display: flex;
+  flex-direction: column;
 }

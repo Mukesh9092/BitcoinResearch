@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
+npm i
+
 npx rimraf dist
-npm run generate-imported-component
+
+#npm run generate-imported-component
 
 npx parcel serve \
   --port $WEB_PORT \
