@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-const query = gql`
+export const getUserIdsAndDashboardIds: string = gql`
   query {
     users {
       id
@@ -10,5 +10,3 @@ const query = gql`
     }
   }
 `
-
-export default query

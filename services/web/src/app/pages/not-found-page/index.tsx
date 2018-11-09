@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-const NotFoundPageComponent = (props) => {
-  return <h1>Not Found</h1>
+export const NotFoundPageComponent = () => {
+  return <h1>NotFoundPage!!!</h1>
 }
 
-export default NotFoundPageComponent
+export const NotFoundPage = NotFoundPageComponent

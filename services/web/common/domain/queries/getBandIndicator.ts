@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-export default gql`
+export const getBandIndicator: string = gql`
   query getBandIndicator(
     $trader: String!
     $name: String!

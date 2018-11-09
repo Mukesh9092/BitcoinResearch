@@ -1,11 +1,9 @@
 import gql from 'graphql-tag'
 
-const mutation = gql`
+export const deleteManyMarkets: string = gql`
   mutation deleteManyUsers {
     deleteManyMarkets {
       count
     }
   }
 `
-
-export default mutation

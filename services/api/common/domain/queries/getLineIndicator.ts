@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-export default gql`
+export const getLineIndicator: string = gql`
   query getLineIndicator(
     $trader: String!
     $name: String!

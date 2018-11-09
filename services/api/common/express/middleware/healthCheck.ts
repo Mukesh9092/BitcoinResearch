@@ -1,10 +1,12 @@
-import { Request, Response, NextFunction } from 'express'
-import { ApplicationWithHTTPServer, AuthenticatedRequest } from '../types'
+import { NextFunction, Response } from 'express'
+import { IApplicationWithHTTPServer, IAuthenticatedRequest } from '../types'
 
-export default function healthCheck(app: ApplicationWithHTTPServer) {
-  app.get('/healthcheck', (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export function healthCheck (app: IApplicationWithHTTPServer): IApplicationWithHTTPServer {
+  app.get('/healthcheck', (req: IAuthenticatedRequest, res: Response, next: NextFunction) => {
     res.json({
       health: 'ok',
     })
   })
+
+  return app
 }

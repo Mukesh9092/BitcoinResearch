@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-const mutation = gql`
+export const createUserWithDashboard: string = gql`
   mutation createUserWithDashboard($name: String!) {
     createUser(data: { name: $name, dashboard: { create: {} } }) {
       id
@@ -11,5 +11,3 @@ const mutation = gql`
     }
   }
 `
-
-export default mutation

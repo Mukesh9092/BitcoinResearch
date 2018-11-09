@@ -1,11 +1,9 @@
 import gql from 'graphql-tag'
 
-const query = gql`
+export const getMarketIds: string = gql`
   query {
     markets {
       id
     }
   }
 `
-
-export default query

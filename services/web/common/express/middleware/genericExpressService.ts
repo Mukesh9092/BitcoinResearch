@@ -1,9 +1,11 @@
 import { json } from 'body-parser'
 import cors from 'cors'
 
-import { ApplicationWithHTTPServer } from '../types'
+import { IApplicationWithHTTPServer } from '../types'
 
-export default function genericExpressService(app: ApplicationWithHTTPServer) {
+export function genericExpressService (app: IApplicationWithHTTPServer): IApplicationWithHTTPServer {
   app.use(json())
   app.use(cors())
+
+  return app
 }

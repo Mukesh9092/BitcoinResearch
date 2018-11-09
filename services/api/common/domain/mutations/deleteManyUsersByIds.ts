@@ -1,11 +1,9 @@
 import gql from 'graphql-tag'
 
-const mutation = gql`
+export const deleteManyUsersByIds: string = gql`
   mutation deleteManyUsersByIds($ids: [ID!]) {
     deleteManyUsers(where: { id_in: $ids }) {
       count
     }
   }
 `
-
-export default mutation

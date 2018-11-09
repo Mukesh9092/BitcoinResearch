@@ -1,0 +1,31 @@
+@import '../../styles/page';
+
+.page {
+  @extend %page;
+
+  table {
+    width: 100%;
+
+    th {
+      text-align: left;
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+}
+
+.error {
+  background-color: #ff0000;
+}
+
+.paper {
+  h1 {
+    color: #000000;
+  }
+}
+
+.tablePaper {
+  overflow-x: auto;
+}

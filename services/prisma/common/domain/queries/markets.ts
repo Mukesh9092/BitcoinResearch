@@ -1,14 +1,20 @@
 import gql from 'graphql-tag'
 
-export default gql`
+export const markets: string = gql`
   query markets {
     markets {
       id
       trader
-      base
-      quote
       category
       type
+      maker
+      taker
+      base
+      quote
+      precisionAmount
+      precisionPrice
+      precisionBase
+      precisionQuote
     }
   }
 `

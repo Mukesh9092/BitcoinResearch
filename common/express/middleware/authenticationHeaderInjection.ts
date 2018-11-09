@@ -1,13 +1,13 @@
-import { Response, NextFunction } from 'express'
+import { NextFunction, Response } from 'express'
 
-import { ApplicationWithHTTPServer, AuthenticatedRequest } from '../types'
+import { IApplicationWithHTTPServer, IAuthenticatedRequest } from '../types'
 
-export default function authenticationHeaderInjection(app: ApplicationWithHTTPServer) {
-  app.use((req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export function authenticationHeaderInjection (app: IApplicationWithHTTPServer): IApplicationWithHTTPServer {
+  app.use((req: IAuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const {
         user,
-        session
+        session,
       } = req.authentication
 
       if (user) {
@@ -23,4 +23,6 @@ export default function authenticationHeaderInjection(app: ApplicationWithHTTPSe
       next(error)
     }
   })
+
+  return app
 }

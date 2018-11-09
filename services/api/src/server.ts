@@ -1,73 +1,34 @@
-import * as ccxt from 'ccxt'
+import dotenv from 'dotenv'
 import unhandledError from 'unhandled-error'
+import { Market } from 'ccxt'
 
-import createUserWithDashboard from '../common/domain/mutations/createUserWithDashboard'
-import deleteManyDashboards from '../common/domain/mutations/deleteManyDashboards'
-import deleteManyUsers from '../common/domain/mutations/deleteManyUsers'
-import deleteManyMarkets from '../common/domain/mutations/deleteManyMarkets'
-import getUserIds from '../common/domain/queries/getUserIds'
+import { IApplicationWithHTTPServer } from '../common/express/types'
+import { expressServiceWith } from '../common/express/middleware/expressServiceWith'
+import { genericExpressService } from '../common/express/middleware/genericExpressService'
+import { logger } from '../common/express/middleware/logger'
 
-import expressServiceWithMiddleware from '../common/express/middleware/expressServiceWith'
-import genericExpressService from '../common/express/middleware/genericExpressService'
+import { ensureInitialData } from './ensure-initial-data'
+import { ensureMarkets } from './ensure-markets'
+import { ensureOHLCVs } from './ensure-ohlcvs'
 
-import loggerMiddleware from '../common/express/middleware/logger'
-import { getServerApolloClient } from '../common/apollo/client'
+dotenv.config()
 
 const { API_HOST, API_PORT } = process.env
 
-const Exchange = ccxt.binance
+console.log('API_HOST', API_HOST)
+console.log('API_PORT', API_PORT)
 
-async function ensureMarkets() {
-  const apolloClient = getServerApolloClient()
-
-  await apolloClient.mutate({ mutation: deleteManyMarkets })
-
-  const exchange = new Exchange()
-  const markets = await exchange.loadMarkets()
-
-  console.log('markets', markets)
-
-  return []
-}
-
-async function ensureInitialData() {
-  const apolloClient = getServerApolloClient()
-
-  const getUserIdsQueryResult = await apolloClient.query({ query: getUserIds })
-
-  console.log('userIds', getUserIdsQueryResult)
-
-  const users = []
-
-  if (users.length) {
-  }
-
-  await apolloClient.mutate({ mutation: deleteManyDashboards })
-  await apolloClient.mutate({ mutation: deleteManyUsers })
-
-  const createUserWithDashboardResult = await apolloClient.mutate({
-    mutation: createUserWithDashboard,
-    variables: {
-      name: 'admin',
-    },
-  })
-
-  return createUserWithDashboardResult.data.createUser
-}
-
-expressServiceWithMiddleware(
-  async (app) => {
+expressServiceWith(
+  async (app: IApplicationWithHTTPServer) => {
     try {
       genericExpressService(app)
-      loggerMiddleware(app)
+      logger(app)
 
-      const markets = await ensureMarkets()
+      await ensureMarkets()
+      // await ensureInitialData()
 
-      console.log('Markets', markets)
-
-      const user = await ensureInitialData()
-
-      console.log('User', user)
+      // Purposefully put this on the background
+      ensureOHLCVs()
 
       return app
     } catch (error) {
@@ -78,8 +39,6 @@ expressServiceWithMiddleware(
   Number(API_PORT),
 )
 
-unhandledError((error) => {
+unhandledError((error: Error) => {
   console.error(error)
 })
-
-

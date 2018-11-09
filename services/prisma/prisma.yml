@@ -1,3 +1,2 @@
-#endpoint: http://${GRAHPQL_HOST}:${GRAPHQL_PORT}
 endpoint: http://graphql.docker.localhost:8100
-datamodel: datamodel.graphql
+datamodel: common/domain/datamodel.graphql

@@ -1,11 +1,9 @@
 import gql from 'graphql-tag'
 
-const mutation = gql`
+export const deleteManyDashboards: string = gql`
   mutation deleteManyDashboards {
     deleteManyDashboards {
       count
     }
   }
 `
-
-export default mutation

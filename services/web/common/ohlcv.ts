@@ -1,34 +1,37 @@
-export function periodToMilliseconds(period) {
+const MINUTE_MODIFIER: number = 60
+const HOUR_MODIFIER: number = 60
+const DAY_MODIFIER: number = 24
+const WEEK_MODIFIER: number = 7
+const MILLISECOND_MODIFIER: number = 1000
+
+export function periodToMilliSeconds (period: string): number {
   const [_, amount, timeframe] = period.match(/(\d+)([wdhm])/)
 
-  let result = amount * 1000
+  const result: number = Number(amount) * MILLISECOND_MODIFIER
 
-  if (timeframe === 'm') {
-    result *= 60
+  switch (timeframe) {
+    case 'm':
+      return result * MINUTE_MODIFIER
+
+    case 'h':
+      return result * MINUTE_MODIFIER * HOUR_MODIFIER
+
+    case 'd':
+      return result * MINUTE_MODIFIER * HOUR_MODIFIER * DAY_MODIFIER
+
+    case 'w':
+      return result * MINUTE_MODIFIER * HOUR_MODIFIER * DAY_MODIFIER * WEEK_MODIFIER
+
+    default:
+      return result
   }
-
-  if (timeframe === 'h') {
-    result *= 60 * 60
-  }
-
-  if (timeframe === 'd') {
-    result *= 60 * 60 * 24
-  }
-
-  if (timeframe === 'w') {
-    result *= 60 * 60 * 24 * 7
-  }
-
-  return result
 }
 
-export function getExpectedLengthForPeriod(period, from, to) {
-  const f = new Date(from).valueOf()
-  const t = new Date(to).valueOf()
+export function getExpectedLengthForPeriod (period: string, from: string, to: string): number {
+  const f: number = new Date(from).valueOf()
+  const t: number = new Date(to).valueOf()
 
-  const difference = t - f
+  const difference: number = t - f
 
-  const result = difference / periodToMilliseconds(period)
-
-  return result
+  return Math.ceil(difference / periodToMilliSeconds(period))
 }

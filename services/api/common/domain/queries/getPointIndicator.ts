@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-export default gql`
+export const getPointIndicator: string = gql`
   query getPointIndicator(
     $trader: String!
     $name: String!

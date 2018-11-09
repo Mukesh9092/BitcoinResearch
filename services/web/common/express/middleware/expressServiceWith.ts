@@ -1,21 +1,28 @@
+import express from 'express'
 import { createServer } from 'http'
-import * as express from 'express'
 
-import { ApplicationWithHTTPServer } from '../types'
+import { IApplicationWithHTTPServer } from '../types'
 
-export default async function expressServiceWith(middleware: Function, host: string, port: number) {
-  const app: ApplicationWithHTTPServer = express()
+export async function expressServiceWith (
+  middleware: (app: IApplicationWithHTTPServer) => Promise<IApplicationWithHTTPServer>,
+  host: string,
+  port: number,
+): Promise<IApplicationWithHTTPServer> {
+  const app: IApplicationWithHTTPServer = express()
 
   await middleware(app)
 
   app.server = createServer(app)
 
-  app.server.listen(host, port, (error: Error) => {
+  app.server.listen(port, host, (error: Error) => {
     if (error) {
       console.error(error)
+
       return
     }
 
     console.log(`HTTP Server listening at http://${host}:${port}.`)
   })
+
+  return app
 }

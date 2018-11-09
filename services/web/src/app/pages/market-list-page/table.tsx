@@ -1,38 +1,53 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 
-export const TableComponent = (props) => {
+import Paper from '@material-ui/core/Paper'
+import MaterialTable from '@material-ui/core/Table';
+import MaterialTableBody from '@material-ui/core/TableBody';
+import MaterialTableCell from '@material-ui/core/TableCell';
+import MaterialTableHead from '@material-ui/core/TableHead';
+import MaterialTableRow from '@material-ui/core/TableRow';
+
+import { IMarket } from '../../../../common/domain/types/IMarket'
+
+import * as styles from './styles.scss'
+
+interface ITableComponentProps {
+  header: string
+  data: IMarket[]
+}
+
+export const TableComponent = (props: ITableComponentProps): React.ReactElement<MaterialTable> => {
   const { header, data } = props
 
   return (
-    <div className="table">
-      <h3>{header}</h3>
+    <Paper className={`${styles.paper} ${styles.tablePaper}`}>
+      <h1>{header}</h1>
 
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Trader</th>
-            <th>Category</th>
-            <th>Type</th>
-            <th>Base</th>
-            <th>Quote</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row) => (
-            <tr key={row.id}>
-              <td>{row.id}</td>
-              <td>{row.trader}</td>
-              <td>{row.category}</td>
-              <td>{row.type}</td>
-              <td>{row.base}</td>
-              <td>{row.quote}</td>
-            </tr>
+      <MaterialTable header={header} data={data}>
+        <MaterialTableHead>
+          <MaterialTableRow>
+            <MaterialTableCell>#</MaterialTableCell>
+            <MaterialTableCell>Trader</MaterialTableCell>
+            <MaterialTableCell>Category</MaterialTableCell>
+            <MaterialTableCell>Type</MaterialTableCell>
+            <MaterialTableCell>Base</MaterialTableCell>
+            <MaterialTableCell>Quote</MaterialTableCell>
+          </MaterialTableRow>
+        </MaterialTableHead>
+        <MaterialTableBody>
+          {data.map((row: IMarket) => (
+            <MaterialTableRow key={row.id}>
+              <MaterialTableCell>{row.id}</MaterialTableCell>
+              <MaterialTableCell>{row.trader}</MaterialTableCell>
+              <MaterialTableCell>{row.category}</MaterialTableCell>
+              <MaterialTableCell>{row.type}</MaterialTableCell>
+              <MaterialTableCell>{row.base}</MaterialTableCell>
+              <MaterialTableCell>{row.quote}</MaterialTableCell>
+            </MaterialTableRow>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </MaterialTableBody>
+      </MaterialTable>
+    </Paper>
   )
 }
 

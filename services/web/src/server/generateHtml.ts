@@ -9,7 +9,7 @@ const bundleTemplatePath = path.resolve(`${__dirname}/../client/index.html`)
 
 const HTML_TEMPLATE = fs.readFileSync(bundleTemplatePath).toString()
 
-export default function generateHtml(markup) {
+export default function generateHtml (markup) {
   const helmet = Helmet.renderStatic()
 
   const $template = cheerio.load(HTML_TEMPLATE)

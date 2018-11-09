@@ -1,13 +1,13 @@
-import { Server } from 'http'
 import { Application, Request } from 'express'
+import { Server } from 'http'
 
-export interface ApplicationWithHTTPServer extends Application {
+export interface IApplicationWithHTTPServer extends Application {
   server?: Server
 }
 
-export interface AuthenticatedRequest extends Request {
+export interface IAuthenticatedRequest extends Request {
   authentication?: {
-    user: string
-    session: string
+    user: string;
+    session: string;
   }
 }

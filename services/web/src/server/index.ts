@@ -1,24 +1,33 @@
 import '@babel/polyfill'
 
 import { resolve } from 'path'
+import dotenv from 'dotenv'
 
+import { static as staticMiddleware } from 'express'
 import faviconMiddleware from 'serve-favicon'
 import unhandledError from 'unhandled-error'
-import { static as staticMiddleware } from 'express'
 
-import expressServiceWithMiddleware from '../../common/express/middleware/expressServiceWith'
-import genericExpressService from '../../common/express/middleware/genericExpressService'
-import loggerMiddleware from '../../common/express/middleware/logger'
-import { isDevelopment } from '../../common/environment'
+import { IApplicationWithHTTPServer } from '../../../../common/express/types'
+import {
+  expressServiceWith,
+  genericExpressService,
+  logger,
+} from '../../common/express/middleware'
+
 import middleware from './middleware'
+
+dotenv.config()
 
 const { WEB_HOST, WEB_PORT } = process.env
 
-expressServiceWithMiddleware(
-  async (app) => {
+console.log('dotenv', dotenv)
+console.log('procenv', process.env)
+
+expressServiceWith(
+  async (app: IApplicationWithHTTPServer) => {
     try {
       genericExpressService(app)
-      loggerMiddleware(app)
+      logger(app)
 
       app.use('/dist', staticMiddleware(`${__dirname}/../client`))
       app.use(faviconMiddleware(resolve('./src/app/favicon.ico')))
@@ -33,6 +42,8 @@ expressServiceWithMiddleware(
   WEB_PORT,
 )
 
-unhandledError((error) => {
-  console.error(error)
+unhandledError((error: Error) => {
+  if (error) {
+    console.error(error)
+  }
 })

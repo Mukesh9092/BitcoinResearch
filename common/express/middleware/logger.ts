@@ -1,15 +1,19 @@
-import morgan from 'morgan'
 import { Request } from 'express'
+import morgan from 'morgan'
 
-import { ApplicationWithHTTPServer } from '../types'
 import { isDevelopment } from '../../environment'
+import { IApplicationWithHTTPServer } from '../types'
 
-const requestMatches = (req: Request): boolean => isDevelopment() && Boolean(req.url.match(/^\/_next/))
+function requestMatches (req: Request): boolean {
+  return isDevelopment() && Boolean(req.url.match(/_next/))
+}
 
-export default function logger(app: ApplicationWithHTTPServer) {
+export function logger (app: IApplicationWithHTTPServer): IApplicationWithHTTPServer {
   if (isDevelopment()) {
     app.use(morgan('dev', { skip: requestMatches }))
   } else {
     app.use(morgan('common', { skip: requestMatches }))
   }
+
+  return app
 }

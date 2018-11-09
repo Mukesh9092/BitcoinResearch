@@ -1,16 +1,16 @@
-import { Response, NextFunction } from 'express'
+import { NextFunction, Response } from 'express'
 
-import { ApplicationWithHTTPServer, AuthenticatedRequest } from '../types'
+import { IApplicationWithHTTPServer, IAuthenticatedRequest } from '../types'
 
-export default function authenticationHeaderExtraction(app: ApplicationWithHTTPServer) {
-  app.use((req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export function authenticationHeaderExtraction (app: IApplicationWithHTTPServer): IApplicationWithHTTPServer {
+  app.use((req: IAuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const user: string = String(req.headers['x-user'])
       const session: string = String(req.headers['x-session'])
 
       req.authentication = {
-        user: user === '' ? null : JSON.parse(String(user)),
-        session: session === '' ? null : JSON.parse(String(session)),
+        session: session === '' ? undefined : JSON.parse(String(session)),
+        user: user === '' ? undefined : JSON.parse(String(user)),
       }
 
       next()
@@ -18,4 +18,6 @@ export default function authenticationHeaderExtraction(app: ApplicationWithHTTPS
       next(error)
     }
   })
+
+  return app
 }

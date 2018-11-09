@@ -1,0 +1,60 @@
+@import '../../styles/measurements';
+@import '../../styles/page';
+
+.page {
+  @extend %page;
+
+  padding: $single-unit;
+}
+
+.toolbar {
+  margin-bottom: $single-unit;
+}
+
+.toolbarButton {
+}
+
+.toolbarIcon {
+  margin-left: $single-unit;
+}
+
+.loading {
+  text-align: center;
+}
+
+.error {
+  background-color: #ff0000;
+}
+
+.empty {
+  text-align: center;
+}
+
+.charts {
+  margin-bottom: $single-unit;
+}
+
+.chartsLoading {
+  margin-top: $single-unit * 4;
+  margin-bottom: $single-unit * 4;
+}
+
+.chart {
+  margin-bottom: $single-unit;
+}
+
+.addChartButton {
+  margin-top: $single-unit;
+}
+
+.addChartButtons {
+  margin-top: $single-unit * 2;
+}
+
+.addChartCancelButton {
+  margin-right: $single-unit !important;
+}
+
+.addChartSaveButton {
+}
+

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-export default gql`
+export const orderBook: string = gql`
   query orderBook($key: String!) {
     orderBook(key: $key) {
       bids {
