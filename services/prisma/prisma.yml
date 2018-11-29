@@ -1,2 +1,9 @@
-endpoint: http://graphql.docker.localhost:8100
+#endpoint: http://prisma.docker.localhost:8100
+endpoint: http://prisma:8100
 datamodel: common/domain/datamodel.graphql
+
+generate:
+  - generator: javascript-client
+    output: ./generated/prisma-js
+  - generator: graphql-schema
+    output: ./generated/prisma-gql

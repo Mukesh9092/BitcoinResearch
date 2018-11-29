@@ -3,20 +3,8 @@ import * as math from 'mathjs'
 import { exponentialMovingAverage } from './exponential-moving-average'
 import { averageTrueRange } from './average-true-range'
 
-export function keltnerChannel(
-  array,
-  precision,
-  input,
-  length,
-  atrLength,
-  atrMultiplier,
-) {
-  const exponentialMovingAverages = exponentialMovingAverage(
-    array,
-    precision,
-    input,
-    length,
-  )
+export function keltnerChannel(array, precision, input, length, atrLength, atrMultiplier) {
+  const exponentialMovingAverages = exponentialMovingAverage(array, precision, input, length)
 
   const averageTrueRanges = averageTrueRange(array, precision, atrLength)
 

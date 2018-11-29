@@ -4,9 +4,7 @@ import testData from './_data'
 
 test('mean', () => {
   const input = 'close'
-  const actual = testData.map((x) => {
-    return x[input]
-  })
+  const actual = testData.map((x) => x[input])
   const precision = 8
   const expected = 0.00085899
 

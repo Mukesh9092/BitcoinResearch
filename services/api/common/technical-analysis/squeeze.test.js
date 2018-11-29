@@ -1014,16 +1014,7 @@ test('Squeeze', () => {
     false,
   ]
 
-  expect(
-    squeeze(
-      actual,
-      precision,
-      input,
-      bbLength,
-      bbMultiplier,
-      kcLength,
-      kcAtrLength,
-      kcAtrMultiplier,
-    ),
-  ).toEqual(expected)
+  expect(squeeze(actual, precision, input, bbLength, bbMultiplier, kcLength, kcAtrLength, kcAtrMultiplier)).toEqual(
+    expected,
+  )
 })

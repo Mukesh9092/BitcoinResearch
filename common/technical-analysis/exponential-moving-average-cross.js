@@ -1,24 +1,8 @@
 import { exponentialMovingAverage } from './exponential-moving-average'
 
-export function exponentialMovingAverageCross(
-  array,
-  precision,
-  input,
-  emaShortLength,
-  emaLongLength,
-) {
-  const emaShort = exponentialMovingAverage(
-    array,
-    precision,
-    input,
-    emaShortLength,
-  )
-  const emaLong = exponentialMovingAverage(
-    array,
-    precision,
-    input,
-    emaLongLength,
-  )
+export function exponentialMovingAverageCross(array, precision, input, emaShortLength, emaLongLength) {
+  const emaShort = exponentialMovingAverage(array, precision, input, emaShortLength)
+  const emaLong = exponentialMovingAverage(array, precision, input, emaLongLength)
 
   return array.map((x, i) => {
     const short = emaShort[i]

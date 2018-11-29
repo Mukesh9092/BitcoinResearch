@@ -19,9 +19,7 @@ export function averageTrueRange(array, precision, length) {
         ),
       )
     } else {
-      const calculation = math.eval(
-        `(${result[i - 1]} * (${length} - 1) + ${trueRanges[i]}) / ${length}`,
-      )
+      const calculation = math.eval(`(${result[i - 1]} * (${length} - 1) + ${trueRanges[i]}) / ${length}`)
 
       const formatted = Number(
         math.format(calculation, {

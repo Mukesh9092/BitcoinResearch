@@ -9,15 +9,10 @@ function ema(array, precision) {
     if (t === 0) return array[0]
 
     return Number(
-      math.format(
-        math.eval(
-          `${weight} * ${array[t - 1]} + (1 - ${weight}) * ${recurse(t - 1)}`,
-        ),
-        {
-          notation: 'fixed',
-          precision,
-        },
-      ),
+      math.format(math.eval(`${weight} * ${array[t - 1]} + (1 - ${weight}) * ${recurse(t - 1)}`), {
+        notation: 'fixed',
+        precision,
+      }),
     )
   }
 
@@ -25,9 +20,7 @@ function ema(array, precision) {
 }
 
 export function exponentialMovingAverage(array, precision, input, length) {
-  const values = array.map((x) => {
-    return x[input]
-  })
+  const values = array.map((x) => x[input])
 
   return values.map((x, i) => {
     if (i < length) {

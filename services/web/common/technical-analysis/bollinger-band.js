@@ -4,12 +4,7 @@ import { simpleMovingAverage } from './simple-moving-average'
 import { standardDeviation } from './standard-deviation'
 
 export function bollingerBand(array, precision, input, length, multiplier) {
-  const simpleMovingAverages = simpleMovingAverage(
-    array,
-    precision,
-    input,
-    length,
-  )
+  const simpleMovingAverages = simpleMovingAverage(array, precision, input, length)
   const standardDeviations = standardDeviation(array, precision, input, length)
 
   const result = array.map((x, i) => {

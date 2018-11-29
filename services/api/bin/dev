@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-npm i
-./node_modules/.bin/nodemon \
-  -w src \
-  -w common \
-  --exec "babel-node --extensions \".js,.jsx,.ts,.tsx\" src/server"

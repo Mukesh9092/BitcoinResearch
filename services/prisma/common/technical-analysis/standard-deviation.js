@@ -10,9 +10,7 @@ export function standardDeviation(array, precision, input, length) {
       const values = array.slice(i - length, i).map((x) => x[input])
 
       let result = math.eval(
-        `sqrt(${math.sum(
-          math.map(values, (x) => math.eval(`(${x} - mean(${values})) ^ 2`)),
-        )} / ${values.length - 1})`,
+        `sqrt(${math.sum(math.map(values, (x) => math.eval(`(${x} - mean(${values})) ^ 2`)))} / ${values.length - 1})`,
       )
 
       result = Number(

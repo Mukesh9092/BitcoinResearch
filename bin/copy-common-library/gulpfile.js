@@ -48,9 +48,17 @@ function copyFilesToServices(sourcePath, services, cb) {
     (service, cb) => {
       const destinationPath = `${projectDirectoryPath}/services/${service}/${targetLibDirectoryPathFragment}`
 
-      console.log(`Copying from "${sourcePath}" to "${destinationPath}".`)
+      // Remove first and force a cache clean in the web service for Parcel to rebuild when the common dir changes.
 
-      cmd.get(`rsync -a ${sourcePath}/* ${destinationPath}`, cb)
+      console.log(`rm -rf "${destinationPath}".`)
+
+      cmd.get(`rm -rf ${destinationPath}`, (error) => {
+        if (error) return cb(error)
+
+        console.log(`rsync -a ${sourcePath}/* ${destinationPath}`)
+
+        cmd.get(`rsync -a ${sourcePath}/* ${destinationPath}`, cb)
+      })
     },
     cb,
   )

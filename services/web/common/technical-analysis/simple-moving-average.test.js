@@ -1010,7 +1010,5 @@ test('simpleMovingAverage', () => {
     0.00078681,
   ]
 
-  expect(simpleMovingAverage(actual, precision, input, length)).toEqual(
-    expected,
-  )
+  expect(simpleMovingAverage(actual, precision, input, length)).toEqual(expected)
 })

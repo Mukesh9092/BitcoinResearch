@@ -1010,7 +1010,5 @@ test('exponentialMovingAverage', () => {
     0.00078692,
   ]
 
-  expect(exponentialMovingAverage(actual, precision, input, length)).toEqual(
-    expected,
-  )
+  expect(exponentialMovingAverage(actual, precision, input, length)).toEqual(expected)
 })

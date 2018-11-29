@@ -13,7 +13,6 @@ WORKDIR ./service
 
 # Copy all files into container.
 COPY ./services/postgresql .
-COPY ./common ./common
 
 # Run this command to start the application.
 CMD postgres -h $POSTGRES_HOST -p $POSTGRES_PORT

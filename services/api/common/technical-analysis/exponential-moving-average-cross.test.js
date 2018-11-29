@@ -1011,13 +1011,5 @@ test('exponentialMovingAverageCross', () => {
     true,
   ]
 
-  expect(
-    exponentialMovingAverageCross(
-      actual,
-      precision,
-      input,
-      emaShortLength,
-      emaLongLength,
-    ),
-  ).toEqual(expected)
+  expect(exponentialMovingAverageCross(actual, precision, input, emaShortLength, emaLongLength)).toEqual(expected)
 })

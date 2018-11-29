@@ -1012,7 +1012,5 @@ test('keltnerChannel', () => {
     [0.00080552, 0.00078692, 0.00076832],
   ]
 
-  expect(
-    keltnerChannel(actual, precision, input, length, atrLength, atrMultiplier),
-  ).toEqual(expected)
+  expect(keltnerChannel(actual, precision, input, length, atrLength, atrMultiplier)).toEqual(expected)
 })

@@ -1012,7 +1012,5 @@ test('bollingerBand', () => {
     [0.00079611, 0.00078681, 0.00077751],
   ]
 
-  expect(bollingerBand(actual, precision, input, length, multiplier)).toEqual(
-    expected,
-  )
+  expect(bollingerBand(actual, precision, input, length, multiplier)).toEqual(expected)
 })
