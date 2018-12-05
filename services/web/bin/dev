@@ -6,6 +6,7 @@ npx rimraf dist
 npm run generate-imported-component
 
 npx parcel serve \
+  --no-cache \
   --port $WEB_PORT \
   --hmr-port $WEB_HMR_PORT \
   --log-level 3 \

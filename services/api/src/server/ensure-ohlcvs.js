@@ -10,6 +10,8 @@ import { destroyOHLCVs } from './destroy-ohlcvs'
 import { fetchOHLCVs } from './fetch-ohlcvs'
 
 async function importMarket(market) {
+  // console.log('importMarket', market.quote, market.base)
+
   const apolloClient = getApolloClient()
 
   const now = new Date()
@@ -42,9 +44,14 @@ async function importMarket(market) {
   const actualLength = oHLCVsResult.data.oHLCVs.length
 
   if (expectedLength !== actualLength) {
+    // console.log(`expected length: ${expectedLength}`)
+    // console.log(`actual length: ${actualLength}`)
+
     await destroyOHLCVs(market, period, from, to)
 
     const ohlcvs = await fetchOHLCVs(symbol, period, from, expectedLength)
+
+    // console.log(`import length: ${ohlcvs.length}`)
 
     await createOHLCVs(market, period, ohlcvs)
   }
@@ -60,10 +67,17 @@ export async function ensureOHLCVs() {
 
   const sanitizedMarkets = Object.keys(marketsResult.data.markets).map((key) => marketsResult.data.markets[key])
 
+  let i = 1
   // eslint-disable-next-line no-restricted-syntax
   for (const market of sanitizedMarkets) {
     // eslint-disable-next-line no-await-in-loop
     await importMarket(market)
+
+    const result = Math.floor((i / sanitizedMarkets.length) * 100)
+
+    console.log(`ensureOHLCVs ${result}% (${market.quote} / ${market.base})`)
+
+    i += 1
   }
 
   console.log('ensureOHLCVs complete')

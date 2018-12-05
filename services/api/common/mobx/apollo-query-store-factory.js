@@ -1,4 +1,3 @@
-import { DocumentNode } from 'graphql'
 import { action, observable, runInAction } from 'mobx'
 
 import { getApolloClient } from '../apollo/client'
@@ -12,6 +11,10 @@ export function apolloQueryStoreFactory(options) {
     @observable error
 
     @observable result
+
+    static defaultSelector(data) {
+      return data[Object.keys(data)[0]]
+    }
 
     @action async query(queryOptions) {
       try {
@@ -27,10 +30,8 @@ export function apolloQueryStoreFactory(options) {
         })
 
         runInAction(() => {
-          const key = Object.keys(result.data)[0]
-
           this.state = 'completed'
-          this.result = result.data[key]
+          this.result = (options?.selector || ApolloQueryStore.defaultSelector)(result.data)
           this.error = undefined
         })
       } catch (error) {

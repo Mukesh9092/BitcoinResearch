@@ -35,11 +35,10 @@ type Market @model {
 }
 
 type OHLCV @model {
-    id: ID! @unique
+    timestamp: DateTime!
     marketBase: String!
     marketQuote: String!
     period: String!
-    timestamp: DateTime!
     open: Float!
     high: Float!
     low: Float!

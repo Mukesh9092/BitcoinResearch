@@ -1,15 +1,38 @@
-import { observable, decorate } from 'mobx'
+import { action, observable } from 'mobx'
 
 import { MarketStore } from './market'
+import { apolloQueryStoreFactory } from './apollo-query-store-factory'
+import { oHLCVs } from '../domain/queries/oHLCVs'
 
 export class ChartStore {
-  constructor(data) {
-    this.id = data.id || undefined
-    this.market = new MarketStore(data.market || undefined)
+  @observable id
+
+  @observable market
+
+  @observable ohlcvs = []
+
+  @observable getOHLCVsQuery = apolloQueryStoreFactory({
+    query: oHLCVs,
+  })
+
+  constructor(options) {
+    if (options) {
+      this.id = options.id
+      this.market = new MarketStore(options.market)
+    }
+  }
+
+  @action async getOHLCVs({ marketBase, marketQuote, from, to, period }) {
+    await this.getOHLCVsQuery.query({
+      variables: {
+        marketBase,
+        marketQuote,
+        from,
+        to,
+        period,
+      },
+    })
+
+    this.ohlcvs = this.getOHLCVsQuery.result
   }
 }
-
-decorate(ChartStore, {
-  id: observable,
-  market: observable,
-})

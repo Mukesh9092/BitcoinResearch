@@ -1,23 +1,23 @@
 import * as React from 'react'
-import { CircularProgress, Paper } from '@material-ui/core'
+import { CircularProgress } from '@material-ui/core'
+import { inject, observer } from 'mobx-react'
 import { startOfYear, endOfYear } from 'date-fns'
-import { Query } from 'react-apollo'
 
-import { oHLCVs } from '../../../../common/domain/queries/oHLCVs'
-
+import { OHLCVChart } from './ohlcv-chart'
 import * as styles from './styles.scss'
 
-export class ChartCardChart extends React.Component {
+@inject('applicationStore')
+@inject('dashboardStore')
+@observer
+class ChartCardChartComponent extends React.Component {
   state = {
     height: 300,
   }
 
-  render () {
-    const { width, chart } = this.props
-    const { height } = this.state
+  componentWillMount() {
+    const { chart } = this.props
 
     const now = new Date()
-
     const start = startOfYear(now)
     const end = endOfYear(now)
 
@@ -29,49 +29,66 @@ export class ChartCardChart extends React.Component {
       to: end.toISOString(),
     }
 
+    chart.getOHLCVs(queryVariables)
+  }
+
+  renderLoading() {
     return (
-      <Query query={oHLCVs} variables={queryVariables} ref={this.chartRef}>
-        {(oHLCVsQueryResult) => {
-          if (oHLCVsQueryResult.loading) {
-            return (
-              <div className={styles.loading}>
-                <CircularProgress />
-              </div>
-            )
-          }
+      <div className={styles.loading}>
+        <CircularProgress />
+      </div>
+    )
+  }
 
-          if (oHLCVsQueryResult.errors && oHLCVsQueryResult.errors.length) {
-            return (
-              <div className={styles.error}>
-                <h1>Error</h1>
-                <pre>{JSON.stringify(oHLCVsQueryResult.errors)}</pre>
-              </div>
-            )
-          }
+  renderError() {
+    const { chart } = this.props
 
-          const { oHLCVs } = oHLCVsQueryResult.data
+    return (
+      <div className={styles.error}>
+        <h1>Error</h1>
+        <pre>{JSON.stringify(chart.getOHLCVsQuery.error)}</pre>
+      </div>
+    )
+  }
 
-          if (!oHLCVs || !oHLCVs.length) {
-            return (
-              <div className={styles.empty}>
-                <p>No chart data.</p>
-              </div>
-            )
-          }
+  render() {
+    const { width, chart } = this.props
+    const { height } = this.state
 
-          return (
-            <OhlcvChart
-              name={`${chart.market.quote}/${chart.market.base}`}
-              type='hybrid'
-              ohlcv={oHLCVs}
-              width={width}
-              height={height}
-              ratio={1}
-              drawVolume={false}
-            />
-          )
-        }}
-      </Query>
+    if (chart.getOHLCVsQuery.state === 'initial') {
+      return this.renderLoading()
+    }
+
+    if (chart.getOHLCVsQuery.state === 'pending') {
+      return this.renderLoading()
+    }
+
+    if (chart.getOHLCVsQuery.state === 'error') {
+      return this.renderError()
+    }
+
+    const { ohlcvs } = chart
+
+    if (!ohlcvs || !ohlcvs.length) {
+      return (
+        <div className={styles.empty}>
+          <p>No chart data.</p>
+        </div>
+      )
+    }
+
+    return (
+      <OHLCVChart
+        name={`${chart.market.quote}/${chart.market.base}`}
+        type="hybrid"
+        ohlcv={ohlcvs}
+        width={width}
+        height={height}
+        ratio={1}
+        drawVolume={false}
+      />
     )
   }
 }
+
+export const ChartCardChart = ChartCardChartComponent

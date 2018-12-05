@@ -25,7 +25,7 @@ export const createOHLCV = gql`
         volume: $volume
       }
     ) {
-      id
+      timestamp
     }
   }
 `

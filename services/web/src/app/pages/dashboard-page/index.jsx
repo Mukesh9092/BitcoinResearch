@@ -18,12 +18,10 @@ class DashboardPageComponent extends React.Component {
   componentWillMount() {
     const { applicationStore, dashboardStore } = this.props
 
-    dashboardStore.dashboardQuery.query({
-      variables: {
-        userId: applicationStore.userQuery.result.id,
-      },
+    dashboardStore.getDashboard({
+      userId: applicationStore.user.id,
     })
-    dashboardStore.marketsQuery.query()
+    dashboardStore.getMarkets()
   }
 
   handleToolbarAddClick = () => {
@@ -38,20 +36,20 @@ class DashboardPageComponent extends React.Component {
     })
   }
 
+  handleAddChartComplete = () => {
+    this.setState({
+      showAddChart: false,
+    })
+  }
+
   render() {
     const { showAddChart } = this.state
-
-    if (!this.props.applicationStore.user) {
-      return null
-    }
 
     return (
       <div className={styles.page}>
         <Toolbar onAddClick={this.handleToolbarAddClick} />
-        {showAddChart && (
-          <AddChart onCancel={this.handleAddChartCancel} />
-        )}
-        <ChartList userId={this.props.userId} />
+        {showAddChart && <AddChart onCancel={this.handleAddChartCancel} onComplete={this.handleAddChartComplete} />}
+        <ChartList />
       </div>
     )
   }

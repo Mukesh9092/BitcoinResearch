@@ -22,18 +22,12 @@ const AboutPage = importedComponent(async () => (await import('./pages/about-pag
 const NotFoundPage = importedComponent(async () => import('./pages/not-found-page').NotFoundPage)
 const DashboardPage = importedComponent(async () => (await import('./pages/dashboard-page')).DashboardPage)
 
-const USERID = 'cjnj6iu8u04lg0a838n9wy734'
-
 const stores = {
   applicationStore: new ApplicationStore(),
   dashboardStore: new DashboardStore(),
 }
 
-stores.applicationStore.userQuery.query({
-  variables: {
-    userId: USERID,
-  },
-})
+stores.applicationStore.getUser()
 
 @observer
 class AppComponent extends React.Component {

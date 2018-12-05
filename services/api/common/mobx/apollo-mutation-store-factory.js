@@ -1,45 +1,50 @@
-import { action, decorate, observable, runInAction } from 'mobx'
+import { action, observable, runInAction } from 'mobx'
+
+import { getApolloClient } from '../apollo/client'
 
 export function apolloMutationStoreFactory(options) {
   class ApolloMutationStore {
-    constructor() {
-      this.apolloClient = options.apolloClient
-      this.state = 'initial'
-      this.result = []
-      this.error = undefined
+    apolloClient = getApolloClient()
+
+    @observable state = 'initial'
+
+    @observable error
+
+    @observable result
+
+    static defaultSelector(data) {
+      return data[Object.keys(data)[0]]
     }
 
-    async mutate(mutationOptions) {
+    @action async mutate(mutationOptions) {
       try {
         runInAction(() => {
-          this.result = undefined
-          this.error = undefined
           this.state = 'pending'
+          this.error = undefined
+          this.result = undefined
         })
 
-        const result = await this.apolloClient.mutate(mutationOptions)
+        const result = await this.apolloClient.mutate({
+          mutation: options.mutation,
+          ...mutationOptions,
+        })
 
         runInAction(() => {
           this.state = 'completed'
-          this.result = result.data[options.propertyName]
+          this.error = undefined
+          this.result = (options?.selector || ApolloMutationStore.defaultSelector)(result.data)
         })
       } catch (error) {
         runInAction(() => {
           this.state = 'error'
           this.error = error
+          this.result = undefined
         })
 
         throw error
       }
     }
   }
-
-  decorate(ApolloMutationStore, {
-    error: observable,
-    mutate: action,
-    result: observable,
-    state: observable,
-  })
 
   return new ApolloMutationStore()
 }

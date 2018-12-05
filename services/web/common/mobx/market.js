@@ -1,52 +1,47 @@
-// @ts-ignore
-import { observable, decorate } from 'mobx'
+import { observable } from 'mobx'
 
 export class MarketStore {
-  constructor(options) {
-    if (!options) {
-      this.id = undefined
-      this.trader = undefined
-      this.active = undefined
-      this.category = undefined
-      this.type = undefined
-      this.base = undefined
-      this.quote = undefined
-      this.maker = undefined
-      this.taker = undefined
-      this.precisionBase = undefined
-      this.precisionQuote = undefined
-      this.precisionAmount = undefined
-      this.precisionPrice = undefined
-    }
+  @observable id = undefined
 
-    this.id = options.id
-    this.trader = options.trader
-    this.active = options.active
-    this.category = options.category
-    this.type = options.type
-    this.base = options.base
-    this.quote = options.quote
-    this.maker = options.maker
-    this.taker = options.taker
-    this.precisionBase = options.precisionBase
-    this.precisionQuote = options.precisionQuote
-    this.precisionAmount = options.precisionAmount
-    this.precisionPrice = options.precisionPrice
+  @observable trader = undefined
+
+  @observable active = undefined
+
+  @observable category = undefined
+
+  @observable type = undefined
+
+  @observable base = undefined
+
+  @observable quote = undefined
+
+  @observable maker = undefined
+
+  @observable taker = undefined
+
+  @observable precisionBase = undefined
+
+  @observable precisionQuote = undefined
+
+  @observable precisionAmount = undefined
+
+  @observable precisionPrice = undefined
+
+  constructor(options) {
+    if (options) {
+      this.id = options.id
+      this.trader = options.trader
+      this.active = options.active
+      this.category = options.category
+      this.type = options.type
+      this.base = options.base
+      this.quote = options.quote
+      this.maker = options.maker
+      this.taker = options.taker
+      this.precisionBase = options.precisionBase
+      this.precisionQuote = options.precisionQuote
+      this.precisionAmount = options.precisionAmount
+      this.precisionPrice = options.precisionPrice
+    }
   }
 }
-
-decorate(MarketStore, {
-  active: observable,
-  base: observable,
-  category: observable,
-  id: observable,
-  maker: observable,
-  precisionAmount: observable,
-  precisionBase: observable,
-  precisionPrice: observable,
-  precisionQuote: observable,
-  quote: observable,
-  taker: observable,
-  trader: observable,
-  type: observable,
-})

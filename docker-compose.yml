@@ -58,20 +58,24 @@ services:
       - 'traefik.port=${PRISMA_PORT}'
 
   api:
+    depends_on:
+      - prisma
     build:
       context: .
       dockerfile: services/api/Dockerfile
     ports:
-    - '${API_PORT}:${API_PORT}'
+      - '${API_PORT}:${API_PORT}'
     volumes:
-    - './services/api:/service'
+      - './services/api:/service'
     env_file: .env
     labels:
-    - 'traefik.frontend.rule=Host:api.docker.localhost'
-    - 'traefik.backend=api'
-    - 'traefik.port=${API_PORT}'
+      - 'traefik.frontend.rule=Host:api.docker.localhost'
+      - 'traefik.backend=api'
+      - 'traefik.port=${API_PORT}'
 
   web:
+    depends_on:
+      - prisma
     build:
       context: .
       dockerfile: services/web/Dockerfile

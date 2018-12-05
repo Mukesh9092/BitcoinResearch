@@ -11,7 +11,6 @@ export const oHLCVs = gql`
         timestamp_lte: $to
       }
     ) {
-      id
       timestamp
       open
       high

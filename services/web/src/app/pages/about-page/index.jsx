@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
@@ -21,6 +22,12 @@ export const AboutPageComponent = (props) => {
         <Grid container spacing={24}>
           <Grid item xs={12}>
             <Paper className={styles.paper}>
+              <h1>Bitcoin Platform</h1>
+
+              <p>
+                Hi! This app will become my automated coin and shares trading platform. I've got a lot of features
+                planned. For now there is the <Link to="/markets">Markets Page</Link> and the <Link to="/dashboard">Dashboard Page</Link>.
+              </p>
             </Paper>
           </Grid>
         </Grid>
