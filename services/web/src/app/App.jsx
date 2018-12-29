@@ -9,11 +9,11 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import { hot } from 'react-hot-loader'
 import { observer, Provider } from 'mobx-react'
 
-import { ApplicationStore } from '../../common/mobx/application'
-import { DashboardStore } from '../../common/mobx/dashboard'
+import { ApplicationStore } from '../common/mobx/application'
+import { DashboardStore } from '../common/mobx/dashboard'
 import { ErrorBoundary } from './error-boundary'
 import { Navigation } from './navigation'
-import { isDevelopment } from '../../common/environment'
+import { isDevelopment } from '../common/environment'
 
 import * as styles from './App.scss'
 

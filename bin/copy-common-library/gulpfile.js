@@ -9,7 +9,7 @@ const async = require('async')
 
 const projectDirectoryPath = path.resolve(`${__dirname}/../..`)
 const sourceLibDirectoryPathFragment = 'common'
-const targetLibDirectoryPathFragment = 'common'
+const targetLibDirectoryPathFragment = 'src/common'
 
 console.log('Project directory path:', projectDirectoryPath)
 

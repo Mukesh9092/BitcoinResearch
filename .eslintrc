@@ -16,13 +16,15 @@
     "browser": true
   },
   "rules": {
-    "arrow-body-style": ["error", "as-needed"],
+    "no-useless-escape": ["warn"],
+    "arrow-body-style": ["error", "always"],
     "arrow-parens": ["error", "always"],
     "consistent-return": "off",
     "import/prefer-default-export": "off",
     "jsx-a11y/anchor-is-valid": "off",
     "no-shadow": "off",
     "no-unused-vars": "off",
+    "react/no-array-index-key": "off",
     "react/prop-types": "off"
   }
 }

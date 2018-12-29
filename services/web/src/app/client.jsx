@@ -8,9 +8,9 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { rehydrateMarks } from 'react-imported-component'
 
 import { App } from './App'
-import { ApplicationStore } from '../../common/mobx/application'
-import { getApolloClient } from '../../common/apollo/client'
-import { isProduction } from '../../common/environment'
+import { ApplicationStore } from '../common/mobx/application'
+import { getApolloClient } from '../common/apollo/client'
+import { isProduction } from '../common/environment'
 
 const applicationStore = new ApplicationStore()
 

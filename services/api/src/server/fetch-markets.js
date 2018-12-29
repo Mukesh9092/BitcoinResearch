@@ -1,6 +1,6 @@
 import { binance as Binance } from 'ccxt'
 
-import { timedPromise } from '../../common/promise'
+import { timedPromise } from '../common/promise'
 
 export async function fetchMarkets() {
   const exchange = new Binance()

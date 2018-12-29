@@ -4,7 +4,7 @@
 .page {
   @extend %page;
 
-  padding: $single-unit;
+  padding: $single-unit $single-unit 0 $single-unit;
 }
 
 .toolbar {
@@ -31,6 +31,7 @@
 }
 
 .charts {
+  margin-top: $single-unit;
   margin-bottom: $single-unit;
 }
 
@@ -40,7 +41,6 @@
 }
 
 .chart {
-  margin-bottom: $single-unit;
 }
 
 .addChartButton {

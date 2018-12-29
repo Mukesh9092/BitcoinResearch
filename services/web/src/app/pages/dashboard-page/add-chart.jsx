@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper'
 import { Select } from '../../components/select'
 
 import * as styles from './styles.scss'
-import { getUserWithDashboardWithChartsWithMarketByUserId } from '../../../../common/domain/queries/getUserWithDashboardWithChartsWithMarketByUserId'
+import { getUserWithDashboardWithChartsWithMarketByUserId } from '../../../common/domain/queries/getUserWithDashboardWithChartsWithMarketByUserId'
 
 @inject('applicationStore')
 @inject('dashboardStore')

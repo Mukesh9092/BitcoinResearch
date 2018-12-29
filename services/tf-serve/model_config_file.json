@@ -1,0 +1,9 @@
+{
+  "model_config_list": [
+    {
+      "name": "test1",
+      "base_path": "/service/src/common/tensorflow/tf/models",
+      "platform": "keras"
+    }
+  ]
+}

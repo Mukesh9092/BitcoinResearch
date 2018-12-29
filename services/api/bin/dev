@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 npm i
 
-nodemon -V -d 2.5 -e .js,.jsx -w common -w src/server  -x ./node_modules/.bin/babel-node src/server
+nodemon -V -d 2.5 -e .js,.jsx -w src  -x ./node_modules/.bin/babel-node src/server
 
 #./node_modules/.bin/babel-node src/server

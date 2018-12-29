@@ -34,6 +34,8 @@ type Market @model {
     trader: String!
 }
 
+# follow with
+# ALTER TABLE "default$default"."OHLCV" ADD CONSTRAINT "ohlcv_unique" UNIQUE ("marketQuote", "marketBase", "period", "timestamp");
 type OHLCV @model {
     timestamp: DateTime!
     marketBase: String!

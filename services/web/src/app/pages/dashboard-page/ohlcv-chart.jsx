@@ -17,10 +17,8 @@ import { discontinuousTimeScaleProvider } from 'react-stockcharts/lib/scale'
 import { OHLCTooltip } from 'react-stockcharts/lib/tooltip'
 import { last } from 'react-stockcharts/lib/utils'
 
-export const OHLCVChartComponent = (props) => {
-  const { name, type, ohlcv, width, height, ratio, drawVolume = true } = props
-
-  const sortedOHLCV = ohlcv.sort((a, b) => {
+function sortByTimestamp(array) {
+  return array.slice().sort((a, b) => {
     if (a.timestamp === b.timestamp) {
       return 0
     }
@@ -31,51 +29,96 @@ export const OHLCVChartComponent = (props) => {
 
     return 1
   })
+}
 
-  const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor((d) => new Date(d.timestamp))
-  const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(sortedOHLCV)
+class OHLCVChartComponent extends React.Component {
+  state = {
+    sortedOHLCV: [],
+  }
 
-  const start = xAccessor(last(data))
-  const end = xAccessor(data[Math.max(0, data.length - 150)])
-  const xExtents = [start, end]
+  constructor(options) {
+    super(options)
 
-  return (
-    <React.Fragment>
-      <ChartCanvas
-        height={height}
-        ratio={ratio}
-        width={width}
-        margin={{ left: 50, right: 100, top: 10, bottom: 25 }}
-        type={type}
-        seriesName={name}
-        data={data}
-        xScale={xScale}
-        xAccessor={xAccessor}
-        displayXAccessor={displayXAccessor}
-        xExtents={xExtents}
-      >
-        <Chart id={1} yExtents={[(d) => [d.high, d.low]]} padding={{ top: 40, bottom: 20 }}>
-          <XAxis axisAt="bottom" orient="bottom" />
-          <YAxis axisAt="right" orient="right" ticks={5} tickFormat={format('.8f')} />
+    this.state.sortedOHLCV = sortByTimestamp(options.ohlcv)
+  }
 
-          <MouseCoordinateX rectWidth={60} at="bottom" orient="bottom" displayFormat={timeFormat('%H:%M:%S')} />
-          <MouseCoordinateY at="right" orient="right" displayFormat={format('.8f')} />
+  handleDownloadMore = (start, end) => {
+    console.log('handleDownloadMore', start, end)
+    debugger
+  }
 
-          <CandlestickSeries />
+  render() {
+    const { sortedOHLCV } = this.state
+    const { name, type, width, height, ratio } = this.props
 
-          <EdgeIndicator
-            itemType="last"
-            orient="right"
-            edgeAt="right"
-            displayFormat={format('.8f')}
-            yAccessor={(d) => d.close}
-            fill={(d) => (d.close > d.open ? '#6BA583' : '#FF0000')}
-          />
+    const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor((d) => new Date(d.timestamp))
+    const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(sortedOHLCV)
 
-          <OHLCTooltip origin={[-40, 0]} xDisplayFormat={timeFormat('%Y-%m-%d %H:%M:%S')} />
-        </Chart>
+    const start = xAccessor(last(data))
+    const end = xAccessor(data[Math.max(0, data.length - 150)])
+    const xExtents = [start, end]
 
-        {drawVolume && (
+    const chartMargin = {
+      left: 50,
+      right: 100,
+      top: 10,
+      bottom: 25,
+    }
+
+    const gridWidth = width - chartMargin.left - chartMargin.right
+    const gridHeight = height - chartMargin.top - chartMargin.bottom
+
+    const xGrid = {
+      innerTickSize: -1 * gridHeight,
+      tickStrokeDasharray: 'ShortDot',
+      tickStrokeOpacity: 0.2,
+      tickStrokeWidth: 1,
+    }
+
+    const yGrid = {
+      innerTickSize: -1 * gridWidth,
+      tickStrokeDasharray: 'ShortDot',
+      tickStrokeOpacity: 0.2,
+      tickStrokeWidth: 1,
+    }
+
+    return (
+      <React.Fragment>
+        <ChartCanvas
+          height={height}
+          ratio={ratio}
+          width={width}
+          margin={chartMargin}
+          type={type}
+          seriesName={name}
+          data={data}
+          xScale={xScale}
+          xAccessor={xAccessor}
+          displayXAccessor={displayXAccessor}
+          xExtents={xExtents}
+          onLoadMore={this.handleDownloadMore}
+        >
+          <Chart id={1} yExtents={[(d) => [d.high, d.low]]} padding={{ top: 40, bottom: 20 }}>
+            <XAxis axisAt="bottom" orient="bottom" {...xGrid} />
+            <YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
+
+            <MouseCoordinateX rectWidth={60} at="bottom" orient="bottom" displayFormat={timeFormat('%H:%M:%S')} />
+            <MouseCoordinateY at="right" orient="right" displayFormat={format('.8f')} />
+
+            <CandlestickSeries />
+
+            <EdgeIndicator
+              itemType="last"
+              orient="right"
+              edgeAt="right"
+              displayFormat={format('.8f')}
+              yAccessor={(d) => d.close}
+              fill={(d) => (d.close > d.open ? '#6BA583' : '#FF0000')}
+            />
+
+            <OHLCTooltip origin={[-40, 0]} xDisplayFormat={timeFormat('%Y-%m-%d %H:%M:%S')} />
+          </Chart>
+
           <Chart id={2} yExtents={[(d) => d.volume]} height={150} origin={(w, h) => [0, h - 150]}>
             <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format('.2s')} />
 
@@ -94,12 +137,12 @@ export const OHLCVChartComponent = (props) => {
               fill="#0F0F0F"
             />
           </Chart>
-        )}
 
-        <CrossHairCursor />
-      </ChartCanvas>
-    </React.Fragment>
-  )
+          <CrossHairCursor />
+        </ChartCanvas>
+      </React.Fragment>
+    )
+  }
 }
 
 export const OHLCVChart = OHLCVChartComponent

@@ -1,6 +1,6 @@
-import { upsertMarket } from '../../common/domain/mutations/upsertMarket'
-import { getApolloClient } from '../../common/apollo/client'
-import { markets } from '../../common/domain/queries/markets'
+import { upsertMarket } from '../common/domain/mutations/upsertMarket'
+import { getApolloClient } from '../common/apollo/client'
+import { markets } from '../common/domain/queries/markets'
 
 import { fetchMarkets } from './fetch-markets'
 import { sanitizeMarket } from './sanitize-market'
@@ -41,5 +41,5 @@ export async function ensureMarkets() {
     }),
   )
 
-  console.log('ensureMarkets complete')
+  console.log('ensureMarkets complete', marketsWithId.length)
 }

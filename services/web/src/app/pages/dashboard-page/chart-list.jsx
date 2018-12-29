@@ -12,24 +12,30 @@ import { ChartCard } from './chart-card'
 @inject('dashboardStore')
 @observer
 class ChartListComponent extends React.Component {
-  renderLoading = () => (
-    <div className={styles.charts}>
-      <div className={styles.loading}>
-        <CircularProgress />
-      </div>
-    </div>
-  )
-
-  renderError = () => (
-    <div className={`${styles.charts} ${styles.chartsLoading}`}>
-      <Paper className={styles.chart}>
-        <div className={styles.error}>
-          <h1>Error</h1>
-          <pre>{JSON.stringify(this.props.dashboardStore.dashboardQuery.error)}</pre>
+  renderLoading = () => {
+    return (
+      <div className={styles.charts}>
+        <div className={styles.loading}>
+          <CircularProgress />
         </div>
-      </Paper>
-    </div>
-  )
+      </div>
+    )
+  }
+
+  renderError = () => {
+    const { dashboardStore } = this.props
+
+    return (
+      <div className={`${styles.charts} ${styles.chartsLoading}`}>
+        <Paper className={styles.chart}>
+          <div className={styles.error}>
+            <h1>Error</h1>
+            <pre>{JSON.stringify(dashboardStore.dashboardQuery.error)}</pre>
+          </div>
+        </Paper>
+      </div>
+    )
+  }
 
   render() {
     const { applicationStore, dashboardStore } = this.props
@@ -62,9 +68,42 @@ class ChartListComponent extends React.Component {
       <div className={styles.charts}>
         <Grid container spacing={24}>
           {data.map((chart, i) => {
+            let xs = 12
+            let md = 6
+            let lg = 4
+            let xl = 2
+
+            if (data.length === 1) {
+              xs = 12
+              md = 12
+              lg = 12
+              xl = 12
+            }
+
+            if (data.length === 2) {
+              xs = 12
+              md = 6
+              lg = 6
+              xl = 6
+            }
+
+            if (data.length === 3) {
+              xs = 12
+              md = 6
+              lg = 4
+              xl = 4
+            }
+
+            if (data.length >= 4) {
+              xs = 12
+              md = 6
+              lg = 4
+              xl = 2
+            }
+
             return (
-              <Grid item xs={12} md={6} lg={4} xl={2}>
-                <ChartCard chart={chart} key={i} userId={applicationStore.user.id} />
+              <Grid item xs={xs} md={md} lg={lg} xl={xl} key={i}>
+                <ChartCard chart={chart} userId={applicationStore.user.id} />
               </Grid>
             )
           })}

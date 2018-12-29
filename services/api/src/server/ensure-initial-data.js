@@ -1,7 +1,7 @@
-import { createUserWithDashboard } from '../../common/domain/mutations/createUserWithDashboard'
-import { deleteManyDashboards } from '../../common/domain/mutations/deleteManyDashboards'
-import { deleteManyUsers } from '../../common/domain/mutations/deleteManyUsers'
-import { getApolloClient } from '../../common/apollo/client'
+import { createUserWithDashboard } from '../common/domain/mutations/createUserWithDashboard'
+import { deleteManyDashboards } from '../common/domain/mutations/deleteManyDashboards'
+import { deleteManyUsers } from '../common/domain/mutations/deleteManyUsers'
+import { getApolloClient } from '../common/apollo/client'
 
 export async function ensureInitialData() {
   console.log('ensureInitialData')

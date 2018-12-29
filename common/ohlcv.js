@@ -1,26 +1,20 @@
-const MINUTE_MODIFIER = 60
-const HOUR_MODIFIER = 60
-const DAY_MODIFIER = 24
-const WEEK_MODIFIER = 7
-const MILLISECOND_MODIFIER = 1000
-
 export function periodToMilliSeconds(period) {
   const [_, amount, timeframe] = period.match(/(\d+)([wdhm])/)
 
-  const result = Number(amount) * MILLISECOND_MODIFIER
+  const result = Number(amount) * 1000
 
   switch (timeframe) {
     case 'm':
-      return result * MINUTE_MODIFIER
+      return result * 60
 
     case 'h':
-      return result * MINUTE_MODIFIER * HOUR_MODIFIER
+      return result * 60 * 60
 
     case 'd':
-      return result * MINUTE_MODIFIER * HOUR_MODIFIER * DAY_MODIFIER
+      return result * 60 * 60 * 24
 
     case 'w':
-      return result * MINUTE_MODIFIER * HOUR_MODIFIER * DAY_MODIFIER * WEEK_MODIFIER
+      return result * 60 * 60 * 24 * 7
 
     default:
       return result
@@ -28,8 +22,13 @@ export function periodToMilliSeconds(period) {
 }
 
 export function getExpectedLengthForPeriod(period, from, to) {
+  const now = new Date().valueOf()
   const f = new Date(from).valueOf()
-  const t = new Date(to).valueOf()
+  let t = new Date(to).valueOf()
+
+  if (t > now) {
+    t = now
+  }
 
   const difference = t - f
 

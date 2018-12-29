@@ -4,7 +4,7 @@ import { Query } from 'react-apollo'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Grid from '@material-ui/core/Grid'
 
-import { markets } from '../../../../common/domain/queries/markets'
+import { markets } from '../../../common/domain/queries/markets'
 
 import * as styles from './styles.scss'
 import { Table } from './table'
