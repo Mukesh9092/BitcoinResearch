@@ -1,9 +1,24 @@
 #!/usr/bin/env bash
 
-echo "Removing common directory from services..."
-./bin/all-services rm -rf common
+copy() {
+  rm -rf services/*/src/common
+  for dir in ./services/*/; do
+    cp -R common $dir/src/common
+  done;
+  echo "`date -u +'%D %X'` Copy complete"
+}
 
-echo "Copying common directory to services and watching for changes..."
-pushd ./bin/copy-common-library;
-npm run start;
-popd;
+copy
+
+inotifywait \
+  --quiet \
+  --monitor \
+  --recursive \
+  --event close_write \
+  --event move \
+  --event create \
+  --event delete \
+  common \
+  | while read -r dir event file; do
+    copy
+  done
