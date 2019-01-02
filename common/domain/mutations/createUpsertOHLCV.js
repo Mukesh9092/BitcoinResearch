@@ -24,14 +24,14 @@ export function createUpsertOHLCVs(ohlcvs) {
           '${new Date(timestamp).toISOString()}',
           '${marketBase}',
           '${marketQuote}',
-          '${period}',
           ${open},
           ${high},
           ${low},
           ${close},
           ${volume},
           '${now}',
-          '${now}'
+          '${now}',
+          ${period}
         )
         ON CONFLICT ON CONSTRAINT \\"ohlcv_unique\\"
         DO UPDATE SET

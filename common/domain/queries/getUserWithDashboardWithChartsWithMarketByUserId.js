@@ -9,6 +9,9 @@ export const getUserWithDashboardWithChartsWithMarketByUserId = gql`
         id
         charts {
           id
+          from
+          to
+          period
           market {
             id
             trader

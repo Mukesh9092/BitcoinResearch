@@ -5,7 +5,7 @@ export const createOHLCV = gql`
     $marketBase: String!
     $marketQuote: String!
     $timestamp: DateTime!
-    $period: String!
+    $period: Period!
     $open: Float!
     $high: Float!
     $low: Float!

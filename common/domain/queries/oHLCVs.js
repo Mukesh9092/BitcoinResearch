@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 
 export const oHLCVs = gql`
-  query oHLCVs($marketBase: String!, $marketQuote: String!, $period: String!, $from: DateTime!, $to: DateTime!) {
+  query oHLCVs($marketBase: String!, $marketQuote: String!, $period: Period!, $from: DateTime!, $to: DateTime!) {
     oHLCVs(
       where: {
         marketBase: $marketBase

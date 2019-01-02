@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:latest
 
 # Expose the application's ports.
 EXPOSE $WEB_PORT
@@ -12,7 +12,9 @@ WORKDIR /service
 # Create app directory
 RUN mkdir -p /service
 WORKDIR /service
-#COPY . .
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
 
 # Run this command to start the application.
 CMD npm run dev

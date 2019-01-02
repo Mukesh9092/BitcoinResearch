@@ -6,7 +6,7 @@ export const getPointIndicator = gql`
     $name: String!
     $base: String!
     $quote: String!
-    $period: String!
+    $period: Period!
     $from: Date!
     $to: Date!
   ) {

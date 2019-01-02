@@ -4,7 +4,7 @@ export const deleteManyOHLCVs = gql`
   mutation deleteManyOHLCVs(
     $marketBase: String!
     $marketQuote: String!
-    $period: String!
+    $period: Period!
     $from: DateTime!
     $to: DateTime!
   ) {

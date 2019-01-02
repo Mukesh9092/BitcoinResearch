@@ -1,0 +1,17 @@
+export const PeriodEnum = {
+  MINUTE1: 0,
+  MINUTE3: 1,
+  MINUTE5: 2,
+  MINUTE15: 3,
+  MINUTE30: 4,
+  HOUR1: 5,
+  HOUR2: 6,
+  HOUR4: 7,
+  HOUR6: 8,
+  HOUR8: 9,
+  HOUR12: 10,
+  DAY1: 11,
+  DAY3: 12,
+  WEEK1: 13,
+  MONTH1: 14,
+}

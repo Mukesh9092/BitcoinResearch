@@ -1,0 +1,35 @@
+@import '../../../styles/measurements.scss';
+
+.container {
+}
+
+.paper {
+  padding: 12px;
+}
+
+.loading {
+  text-align: center;
+}
+
+.error {
+  background-color: #ff0000;
+}
+
+.empty {
+  text-align: center;
+}
+
+.textField {
+  z-index: 1000;
+}
+
+.buttons {
+  margin-top: $single-unit * 2;
+}
+
+.cancelButton {
+  margin-right: $single-unit !important;
+}
+
+.saveButton {
+}

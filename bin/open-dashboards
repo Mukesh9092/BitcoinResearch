@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-chromium-browser http://redis-admin.docker.localhost
-chromium-browser http://postgresql-admin.docker.localhost
-chromium-browser http://api.docker.localhost/graphiql
-chromium-browser http://docker.localhost
+chromium-browser http://localhost:8080/dashboard/      # Traefik Proxy
+chromium-browser http://postgresql-admin.tomwieland.nl # PostgreSQL Admin
+chromium-browser http://prisma.tomwieland.nl           # Prisma GraphQL
+chromium-browser http://tensorflow.tomwieland.nl       # Tensorflow
+chromium-browser http://tomwieland.nl

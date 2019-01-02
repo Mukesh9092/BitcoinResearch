@@ -9,9 +9,9 @@ import { isServer } from '../environment'
 
 dotenv.config()
 
-const { PRISMA_HOST, PRISMA_PORT } = process.env
+const { PRISMA_HOST, PRISMA_PORT, PRISMA_URL } = process.env
 
-const API_URI_CLIENT = 'http://prisma.docker.localhost/'
+const API_URI_CLIENT = PRISMA_URL
 const API_URI_SERVER = `http://${PRISMA_HOST}:${PRISMA_PORT}/`
 
 let client

@@ -1,20 +1,24 @@
+// TODO: This is probably pretty bad
 export function periodToMilliSeconds(period) {
-  const [_, amount, timeframe] = period.match(/(\d+)([wdhm])/)
+  const [_, timeframe, amount] = period.match(/([A-Z]+)(\d+)/)
 
   const result = Number(amount) * 1000
 
   switch (timeframe) {
-    case 'm':
+    case 'MINUTE':
       return result * 60
 
-    case 'h':
+    case 'HOUR':
       return result * 60 * 60
 
-    case 'd':
+    case 'DAY':
       return result * 60 * 60 * 24
 
-    case 'w':
+    case 'WEEK':
       return result * 60 * 60 * 24 * 7
+
+    case 'MONTH':
+      return result * 60 * 60 * 24 * 7 * 4
 
     default:
       return result

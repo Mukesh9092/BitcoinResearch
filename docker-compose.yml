@@ -2,7 +2,7 @@ version: '3'
 services:
   proxy:
     image: traefik
-    command: '-c /dev/null --api --docker --docker.domain=docker.localhost --logLevel=DEBUG'
+    command: '-c /dev/null --api --docker --docker.domain=tomwieland.nl --logLevel=DEBUG'
     ports:
       - '80:80'
       - '8080:8080'
@@ -14,7 +14,7 @@ services:
   postgresql:
     image: 'postgres:latest'
     ports:
-      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+      - '${POSTGRESQL_PORT}:${POSTGRESQL_PORT}'
     volumes:
       - './services/postgresql/data:/var/lib/postgresql/data'
     env_file: .env
@@ -22,17 +22,19 @@ services:
   postgresql-admin:
     depends_on:
       - postgresql
-    image: sosedoff/pgweb
+    image: dpage/pgadmin4:latest
     ports:
-      - '${POSTGRES_ADMIN_PORT}:${POSTGRES_ADMIN_PORT}'
+      - '${POSTGRESQL_ADMIN_PORT}:80'
+    volumes:
+      - './services/postgresql-admin/data:/root/.pgadmin'
     env_file: .env
     environment:
-      - SERVICE_NAME=postgresql-admin
-      - 'SERVICE_EXPOSE_PORT=${POSTGRES_ADMIN_PORT}'
+      PGADMIN_DEFAULT_EMAIL: 'tom.wieland@gmail.com'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
     labels:
-      - 'traefik.frontend.rule=Host:${POSTGRES_ADMIN_HOST}.docker.localhost'
-      - 'traefik.backend=${POSTGRES_ADMIN_HOST}'
-      - 'traefik.port=${POSTGRES_ADMIN_PORT}'
+      traefik.frontend.rule: 'Host:${PRISMA_HOST}.tomwieland.nl'
+      traefik.backend: '${PRISMA_HOST}'
+      traefik.port: '${PRISMA_PORT}'
 
   prisma:
     depends_on:
@@ -49,16 +51,16 @@ services:
         databases:
           default:
             connector: postgres
-            host: ${POSTGRES_HOST}
-            port: ${POSTGRES_PORT}
-            user: ${POSTGRES_USER}
-            password: ${POSTGRES_PASSWORD}
+            host: ${POSTGRESQL_HOST}
+            port: ${POSTGRESQL_PORT}
+            user: ${POSTGRESQL_USER}
+            password: ${POSTGRESQL_PASSWORD}
             migrations: true
             rawAccess: true
     labels:
-      - 'traefik.frontend.rule=Host:${PRISMA_HOST}.docker.localhost'
-      - 'traefik.backend=${PRISMA_HOST}'
-      - 'traefik.port=${PRISMA_PORT}'
+      traefik.frontend.rule: 'Host:${PRISMA_HOST}.tomwieland.nl'
+      traefik.backend: '${PRISMA_HOST}'
+      traefik.port: '${PRISMA_PORT}'
 
   tensorflow:
     image: tensorflow/tensorflow
@@ -69,9 +71,9 @@ services:
     env_file: .env
     command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
     labels:
-      - 'traefik.frontend.rule=Host:${TENSORFLOW_HOST}.docker.localhost'
-      - 'traefik.backend=${TENSORFLOW_HOST}'
-      - 'traefik.port=8888'
+      traefik.frontend.rule: 'Host:${TENSORFLOW_HOST}.tomwieland.nl'
+      traefik.backend: '${TENSORFLOW_HOST}'
+      traefik.port: '8888'
 
   tf-serve:
     image: tobegit3hub/simple_tensorflow_serving
@@ -82,23 +84,17 @@ services:
     env_file: .env
     command: 'simple_tensorflow_serving --model_base_path=/tf'
     labels:
-      - 'traefik.frontend.rule=Host:${TF_SERVE_HOST}.docker.localhost'
-      - 'traefik.backend=${TF_SERVE_HOST}'
-      - 'traefik.port=${TF_SERVE_PORT}'
+      traefik.frontend.rule: 'Host:${TF_SERVE_HOST}.tomwieland.nl'
+      traefik.backend: '${TF_SERVE_HOST}'
+      traefik.port: '${TF_SERVE_PORT}'
 
   api:
     depends_on:
       - prisma
     build: services/api
-    ports:
-      - '${API_PORT}:${API_PORT}'
     volumes:
       - './services/api:/service'
     env_file: .env
-    labels:
-      - 'traefik.frontend.rule=Host:${API_HOST}.docker.localhost'
-      - 'traefik.backend=${API_HOST}'
-      - 'traefik.port=${API_PORT}'
 
   web:
     depends_on:
@@ -111,6 +107,6 @@ services:
       - './services/web:/service'
     env_file: .env
     labels:
-      - 'traefik.frontend.rule=Host:docker.localhost'
-      - 'traefik.backend=${WEB_HOST}'
-      - 'traefik.port=${WEB_PORT}'
+      traefik.frontend.rule: 'Host:web.tomwieland.nl'
+      traefik.backend: '${WEB_HOST}'
+      traefik.port: '${WEB_PORT}'

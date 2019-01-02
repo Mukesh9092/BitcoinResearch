@@ -7,10 +7,8 @@ export function apolloQueryStoreFactory(options) {
     apolloClient = getApolloClient()
 
     @observable state = 'initial'
-
-    @observable error
-
-    @observable result
+    @observable error = undefined
+    @observable result = undefined
 
     static defaultSelector(data) {
       return data[Object.keys(data)[0]]

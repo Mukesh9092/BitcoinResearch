@@ -53,11 +53,14 @@ export class DashboardStore {
     this.markets = this.marketsQuery.result.map((x) => new MarketStore(x))
   }
 
-  @action async createChart({ userId, dashboardId, marketId }) {
+  @action async createChart({ userId, dashboardId, marketId, from, to, period }) {
     await this.createChartMutation.mutate({
       variables: {
         dashboardId,
         marketId,
+        from,
+        to,
+        period,
       },
     })
 
@@ -72,5 +75,9 @@ export class DashboardStore {
     })
 
     this.charts = this.charts.filter((x) => x.id !== chartId)
+  }
+
+  @action async navigateToChartPage({ chartId }) {
+    await this.props.history.push(`/chart/${chartId}`)
   }
 }

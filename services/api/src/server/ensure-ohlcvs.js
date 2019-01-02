@@ -1,6 +1,6 @@
 import { startOfYear, endOfYear } from 'date-fns'
 
-
+import { PeriodEnum } from '../common/domain/Period.enum'
 import { getApolloClient } from '../common/apollo/client'
 import { getExpectedLengthForPeriod } from '../common/ohlcv'
 import { markets } from '../common/domain/queries/markets'
@@ -16,7 +16,7 @@ async function ensureMarket(market) {
   const end = endOfYear(now)
 
   const from = start.toISOString()
-  const period = '1d'
+  const period = 'DAY1'
   const to = end.toISOString()
   const symbol = `${market.base}/${market.quote}`
 
@@ -45,10 +45,10 @@ async function ensureMarket(market) {
   ohlcvs = ohlcvs.map((x) => {
     const [timestamp, open, high, low, close, volume] = x
 
-    return [timestamp, market.base, market.quote, period, open, high, low, close, volume]
+    return [timestamp, market.base, market.quote, PeriodEnum[period], open, high, low, close, volume]
   })
 
-  await createOHLCVs(market, period, ohlcvs)
+  await createOHLCVs(ohlcvs)
 }
 
 export async function ensureOHLCVs() {
