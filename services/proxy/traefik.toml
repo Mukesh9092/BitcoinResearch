@@ -1,6 +1,5 @@
-# debug = false
-
-# logLevel = "ERROR"
+debug = false
+logLevel = "WARN" # DEBUG, INFO, WARN, ERROR
 defaultEntryPoints = ["https","http"]
 
 [entryPoints]
@@ -24,6 +23,6 @@ OnHostRule = true
 
 [docker]
 endpoint = "unix:///var/run/docker.sock"
-domain = "tomwieland.nl"
+domain = "localtest.me"
 watch = true
 exposedbydefault = false

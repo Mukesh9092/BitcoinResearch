@@ -1,5 +1,4 @@
-endpoint: http://prisma.sso.tomwieland.nl
-#endpoint: http://prisma:8100
+endpoint: http://prisma.localtest.me
 datamodel: src/common/domain/datamodel.graphql
 
 generate:
