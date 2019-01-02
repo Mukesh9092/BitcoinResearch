@@ -9,18 +9,20 @@ import { isServer } from '../environment'
 
 dotenv.config()
 
-const { PRISMA_HOST, PRISMA_PORT, PRISMA_URL } = process.env
-
-const API_URI_CLIENT = PRISMA_URL
-const API_URI_SERVER = `http://${PRISMA_HOST}:${PRISMA_PORT}/`
+const { PRISMA_HOST, PRISMA_PORT } = process.env
 
 let client
 export function getApolloClient() {
   if (client) return client
 
   const cache = new InMemoryCache()
-  const uri = `${isServer() ? API_URI_SERVER : API_URI_CLIENT}`
-  // const uri = API_URI_CLIENT
+
+  let uri
+  if (isServer()) {
+    uri = `http://${PRISMA_HOST}:${PRISMA_PORT}/`
+  } else {
+    uri = `http://prisma.localtest.me`
+  }
 
   const link = new HttpLink({ uri, fetch })
 
