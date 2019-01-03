@@ -77,9 +77,9 @@ services:
     ports:
       - '${TF_SERVE_PORT}:${TF_SERVE_PORT_IN}'
     volumes:
-      - './common/tensorflow/tf:/tf'
+      - './services/tf-serve:/service'
     env_file: .env
-    command: 'simple_tensorflow_serving --model_base_path=/tf'
+    command: 'simple_tensorflow_serving --model_base_path=/service/src/common/tensorflow/tf/models/test1'
     labels:
       traefik.frontend.rule: 'Host:${TF_SERVE_HOST}.${HOSTNAME}'
       traefik.backend: '${TF_SERVE_HOST}'
