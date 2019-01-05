@@ -1,0 +1,3 @@
+# This must be localhost, because prisma deploy is ran from the host machine.
+endpoint: http://localhost:8020
+datamodel: ../domain/datamodel.graphql

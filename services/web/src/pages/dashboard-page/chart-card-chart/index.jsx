@@ -2,7 +2,7 @@ import * as React from 'react'
 import { CircularProgress } from '@material-ui/core'
 import { debounce } from 'lodash'
 import { inject, observer } from 'mobx-react'
-import { startOfYear, endOfYear, subDays, addMonths } from 'date-fns'
+import { subMonths } from 'date-fns'
 
 import { OHLCVChart } from '../../../components/ohlcv-chart'
 
@@ -14,8 +14,8 @@ import * as styles from './styles.scss'
 class ChartCardChartComponent extends React.Component {
   state = {
     height: 300,
-    start: addMonths(startOfYear(new Date()), 6),
-    end: endOfYear(new Date()),
+    start: subMonths(new Date(), 6),
+    end: new Date(),
   }
 
   handleDownloadMore = debounce((subtractionAmount) => {

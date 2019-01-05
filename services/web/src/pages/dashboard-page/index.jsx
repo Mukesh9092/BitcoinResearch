@@ -23,10 +23,10 @@ class DashboardPageComponent extends React.Component {
   componentWillMount() {
     const { applicationStore, dashboardStore } = this.props
 
+    dashboardStore.getMarkets()
     dashboardStore.getDashboard({
       userId: applicationStore.user.id,
     })
-    dashboardStore.getMarkets()
   }
 
   handleToolbarAddClick = () => {

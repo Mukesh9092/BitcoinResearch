@@ -2,7 +2,11 @@ import gql from 'graphql-tag'
 
 export const markets = gql`
   query markets {
-    markets {
+    markets(
+      where: {
+        enabled: true
+      }
+    ) {
       id
       trader
       category

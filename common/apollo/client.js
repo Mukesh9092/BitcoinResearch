@@ -9,29 +9,30 @@ import { isServer } from '../environment'
 
 dotenv.config()
 
-const { PRISMA_HOST, PRISMA_PORT } = process.env
+const { API_HOST, API_PORT } = process.env
 
-let client
-export function getApolloClient() {
-  if (client) return client
-
-  const cache = new InMemoryCache()
+export function getApolloClient(options) {
+  const cache = options.cache || new InMemoryCache()
 
   let uri
-  if (isServer()) {
-    uri = `http://${PRISMA_HOST}:${PRISMA_PORT}/`
+  if (options.uri) {
+    uri = options.uri
   } else {
-    uri = `http://prisma.localtest.me`
+    if (isServer()) {
+      options.uri = `http://${API_HOST}:${API_PORT}/`
+    } else {
+      options.uri = `http://api.localtest.me`
+    }
   }
 
-  const link = new HttpLink({ uri, fetch })
+  const link = options.link || new HttpLink({ uri, fetch })
 
   if (!isServer()) {
     // eslint-disable-next-line no-underscore-dangle
     cache.restore(window.__APOLLO_STATE__)
   }
 
-  client = new ApolloClient({
+  const client = new ApolloClient({
     cache,
     link,
     ssrMode: isServer(),

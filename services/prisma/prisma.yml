@@ -1,8 +1,0 @@
-endpoint: http://prisma.localtest.me
-datamodel: src/common/domain/datamodel.graphql
-
-generate:
-  - generator: javascript-client
-    output: ./generated/prisma-js
-  - generator: graphql-schema
-    output: ./generated/prisma-gql

@@ -2,20 +2,20 @@ scalar DateTime
 
 enum Period {
   MINUTE1
-  MINUTE3
-  MINUTE5
+  #MINUTE3
+  #MINUTE5
   MINUTE15
-  MINUTE30
+  #MINUTE30
   HOUR1
-  HOUR2
-  HOUR4
+  #HOUR2
+  #HOUR4
   HOUR6
-  HOUR8
+  #HOUR8
   HOUR12
   DAY1
-  DAY3
-  WEEK1
-  MONTH1
+  #DAY3
+  #WEEK1
+  #MONTH1
 }
 
 type User @model {
@@ -42,6 +42,7 @@ type Chart @model {
 type Market @model {
   id: ID! @unique
   active: Boolean!
+  enabled: Boolean
   category: String!
   type: String!
   base: String!
@@ -58,7 +59,7 @@ type Market @model {
 # follow with
 # ALTER TABLE "default$default"."OHLCV" ADD CONSTRAINT "ohlcv_unique" UNIQUE ("marketQuote", "marketBase", "period", "timestamp");
 type OHLCV @model {
-  timestamp: DateTime!
+  datetime: DateTime!
   marketBase: String!
   marketQuote: String!
   period: Period!

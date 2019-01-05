@@ -1,45 +1,82 @@
-import { upsertMarket } from '../common/domain/mutations/upsertMarket'
+import dotenv from 'dotenv'
+import gql from 'graphql-tag'
+
+import { debug } from '../common/log'
 import { getApolloClient } from '../common/apollo/client'
+
+import { createOHLCVTables } from '../common/domain/mutations/createOHLCVTables'
 import { markets } from '../common/domain/queries/markets'
 
 import { fetchMarkets } from './fetch-markets'
+import { getPeriodValues } from './get-period-values'
 import { sanitizeMarket } from './sanitize-market'
 
+dotenv.config()
+
+const { PRISMA_HOST, PRISMA_PORT } = process.env
+
 export async function ensureMarkets() {
-  console.log('ensureMarkets')
+  console.log('ensureMarkets creating markets')
 
-  const apolloClient = getApolloClient()
+  const apolloClient = getApolloClient({
+    uri: `http://${PRISMA_HOST}:${PRISMA_PORT}`
+  })
 
-  const dbMarkets = (await apolloClient.query({ query: markets })).data.markets
+  // const dbMarkets = (await apolloClient.query({ query: markets })).data.markets
   const apiMarkets = (await fetchMarkets()).map(sanitizeMarket)
 
-  const marketsWithId = apiMarkets.reduce((memo, currentApiMarket) => {
-    const dbMarketResult = dbMarkets.find(
-      (currentDbMarket) =>
-        currentDbMarket.trader === currentApiMarket.trader &&
-        currentDbMarket.base === currentApiMarket.base &&
-        currentDbMarket.quote === currentApiMarket.quote,
-    )
-
-    memo.push({
-      ...currentApiMarket,
-      id: (dbMarketResult && dbMarketResult.id) || '',
-    })
-
-    return memo
-  }, [])
+  await apolloClient.mutate({
+    mutation: gql`
+      mutation {
+        deleteManyMarkets(where:{}) {
+          count
+        }
+      }
+    `
+  })
 
   await Promise.all(
-    marketsWithId.map((market) => {
+    apiMarkets.map((market) => {
       return apolloClient.mutate({
-        mutation: upsertMarket,
-        variables: {
-          ...market,
-          id: market.id || '',
-        },
+        mutation: gql`
+          mutation createMarket(
+            $active: Boolean!
+            $enabled: Boolean!
+            $trader: String!
+            $category: String!
+            $type: String!
+            $base: String!
+            $quote: String!
+            $maker: String!
+            $taker: String!
+            $precisionAmount: Int!
+            $precisionBase: Int!
+            $precisionPrice: Int!
+            $precisionQuote: Int!
+          ) {
+            createMarket(data: {
+              active: $active
+              enabled: $enabled
+              trader: $trader
+              category: $category
+              type: $type
+              base: $base
+              quote: $quote
+              maker: $maker
+              taker: $taker
+              precisionAmount: $precisionAmount
+              precisionBase: $precisionBase
+              precisionPrice: $precisionPrice
+              precisionQuote: $precisionQuote
+            }) {
+              id
+            }
+          }
+        `,
+        variables: market,
       })
     }),
   )
 
-  console.log('ensureMarkets complete', marketsWithId.length)
+  console.log('ensureMarkets created markets: ', apiMarkets.length)
 }
