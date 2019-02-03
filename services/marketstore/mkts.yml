@@ -12,14 +12,19 @@ bgworkers:
     name: BinanceFetcher
     config:
       symbols:
-        - BTC
+        - BNB
+        - XRP
         - ETH
+        - TRX
+        - HOT
+        - BTT
         - LTC
+        - XLM
       base_timeframe: "1Min"
-      base_currency: "USDT"
+      base_currency: "BTC"
       query_start: "2018-01-01 00:00"
   - module: ondiskagg.so
-    on: */1Min/OHLCV
+    on: "*/1Min/OHLCV"
     config:
       destinations:
         - 5Min
@@ -29,4 +34,4 @@ bgworkers:
         - 12H
         - 1D
   - module: stream.so
-    on: */*/*
+    on: "*/*/*"

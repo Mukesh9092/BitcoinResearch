@@ -2,44 +2,52 @@ import dotenv from 'dotenv'
 import { GraphQLServer } from 'graphql-yoga'
 import { Prisma } from 'prisma-binding'
 
-import resolvers from './resolvers'
-import { ensureInitialData } from './ensure-initial-data'
-import { ensureMarkets } from './ensure-markets'
+import { ensureInitialData } from './importer/ensure-initial-data'
+import { ensureMarkets } from './importer/ensure-markets'
+
+import { createChart } from './resolvers/Mutation/createChart'
+import { deleteChart } from './resolvers/Mutation/deleteChart'
+import { getCurrentUser } from './resolvers/Query/getCurrentUser'
+import { getMarkets } from './resolvers/Query/getMarkets'
+import { getOHLCVs } from './resolvers/Query/getOHLCVs'
 
 dotenv.config()
 
-const {
-  HOSTNAME,
-  APP_HOST,
-  APP_PORT,
-  APP_PORT_IN,
-  PRISMA_HOST,
-  PRISMA_PORT,
-  PRISMA_PORT_IN
-} = process.env
+const { APP_PORT_IN, PRISMA_HOST, PRISMA_PORT } = process.env
+
+const resolvers = {
+  Query: {
+    getCurrentUser,
+    getMarkets,
+    getOHLCVs,
+  },
+
+  Mutation: {
+    createChart,
+    deleteChart,
+  },
+}
+
+const context = (req) => {
+  return {
+    ...req,
+    prisma: new Prisma({
+      typeDefs: 'src/datamodel.prisma.gen.graphql',
+      endpoint: `http://${PRISMA_HOST}:${PRISMA_PORT}`,
+    }),
+  }
+}
 
 const server = new GraphQLServer({
   port: APP_PORT_IN,
   typeDefs: 'src/schema.graphql',
   resolvers,
-  context: req => ({
-    ...req,
-    prisma: new Prisma({
-      typeDefs: '../common/domain/datamodel.prisma.gen.graphql',
-      endpoint: `${PRISMA_HOST}:${PRISMA_PORT}`,
-    }),
-  }),
+  context,
 })
 
-async function start() {
-  console.log('Starting import.')
+server.start(async () => {
+  console.log(`GraphQL server is running on http://localhost:4000`)
 
   await ensureInitialData()
   await ensureMarkets()
-
-  console.log('Import complete.')
-
-  server.start(() => console.log(`GraphQL server is running on http://localhost:4000`))
-}
-
-start()
+})

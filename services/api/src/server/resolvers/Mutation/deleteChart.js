@@ -1,9 +1,12 @@
-export default (_, args, context, info) => {
-  return context.prisma.query.deleteChart({
-    data: {
-      where: {
-        id: args.id,
+export const deleteChart = (_, args, context, info) => {
+  return context.prisma.mutation.deleteChart(
+    {
+      data: {
+        where: {
+          id: args.id,
+        },
       },
     },
-  }, info)
+    info,
+  )
 }

@@ -1,19 +1,108 @@
-import gql from 'graphql-tag'
+import fetch from 'cross-fetch'
+import msgpack from 'msgpack'
+import uuid from 'uuid'
 
-export default (_, args, context, info) => {
-  const tableName = `OHLCV_${context.marketQuote}_${context.marketBase}_${context.period}`
+import { periodToMarketStore } from '../../../common/ohlcv'
 
-  const graphqlQuery = stripWhiteSpace(`mutation { executeRaw(query: "${sqlQuery}") }`)
+const { MARKETSTORE_HOST, MARKETSTORE_PORT, MARKETSTORE_API_HOST, MARKETSTORE_API_PORT } = process.env
 
-  return context.prisma.query.OHLCVs({
-    data: {
-      where: {
-        marketBase: args.marketBase,
-        marketQuote: args.marketQuote,
-        period: args.period,
-        timestamp_gte: args.from,
-        timestamp_lte: args.to,
-      },
-    },
-  }, info)
+export const getOHLCVs = async (_, args, context, info) => {
+  const host = MARKETSTORE_API_HOST
+  const port = MARKETSTORE_API_PORT
+  const { base, from, to } = args
+  const period = periodToMarketStore(args.period)
+  const url = `http://${host}:${port}/query/${base}/${period}/OHLCV/${from}/${to}`
+
+  const fetchResult = await fetch(url)
+  const fetchResultJSON = await fetchResult.json()
+
+  console.log('fetchResultJSON', Object.keys(fetchResultJSON), typeof fetchResultJSON)
+
+  const openKeys = Object.keys(fetchResultJSON.Open).sort()
+
+  const result = []
+
+  openKeys.forEach((key) => {
+    result.push({
+      datetime: new Date(key),
+      marketBase: args.base,
+      marketQuote: args.quote,
+      period: args.period,
+      open: fetchResultJSON.Open[key],
+      high: fetchResultJSON.High[key],
+      low: fetchResultJSON.Low[key],
+      close: fetchResultJSON.Close[key],
+      volume: fetchResultJSON.Volume[key],
+    })
+  })
+
+  return result
 }
+
+/*
+export const getOHLCVs = async (_, args, context, info) => {
+  const host = MARKETSTORE_HOST
+  const port = MARKETSTORE_PORT
+  const { base, from, to } = args
+  const period = periodToMarketStore(args.period)
+  const type = 'OHLCV'
+  const url = `http://${host}:${port}/rpc`
+
+  const message = msgpack.pack({
+    requests: [
+      {
+        method: 'DataService.Query',
+        id: uuid(),
+        jsonrpc: '2.0',
+        params: {
+          destination: `${base}/${period}/${type}`,
+          // key_category
+          epoch_start: from,
+          epoch_end: to,
+          // limit_record_count:
+          // limit_from_start:
+          // functions:
+        },
+      },
+    ],
+  })
+
+  console.log('message', message)
+
+  const options = {
+    method: 'POST',
+    body: message,
+    headers: { 'Content-Type': 'application/json' },
+  }
+
+  console.log('options', options)
+
+  const fetchResult = await fetch(url, options)
+
+  console.log('fetchResult', fetchResult)
+
+  const fetchResultJSON = await fetchResult.text()
+
+  console.log('fetchResultJSON', typeof fetchResultJSON, fetchResultJSON)
+
+  const openKeys = Object.keys(fetchResultJSON.Open).sort()
+
+  const result = []
+
+  openKeys.forEach((key) => {
+    result.push({
+      datetime: new Date(key),
+      marketBase: args.base,
+      marketQuote: args.quote,
+      period: args.period,
+      open: fetchResultJSON.Open[key],
+      high: fetchResultJSON.High[key],
+      low: fetchResultJSON.Low[key],
+      close: fetchResultJSON.Close[key],
+      volume: fetchResultJSON.Volume[key],
+    })
+  })
+
+  return result
+}
+ */

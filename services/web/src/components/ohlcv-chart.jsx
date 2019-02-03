@@ -31,7 +31,7 @@ function sortByTimestamp(array) {
   })
 }
 
-export const OHLCVChart = (props) => {
+const OHLCVChart = (props) => {
   const { name, type, width, height, ratio, ohlcv, onDownloadMore } = props
   const sortedOHLCV = sortByTimestamp(ohlcv)
 
@@ -125,3 +125,5 @@ export const OHLCVChart = (props) => {
     </ChartCanvas>
   )
 }
+
+export default OHLCVChart

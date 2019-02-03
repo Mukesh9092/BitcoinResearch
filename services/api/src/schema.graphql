@@ -1,9 +1,12 @@
+# import Dashboard from './datamodel.prisma.gen.graphql'
 # import Post from './datamodel.prisma.gen.graphql'
 # import User from './datamodel.prisma.gen.graphql'
 
 type Query {
-  getOHLCVs(base: String!, quote: String!, period: Period!, from: DateTime!, to: DateTime!): [OHLCV],
+  getCurrentUser: User,
+  getDashboard(userId: ID!): Dashboard,
   getMarkets: [Market],
+  getOHLCVs(base: String!, quote: String!, period: Period!, from: DateTime!, to: DateTime!): [OHLCV],
 
   # getIndicator(name: String! base: String!, quote: String!, period: Period, from: DateTime!, to: DateTime!): [Indicator]
 }

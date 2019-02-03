@@ -1,3 +1,12 @@
-export default (_, args, context, info) => {
-  return context.prisma.query.markets({}, info)
+export const getMarkets = (_, args, context, info) => {
+  return context.prisma.query.markets(
+    {
+      data: {
+        where: {
+          enabled: true,
+        },
+      },
+    },
+    info,
+  )
 }
