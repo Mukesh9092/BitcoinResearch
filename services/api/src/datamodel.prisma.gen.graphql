@@ -1,5 +1,5 @@
 # source: http://prisma:8020
-# timestamp: Sat Jan 05 2019 00:33:23 GMT+0000 (Coordinated Universal Time)
+# timestamp: Mon Feb 04 2019 00:24:33 GMT+0000 (Coordinated Universal Time)
 
 type AggregateChart {
   count: Int!
@@ -617,6 +617,7 @@ scalar Long
 type Market implements Node {
   id: ID!
   active: Boolean!
+  enabled: Boolean
   category: String!
   type: String!
   base: String!
@@ -642,6 +643,7 @@ type MarketConnection {
 
 input MarketCreateInput {
   active: Boolean!
+  enabled: Boolean
   category: String!
   type: String!
   base: String!
@@ -674,6 +676,8 @@ enum MarketOrderByInput {
   id_DESC
   active_ASC
   active_DESC
+  enabled_ASC
+  enabled_DESC
   category_ASC
   category_DESC
   type_ASC
@@ -705,6 +709,7 @@ enum MarketOrderByInput {
 type MarketPreviousValues {
   id: ID!
   active: Boolean!
+  enabled: Boolean
   category: String!
   type: String!
   base: String!
@@ -759,6 +764,7 @@ input MarketSubscriptionWhereInput {
 
 input MarketUpdateDataInput {
   active: Boolean
+  enabled: Boolean
   category: String
   type: String
   base: String
@@ -774,6 +780,7 @@ input MarketUpdateDataInput {
 
 input MarketUpdateInput {
   active: Boolean
+  enabled: Boolean
   category: String
   type: String
   base: String
@@ -789,6 +796,7 @@ input MarketUpdateInput {
 
 input MarketUpdateManyMutationInput {
   active: Boolean
+  enabled: Boolean
   category: String
   type: String
   base: String
@@ -867,6 +875,10 @@ input MarketWhereInput {
 
   """All values that are not equal to given value."""
   active_not: Boolean
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
   category: String
 
   """All values that are not equal to given value."""
@@ -1285,8 +1297,8 @@ interface Node {
 
 type OHLCV {
   datetime: DateTime!
-  marketBase: String!
-  marketQuote: String!
+  base: String!
+  quote: String!
   period: Period!
   open: Float!
   high: Float!
@@ -1307,8 +1319,8 @@ type OHLCVConnection {
 
 input OHLCVCreateInput {
   datetime: DateTime!
-  marketBase: String!
-  marketQuote: String!
+  base: String!
+  quote: String!
   period: Period!
   open: Float!
   high: Float!
@@ -1329,10 +1341,10 @@ type OHLCVEdge {
 enum OHLCVOrderByInput {
   datetime_ASC
   datetime_DESC
-  marketBase_ASC
-  marketBase_DESC
-  marketQuote_ASC
-  marketQuote_DESC
+  base_ASC
+  base_DESC
+  quote_ASC
+  quote_DESC
   period_ASC
   period_DESC
   open_ASC
@@ -1355,8 +1367,8 @@ enum OHLCVOrderByInput {
 
 type OHLCVPreviousValues {
   datetime: DateTime!
-  marketBase: String!
-  marketQuote: String!
+  base: String!
+  quote: String!
   period: Period!
   open: Float!
   high: Float!
@@ -1406,8 +1418,8 @@ input OHLCVSubscriptionWhereInput {
 
 input OHLCVUpdateManyMutationInput {
   datetime: DateTime
-  marketBase: String
-  marketQuote: String
+  base: String
+  quote: String
   period: Period
   open: Float
   high: Float
@@ -1447,86 +1459,86 @@ input OHLCVWhereInput {
 
   """All values greater than or equal the given value."""
   datetime_gte: DateTime
-  marketBase: String
+  base: String
 
   """All values that are not equal to given value."""
-  marketBase_not: String
+  base_not: String
 
   """All values that are contained in given list."""
-  marketBase_in: [String!]
+  base_in: [String!]
 
   """All values that are not contained in given list."""
-  marketBase_not_in: [String!]
+  base_not_in: [String!]
 
   """All values less than the given value."""
-  marketBase_lt: String
+  base_lt: String
 
   """All values less than or equal the given value."""
-  marketBase_lte: String
+  base_lte: String
 
   """All values greater than the given value."""
-  marketBase_gt: String
+  base_gt: String
 
   """All values greater than or equal the given value."""
-  marketBase_gte: String
+  base_gte: String
 
   """All values containing the given string."""
-  marketBase_contains: String
+  base_contains: String
 
   """All values not containing the given string."""
-  marketBase_not_contains: String
+  base_not_contains: String
 
   """All values starting with the given string."""
-  marketBase_starts_with: String
+  base_starts_with: String
 
   """All values not starting with the given string."""
-  marketBase_not_starts_with: String
+  base_not_starts_with: String
 
   """All values ending with the given string."""
-  marketBase_ends_with: String
+  base_ends_with: String
 
   """All values not ending with the given string."""
-  marketBase_not_ends_with: String
-  marketQuote: String
+  base_not_ends_with: String
+  quote: String
 
   """All values that are not equal to given value."""
-  marketQuote_not: String
+  quote_not: String
 
   """All values that are contained in given list."""
-  marketQuote_in: [String!]
+  quote_in: [String!]
 
   """All values that are not contained in given list."""
-  marketQuote_not_in: [String!]
+  quote_not_in: [String!]
 
   """All values less than the given value."""
-  marketQuote_lt: String
+  quote_lt: String
 
   """All values less than or equal the given value."""
-  marketQuote_lte: String
+  quote_lte: String
 
   """All values greater than the given value."""
-  marketQuote_gt: String
+  quote_gt: String
 
   """All values greater than or equal the given value."""
-  marketQuote_gte: String
+  quote_gte: String
 
   """All values containing the given string."""
-  marketQuote_contains: String
+  quote_contains: String
 
   """All values not containing the given string."""
-  marketQuote_not_contains: String
+  quote_not_contains: String
 
   """All values starting with the given string."""
-  marketQuote_starts_with: String
+  quote_starts_with: String
 
   """All values not starting with the given string."""
-  marketQuote_not_starts_with: String
+  quote_not_starts_with: String
 
   """All values ending with the given string."""
-  marketQuote_ends_with: String
+  quote_ends_with: String
 
   """All values not ending with the given string."""
-  marketQuote_not_ends_with: String
+  quote_not_ends_with: String
   period: Period
 
   """All values that are not equal to given value."""
@@ -1666,20 +1678,11 @@ type PageInfo {
 
 enum Period {
   MINUTE1
-  MINUTE3
-  MINUTE5
   MINUTE15
-  MINUTE30
   HOUR1
-  HOUR2
-  HOUR4
   HOUR6
-  HOUR8
   HOUR12
   DAY1
-  DAY3
-  WEEK1
-  MONTH1
 }
 
 enum PrismaDatabase {

@@ -11,51 +11,53 @@ import * as styles from './styles.scss'
 @inject('store')
 @observer
 class ChartCardChartComponent extends React.Component {
-  state = {
-    height: 300,
-    start: subMonths(new Date(), 6),
-    end: new Date(),
-  }
-
   handleDownloadMore = debounce((subtractionAmount) => {
     const {
       props: { chart },
-      state: { start, end },
+      state: { from, to },
     } = this
 
-    const newStart = subDays(start, Math.abs(subtractionAmount))
-
-    const from = newStart.toISOString()
-    const to = end.toISOString()
+    const newFrom = subDays(new Date(from), Math.abs(subtractionAmount)).toISOString()
 
     this.setState({
-      start: newStart,
+      from: newFrom,
     })
 
     chart.ohlcvStore.fetch({
-      from,
-      marketBase: chart.marketStore.base,
-      marketQuote: chart.marketStore.quote,
-      period: 'DAY1',
+      base: chart.marketStore.base,
+      quote: chart.marketStore.quote,
+      period: chart.period,
+      from: newFrom,
       to,
     })
   }, 1000)
 
+  constructor(props) {
+    super(props)
+
+    const {
+      chart: { from, to },
+    } = props
+
+    this.state = {
+      height: 300,
+      from,
+      to,
+    }
+  }
+
   componentWillMount() {
     const {
       props: { chart },
-      state: { start, end },
+      state: { from, to },
     } = this
 
-    const from = start.toISOString()
-    const to = end.toISOString()
-
     chart.ohlcvStore.fetch({
-      marketBase: chart.marketStore.base,
-      marketQuote: chart.marketStore.quote,
+      base: chart.marketStore.base,
+      quote: chart.marketStore.quote,
+      period: chart.period,
       from,
       to,
-      period: 'DAY1',
     })
   }
 
@@ -69,19 +71,23 @@ class ChartCardChartComponent extends React.Component {
 
   render() {
     const {
-      props: { width, chart },
+      props: {
+        width,
+        chart,
+        chart: {
+          ohlcvStore: { fetch, ohlcvs },
+        },
+      },
       state: { height },
     } = this
 
-    if (chart.ohlcvStore.fetch.pending) {
+    if (fetch.pending) {
       return ChartCardChartComponent.renderLoading()
     }
 
-    if (chart.ohlcvStore.fetch.error) {
-      throw chart.ohlcvStore.fetch.error
+    if (fetch.error) {
+      throw fetch.error
     }
-
-    const { ohlcvs } = chart
 
     if (!ohlcvs || !ohlcvs.length) {
       return (

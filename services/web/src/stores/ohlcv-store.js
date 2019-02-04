@@ -20,20 +20,18 @@ export class OHLCVStore {
     this.ohlcvs = object
   }
 
-  @task async fetch({ marketBase, marketQuote, from, to, period }) {
+  @task async fetch({ base, quote, from, to, period }) {
     const result = await this.apolloClient.query({
       query: getOHLCVs,
       variables: {
-        marketBase,
-        marketQuote,
+        base,
+        quote,
         from,
         to,
         period,
       },
     })
 
-    debugger
-
-    this.setFromObject(result.result)
+    this.setFromObject(result.data.getOHLCVs)
   }
 }

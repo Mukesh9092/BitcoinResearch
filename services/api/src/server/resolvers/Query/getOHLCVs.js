@@ -6,6 +6,10 @@ import { periodToMarketStore } from '../../../common/ohlcv'
 
 const { MARKETSTORE_HOST, MARKETSTORE_PORT, MARKETSTORE_API_HOST, MARKETSTORE_API_PORT } = process.env
 
+function sanitizeDateForMarketStore(isoDateTime) {
+  return new Date(isoDateTime / 1000)
+}
+
 export const getOHLCVs = async (_, args, context, info) => {
   const host = MARKETSTORE_API_HOST
   const port = MARKETSTORE_API_PORT
@@ -16,27 +20,21 @@ export const getOHLCVs = async (_, args, context, info) => {
   const fetchResult = await fetch(url)
   const fetchResultJSON = await fetchResult.json()
 
-  console.log('fetchResultJSON', Object.keys(fetchResultJSON), typeof fetchResultJSON)
-
   const openKeys = Object.keys(fetchResultJSON.Open).sort()
 
-  const result = []
-
-  openKeys.forEach((key) => {
-    result.push({
-      datetime: new Date(key),
-      marketBase: args.base,
-      marketQuote: args.quote,
+  return openKeys.map((key) => {
+    return {
+      datetime: new Date(Number(key)),
+      base: args.base,
+      quote: args.quote,
       period: args.period,
       open: fetchResultJSON.Open[key],
       high: fetchResultJSON.High[key],
       low: fetchResultJSON.Low[key],
       close: fetchResultJSON.Close[key],
       volume: fetchResultJSON.Volume[key],
-    })
+    }
   })
-
-  return result
 }
 
 /*
@@ -92,8 +90,8 @@ export const getOHLCVs = async (_, args, context, info) => {
   openKeys.forEach((key) => {
     result.push({
       datetime: new Date(key),
-      marketBase: args.base,
-      marketQuote: args.quote,
+      base: args.base,
+      quote: args.quote,
       period: args.period,
       open: fetchResultJSON.Open[key],
       high: fetchResultJSON.High[key],

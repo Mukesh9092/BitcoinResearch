@@ -6,8 +6,6 @@ projects:
         # TODO: Don't cardcode port here. Take from .env file.
         default: http://localhost:8020
   prisma:
-
-
     schemaPath: src/datamodel.prisma.gen.graphql
     extensions:
-      prisma: src/common/prisma/prisma.yml
+      prisma: prisma.yml

@@ -1,11 +1,11 @@
 import gql from 'graphql-tag'
 
 export const getOHLCVs = gql`
-  query getOHLCVs($marketBase: String!, $marketQuote: String!, $period: Period!, $from: DateTime!, $to: DateTime!) {
-    getOHLCVs(base: $marketBase, quote: $marketQuote, period: $period, from: $from, to: $to) {
+  query getOHLCVs($base: String!, $quote: String!, $period: Period!, $from: DateTime!, $to: DateTime!) {
+    getOHLCVs(base: $base, quote: $quote, period: $period, from: $from, to: $to) {
       datetime
-      marketBase
-      marketQuote
+      base
+      quote
       period
       open
       high

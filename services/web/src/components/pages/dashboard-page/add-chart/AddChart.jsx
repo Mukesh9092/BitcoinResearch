@@ -45,28 +45,22 @@ class AddChartComponent extends AsyncComponent {
       userId: store.user.id,
       dashboardId: dashboardStore.id,
       marketId: market.value,
-      from: addMonths(startOfMonth(startOfYear(new Date())), 6).toISOString(),
-      to: endOfYear(new Date()).toISOString(),
-      period: 'DAY1',
+      // from: addMonths(startOfMonth(startOfYear(new Date())), 6).toISOString(),
+      // to: endOfYear(new Date()).toISOString(),
+      from: '2018-01-01T00:00:00Z',
+      to: '2018-01-02T00:00:00Z',
+      period: 'MINUTE1',
     }
 
-    debugger
-
     await dashboardStore.createChart(options)
-
-    debugger
 
     this.setState({
       createChartLoading: false,
     })
 
-    debugger
-
     if (onComplete) {
       onComplete()
     }
-
-    debugger
   }
 
   constructor(props) {
