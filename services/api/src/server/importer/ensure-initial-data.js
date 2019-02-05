@@ -39,4 +39,6 @@ export async function ensureInitialData() {
 
     debug('ensureInitialData createUserWithDashboardResult', createUserWithDashboardResult)
   }
+
+  debug('ensureInitialData done')
 }

@@ -4,7 +4,7 @@ import time
 import pymarketstore as mstore
 
 from sanic import Sanic
-from sanic.response import text
+from sanic.response import json
 
 MARKETSTORE_API_HOST = str(os.environ['MARKETSTORE_API_HOST'])
 MARKETSTORE_API_PORT_IN = int(os.environ['MARKETSTORE_API_PORT_IN'])
@@ -20,12 +20,14 @@ http_server = Sanic()
 async def test(request, asset, period, type, start, end):
     params = mstore.Params(asset, period, type, start=start, end=end)
     response = mstore_client.query(params)
-    result = response.first().df().to_json()
-    return text(
-        result,
-        headers={'Content-Type': 'application/json'},
-        status=200
-    )
+    result = response.first().df().to_dict()
+    return json(result)
+
+@http_server.route("/markets")
+async def test(request):
+    result = mstore_client.list_symbols()
+    result.sort()
+    return json(result)
 
 # @http_server.route("/write/<asset>/<period>/<type>")
 # async def test(request, asset, period, type):

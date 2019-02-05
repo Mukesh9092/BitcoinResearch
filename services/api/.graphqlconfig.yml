@@ -1,6 +1,6 @@
 projects:
   app:
-    schemaPath: src/schema.graphql
+    schemaPath: src/datamodel.graphql
     extensions:
       endpoints:
         # TODO: Don't cardcode port here. Take from .env file.

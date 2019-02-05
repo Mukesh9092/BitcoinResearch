@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-npm i
-
-python3 --version
-pip3 --version
-
-./src/common/wait-for-it.sh $MARKETSTORE_HOST:$MARKETSTORE_PORT -s -t 0 -- \
-  nodemon -V -d 2.5 -e .py -w src  -x python3 server.py

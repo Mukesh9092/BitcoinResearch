@@ -34,7 +34,10 @@ export class ChartStore {
     this.to = object.to
     this.period = object.period
 
-    this.marketStore = new MarketStore(object.market)
+    this.marketStore = new MarketStore({
+      base: object.base,
+      quote: object.quote,
+    })
     this.ohlcvStore = new OHLCVStore(object.ohlcvs)
   }
 

@@ -72,17 +72,6 @@ services:
       traefik.backend: '${ADVISOR_HOST}'
       traefik.port: '${ADVISOR_PORT_IN}'
 
-  nni:
-    image: msranni/nni:latest
-    ports:
-      - '${NNI_PORT}:${NNI_PORT_IN}'
-    volumes:
-      - './services/nni/data:/root'
-    env_file: .env
-    labels:
-      traefik.backend: '${NNI_HOST}'
-      traefik.port: '${NNI_PORT_IN}'
-
   postgresql:
     image: 'postgres:latest'
     ports:

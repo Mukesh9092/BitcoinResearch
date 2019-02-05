@@ -1,14 +1,7 @@
-import fetch from 'cross-fetch'
-import msgpack from 'msgpack'
-import uuid from 'uuid'
-
+import { debug } from '../../../common/log'
 import { periodToMarketStore } from '../../../common/ohlcv'
 
-const { MARKETSTORE_HOST, MARKETSTORE_PORT, MARKETSTORE_API_HOST, MARKETSTORE_API_PORT } = process.env
-
-function sanitizeDateForMarketStore(isoDateTime) {
-  return new Date(isoDateTime / 1000)
-}
+const { MARKETSTORE_API_HOST, MARKETSTORE_API_PORT } = process.env
 
 export const getOHLCVs = async (_, args, context, info) => {
   const host = MARKETSTORE_API_HOST
@@ -18,13 +11,20 @@ export const getOHLCVs = async (_, args, context, info) => {
   const url = `http://${host}:${port}/query/${base}/${period}/OHLCV/${from}/${to}`
 
   const fetchResult = await fetch(url)
-  const fetchResultJSON = await fetchResult.json()
+  // debug('getOHLCVs fetchResult', fetchResult)
+
+  const fetchResultText = await fetchResult.text()
+  // debug(`getOHLCVs fetchResultText "${fetchResultText}"`, typeof fetchResultText)
+
+  const fetchResultJSON = JSON.parse(fetchResultText)
+  // debug('getOHLCVs fetchResultJSON', fetchResultJSON)
 
   const openKeys = Object.keys(fetchResultJSON.Open).sort()
+  // debug('getOHLCVs openKeys', openKeys)
 
   return openKeys.map((key) => {
     return {
-      datetime: new Date(Number(key)),
+      datetime: new Date(key),
       base: args.base,
       quote: args.quote,
       period: args.period,
@@ -38,6 +38,10 @@ export const getOHLCVs = async (_, args, context, info) => {
 }
 
 /*
+import fetch from 'cross-fetch'
+import msgpack from 'msgpack'
+import uuid from 'uuid'
+
 export const getOHLCVs = async (_, args, context, info) => {
   const host = MARKETSTORE_HOST
   const port = MARKETSTORE_PORT

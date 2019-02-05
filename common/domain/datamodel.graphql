@@ -35,35 +35,7 @@ type Chart @model {
   from: DateTime!
   to: DateTime!
   period: Period!
+  base: String!
+  quote: String!
   dashboard: Dashboard! @relation(name: "DashboardCharts")
-  market: Market! @relation(name: "ChartMarket")
-}
-
-type Market @model {
-  id: ID! @unique
-  active: Boolean!
-  enabled: Boolean
-  category: String!
-  type: String!
-  base: String!
-  maker: String!
-  precisionAmount: Int!
-  precisionBase: Int!
-  precisionPrice: Int!
-  precisionQuote: Int!
-  quote: String!
-  taker: String!
-  trader: String!
-}
-
-type OHLCV @model {
-  datetime: DateTime!
-  base: String!
-  quote: String!
-  period: Period!
-  open: Float!
-  high: Float!
-  low: Float!
-  close: Float!
-  volume: Float!
 }

@@ -41,10 +41,13 @@ class AddChartComponent extends AsyncComponent {
       createChartLoading: true,
     })
 
+    const [base, quote] = market.value.split('/')
+
     const options = {
       userId: store.user.id,
       dashboardId: dashboardStore.id,
-      marketId: market.value,
+      base,
+      quote,
       // from: addMonths(startOfMonth(startOfYear(new Date())), 6).toISOString(),
       // to: endOfYear(new Date()).toISOString(),
       from: '2018-01-01T00:00:00Z',
@@ -109,8 +112,8 @@ class AddChartComponent extends AsyncComponent {
     const sortedData = sortBy(markets, ['quote', 'base'])
     const options = sortedData.map((x) => {
       return {
-        label: `${x.quote}/${x.base}`,
-        value: x.id,
+        label: x.quote,
+        value: `${x.base}/${x.quote}`,
       }
     })
 

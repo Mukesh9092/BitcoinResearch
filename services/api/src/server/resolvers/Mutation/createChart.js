@@ -1,7 +1,4 @@
 export const createChart = (_, args, context, info) => {
-  console.log('createChart args', args)
-  console.log('createChart info', info)
-
   return context.prisma.mutation.createChart(
     {
       data: {
@@ -10,11 +7,8 @@ export const createChart = (_, args, context, info) => {
             id: args.dashboardId,
           },
         },
-        market: {
-          connect: {
-            id: args.marketId,
-          },
-        },
+        base: args.base,
+        quote: args.quote,
         from: args.from,
         to: args.to,
         period: args.period,

@@ -52,7 +52,7 @@ class ChartCardComponent extends React.Component {
       },
     } = this.props
 
-    const title = `${quote} / ${base}`
+    const title = quote
 
     return (
       <Card className={styles.chart} ref={this.containerRef}>

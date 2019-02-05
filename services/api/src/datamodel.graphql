@@ -2,6 +2,23 @@
 # import Post from './datamodel.prisma.gen.graphql'
 # import User from './datamodel.prisma.gen.graphql'
 
+type Market {
+    base: String!
+    quote: String!
+}
+
+type OHLCV {
+    datetime: DateTime!
+    base: String!
+    quote: String!
+    period: Period!
+    open: Float!
+    high: Float!
+    low: Float!
+    close: Float!
+    volume: Float!
+}
+
 type Query {
   getCurrentUser: User,
   getDashboard(userId: ID!): Dashboard,
@@ -12,6 +29,6 @@ type Query {
 }
 
 type Mutation {
-  createChart(dashboardId: ID!, marketId: ID!, from: DateTime!, to: DateTime!, period: Period!): Chart,
+  createChart(dashboardId: ID!, base: String!, quote: String!, from: DateTime!, to: DateTime!, period: Period!): Chart,
   deleteChart(chartId: ID!): Boolean,
 }

@@ -51,7 +51,7 @@ class ChartCardChartComponent extends React.Component {
       props: { chart },
       state: { from, to },
     } = this
-
+    
     chart.ohlcvStore.fetch({
       base: chart.marketStore.base,
       quote: chart.marketStore.quote,

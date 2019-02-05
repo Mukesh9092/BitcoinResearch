@@ -1,19 +1,11 @@
 # source: http://prisma:8020
-# timestamp: Mon Feb 04 2019 00:24:33 GMT+0000 (Coordinated Universal Time)
+# timestamp: Tue Feb 05 2019 01:14:44 GMT+0000 (Coordinated Universal Time)
 
 type AggregateChart {
   count: Int!
 }
 
 type AggregateDashboard {
-  count: Int!
-}
-
-type AggregateMarket {
-  count: Int!
-}
-
-type AggregateOHLCV {
   count: Int!
 }
 
@@ -31,8 +23,9 @@ type Chart implements Node {
   from: DateTime!
   to: DateTime!
   period: Period!
+  base: String!
+  quote: String!
   dashboard: Dashboard!
-  market: Market!
 }
 
 """A connection to a list of items."""
@@ -49,8 +42,9 @@ input ChartCreateInput {
   from: DateTime!
   to: DateTime!
   period: Period!
+  base: String!
+  quote: String!
   dashboard: DashboardCreateOneWithoutChartsInput!
-  market: MarketCreateOneInput!
 }
 
 input ChartCreateManyWithoutDashboardInput {
@@ -62,7 +56,8 @@ input ChartCreateWithoutDashboardInput {
   from: DateTime!
   to: DateTime!
   period: Period!
-  market: MarketCreateOneInput!
+  base: String!
+  quote: String!
 }
 
 """An edge in a connection."""
@@ -83,6 +78,10 @@ enum ChartOrderByInput {
   to_DESC
   period_ASC
   period_DESC
+  base_ASC
+  base_DESC
+  quote_ASC
+  quote_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -94,6 +93,8 @@ type ChartPreviousValues {
   from: DateTime!
   to: DateTime!
   period: Period!
+  base: String!
+  quote: String!
 }
 
 input ChartScalarWhereInput {
@@ -199,6 +200,86 @@ input ChartScalarWhereInput {
 
   """All values that are not contained in given list."""
   period_not_in: [Period!]
+  base: String
+
+  """All values that are not equal to given value."""
+  base_not: String
+
+  """All values that are contained in given list."""
+  base_in: [String!]
+
+  """All values that are not contained in given list."""
+  base_not_in: [String!]
+
+  """All values less than the given value."""
+  base_lt: String
+
+  """All values less than or equal the given value."""
+  base_lte: String
+
+  """All values greater than the given value."""
+  base_gt: String
+
+  """All values greater than or equal the given value."""
+  base_gte: String
+
+  """All values containing the given string."""
+  base_contains: String
+
+  """All values not containing the given string."""
+  base_not_contains: String
+
+  """All values starting with the given string."""
+  base_starts_with: String
+
+  """All values not starting with the given string."""
+  base_not_starts_with: String
+
+  """All values ending with the given string."""
+  base_ends_with: String
+
+  """All values not ending with the given string."""
+  base_not_ends_with: String
+  quote: String
+
+  """All values that are not equal to given value."""
+  quote_not: String
+
+  """All values that are contained in given list."""
+  quote_in: [String!]
+
+  """All values that are not contained in given list."""
+  quote_not_in: [String!]
+
+  """All values less than the given value."""
+  quote_lt: String
+
+  """All values less than or equal the given value."""
+  quote_lte: String
+
+  """All values greater than the given value."""
+  quote_gt: String
+
+  """All values greater than or equal the given value."""
+  quote_gte: String
+
+  """All values containing the given string."""
+  quote_contains: String
+
+  """All values not containing the given string."""
+  quote_not_contains: String
+
+  """All values starting with the given string."""
+  quote_starts_with: String
+
+  """All values not starting with the given string."""
+  quote_not_starts_with: String
+
+  """All values ending with the given string."""
+  quote_ends_with: String
+
+  """All values not ending with the given string."""
+  quote_not_ends_with: String
 }
 
 type ChartSubscriptionPayload {
@@ -244,20 +325,25 @@ input ChartUpdateInput {
   from: DateTime
   to: DateTime
   period: Period
+  base: String
+  quote: String
   dashboard: DashboardUpdateOneRequiredWithoutChartsInput
-  market: MarketUpdateOneRequiredInput
 }
 
 input ChartUpdateManyDataInput {
   from: DateTime
   to: DateTime
   period: Period
+  base: String
+  quote: String
 }
 
 input ChartUpdateManyMutationInput {
   from: DateTime
   to: DateTime
   period: Period
+  base: String
+  quote: String
 }
 
 input ChartUpdateManyWithoutDashboardInput {
@@ -280,7 +366,8 @@ input ChartUpdateWithoutDashboardDataInput {
   from: DateTime
   to: DateTime
   period: Period
-  market: MarketUpdateOneRequiredInput
+  base: String
+  quote: String
 }
 
 input ChartUpdateWithWhereUniqueWithoutDashboardInput {
@@ -397,8 +484,87 @@ input ChartWhereInput {
 
   """All values that are not contained in given list."""
   period_not_in: [Period!]
+  base: String
+
+  """All values that are not equal to given value."""
+  base_not: String
+
+  """All values that are contained in given list."""
+  base_in: [String!]
+
+  """All values that are not contained in given list."""
+  base_not_in: [String!]
+
+  """All values less than the given value."""
+  base_lt: String
+
+  """All values less than or equal the given value."""
+  base_lte: String
+
+  """All values greater than the given value."""
+  base_gt: String
+
+  """All values greater than or equal the given value."""
+  base_gte: String
+
+  """All values containing the given string."""
+  base_contains: String
+
+  """All values not containing the given string."""
+  base_not_contains: String
+
+  """All values starting with the given string."""
+  base_starts_with: String
+
+  """All values not starting with the given string."""
+  base_not_starts_with: String
+
+  """All values ending with the given string."""
+  base_ends_with: String
+
+  """All values not ending with the given string."""
+  base_not_ends_with: String
+  quote: String
+
+  """All values that are not equal to given value."""
+  quote_not: String
+
+  """All values that are contained in given list."""
+  quote_in: [String!]
+
+  """All values that are not contained in given list."""
+  quote_not_in: [String!]
+
+  """All values less than the given value."""
+  quote_lt: String
+
+  """All values less than or equal the given value."""
+  quote_lte: String
+
+  """All values greater than the given value."""
+  quote_gt: String
+
+  """All values greater than or equal the given value."""
+  quote_gte: String
+
+  """All values containing the given string."""
+  quote_contains: String
+
+  """All values not containing the given string."""
+  quote_not_contains: String
+
+  """All values starting with the given string."""
+  quote_starts_with: String
+
+  """All values not starting with the given string."""
+  quote_not_starts_with: String
+
+  """All values ending with the given string."""
+  quote_ends_with: String
+
+  """All values not ending with the given string."""
+  quote_not_ends_with: String
   dashboard: DashboardWhereInput
-  market: MarketWhereInput
 }
 
 input ChartWhereUniqueInput {
@@ -614,672 +780,24 @@ Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
 
-type Market implements Node {
-  id: ID!
-  active: Boolean!
-  enabled: Boolean
-  category: String!
-  type: String!
-  base: String!
-  maker: String!
-  precisionAmount: Int!
-  precisionBase: Int!
-  precisionPrice: Int!
-  precisionQuote: Int!
-  quote: String!
-  taker: String!
-  trader: String!
-}
-
-"""A connection to a list of items."""
-type MarketConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [MarketEdge]!
-  aggregate: AggregateMarket!
-}
-
-input MarketCreateInput {
-  active: Boolean!
-  enabled: Boolean
-  category: String!
-  type: String!
-  base: String!
-  maker: String!
-  precisionAmount: Int!
-  precisionBase: Int!
-  precisionPrice: Int!
-  precisionQuote: Int!
-  quote: String!
-  taker: String!
-  trader: String!
-}
-
-input MarketCreateOneInput {
-  create: MarketCreateInput
-  connect: MarketWhereUniqueInput
-}
-
-"""An edge in a connection."""
-type MarketEdge {
-  """The item at the end of the edge."""
-  node: Market!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum MarketOrderByInput {
-  id_ASC
-  id_DESC
-  active_ASC
-  active_DESC
-  enabled_ASC
-  enabled_DESC
-  category_ASC
-  category_DESC
-  type_ASC
-  type_DESC
-  base_ASC
-  base_DESC
-  maker_ASC
-  maker_DESC
-  precisionAmount_ASC
-  precisionAmount_DESC
-  precisionBase_ASC
-  precisionBase_DESC
-  precisionPrice_ASC
-  precisionPrice_DESC
-  precisionQuote_ASC
-  precisionQuote_DESC
-  quote_ASC
-  quote_DESC
-  taker_ASC
-  taker_DESC
-  trader_ASC
-  trader_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type MarketPreviousValues {
-  id: ID!
-  active: Boolean!
-  enabled: Boolean
-  category: String!
-  type: String!
-  base: String!
-  maker: String!
-  precisionAmount: Int!
-  precisionBase: Int!
-  precisionPrice: Int!
-  precisionQuote: Int!
-  quote: String!
-  taker: String!
-  trader: String!
-}
-
-type MarketSubscriptionPayload {
-  mutation: MutationType!
-  node: Market
-  updatedFields: [String!]
-  previousValues: MarketPreviousValues
-}
-
-input MarketSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [MarketSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [MarketSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [MarketSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: MarketWhereInput
-}
-
-input MarketUpdateDataInput {
-  active: Boolean
-  enabled: Boolean
-  category: String
-  type: String
-  base: String
-  maker: String
-  precisionAmount: Int
-  precisionBase: Int
-  precisionPrice: Int
-  precisionQuote: Int
-  quote: String
-  taker: String
-  trader: String
-}
-
-input MarketUpdateInput {
-  active: Boolean
-  enabled: Boolean
-  category: String
-  type: String
-  base: String
-  maker: String
-  precisionAmount: Int
-  precisionBase: Int
-  precisionPrice: Int
-  precisionQuote: Int
-  quote: String
-  taker: String
-  trader: String
-}
-
-input MarketUpdateManyMutationInput {
-  active: Boolean
-  enabled: Boolean
-  category: String
-  type: String
-  base: String
-  maker: String
-  precisionAmount: Int
-  precisionBase: Int
-  precisionPrice: Int
-  precisionQuote: Int
-  quote: String
-  taker: String
-  trader: String
-}
-
-input MarketUpdateOneRequiredInput {
-  create: MarketCreateInput
-  connect: MarketWhereUniqueInput
-  update: MarketUpdateDataInput
-  upsert: MarketUpsertNestedInput
-}
-
-input MarketUpsertNestedInput {
-  update: MarketUpdateDataInput!
-  create: MarketCreateInput!
-}
-
-input MarketWhereInput {
-  """Logical AND on all given filters."""
-  AND: [MarketWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [MarketWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [MarketWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  active: Boolean
-
-  """All values that are not equal to given value."""
-  active_not: Boolean
-  enabled: Boolean
-
-  """All values that are not equal to given value."""
-  enabled_not: Boolean
-  category: String
-
-  """All values that are not equal to given value."""
-  category_not: String
-
-  """All values that are contained in given list."""
-  category_in: [String!]
-
-  """All values that are not contained in given list."""
-  category_not_in: [String!]
-
-  """All values less than the given value."""
-  category_lt: String
-
-  """All values less than or equal the given value."""
-  category_lte: String
-
-  """All values greater than the given value."""
-  category_gt: String
-
-  """All values greater than or equal the given value."""
-  category_gte: String
-
-  """All values containing the given string."""
-  category_contains: String
-
-  """All values not containing the given string."""
-  category_not_contains: String
-
-  """All values starting with the given string."""
-  category_starts_with: String
-
-  """All values not starting with the given string."""
-  category_not_starts_with: String
-
-  """All values ending with the given string."""
-  category_ends_with: String
-
-  """All values not ending with the given string."""
-  category_not_ends_with: String
-  type: String
-
-  """All values that are not equal to given value."""
-  type_not: String
-
-  """All values that are contained in given list."""
-  type_in: [String!]
-
-  """All values that are not contained in given list."""
-  type_not_in: [String!]
-
-  """All values less than the given value."""
-  type_lt: String
-
-  """All values less than or equal the given value."""
-  type_lte: String
-
-  """All values greater than the given value."""
-  type_gt: String
-
-  """All values greater than or equal the given value."""
-  type_gte: String
-
-  """All values containing the given string."""
-  type_contains: String
-
-  """All values not containing the given string."""
-  type_not_contains: String
-
-  """All values starting with the given string."""
-  type_starts_with: String
-
-  """All values not starting with the given string."""
-  type_not_starts_with: String
-
-  """All values ending with the given string."""
-  type_ends_with: String
-
-  """All values not ending with the given string."""
-  type_not_ends_with: String
-  base: String
-
-  """All values that are not equal to given value."""
-  base_not: String
-
-  """All values that are contained in given list."""
-  base_in: [String!]
-
-  """All values that are not contained in given list."""
-  base_not_in: [String!]
-
-  """All values less than the given value."""
-  base_lt: String
-
-  """All values less than or equal the given value."""
-  base_lte: String
-
-  """All values greater than the given value."""
-  base_gt: String
-
-  """All values greater than or equal the given value."""
-  base_gte: String
-
-  """All values containing the given string."""
-  base_contains: String
-
-  """All values not containing the given string."""
-  base_not_contains: String
-
-  """All values starting with the given string."""
-  base_starts_with: String
-
-  """All values not starting with the given string."""
-  base_not_starts_with: String
-
-  """All values ending with the given string."""
-  base_ends_with: String
-
-  """All values not ending with the given string."""
-  base_not_ends_with: String
-  maker: String
-
-  """All values that are not equal to given value."""
-  maker_not: String
-
-  """All values that are contained in given list."""
-  maker_in: [String!]
-
-  """All values that are not contained in given list."""
-  maker_not_in: [String!]
-
-  """All values less than the given value."""
-  maker_lt: String
-
-  """All values less than or equal the given value."""
-  maker_lte: String
-
-  """All values greater than the given value."""
-  maker_gt: String
-
-  """All values greater than or equal the given value."""
-  maker_gte: String
-
-  """All values containing the given string."""
-  maker_contains: String
-
-  """All values not containing the given string."""
-  maker_not_contains: String
-
-  """All values starting with the given string."""
-  maker_starts_with: String
-
-  """All values not starting with the given string."""
-  maker_not_starts_with: String
-
-  """All values ending with the given string."""
-  maker_ends_with: String
-
-  """All values not ending with the given string."""
-  maker_not_ends_with: String
-  precisionAmount: Int
-
-  """All values that are not equal to given value."""
-  precisionAmount_not: Int
-
-  """All values that are contained in given list."""
-  precisionAmount_in: [Int!]
-
-  """All values that are not contained in given list."""
-  precisionAmount_not_in: [Int!]
-
-  """All values less than the given value."""
-  precisionAmount_lt: Int
-
-  """All values less than or equal the given value."""
-  precisionAmount_lte: Int
-
-  """All values greater than the given value."""
-  precisionAmount_gt: Int
-
-  """All values greater than or equal the given value."""
-  precisionAmount_gte: Int
-  precisionBase: Int
-
-  """All values that are not equal to given value."""
-  precisionBase_not: Int
-
-  """All values that are contained in given list."""
-  precisionBase_in: [Int!]
-
-  """All values that are not contained in given list."""
-  precisionBase_not_in: [Int!]
-
-  """All values less than the given value."""
-  precisionBase_lt: Int
-
-  """All values less than or equal the given value."""
-  precisionBase_lte: Int
-
-  """All values greater than the given value."""
-  precisionBase_gt: Int
-
-  """All values greater than or equal the given value."""
-  precisionBase_gte: Int
-  precisionPrice: Int
-
-  """All values that are not equal to given value."""
-  precisionPrice_not: Int
-
-  """All values that are contained in given list."""
-  precisionPrice_in: [Int!]
-
-  """All values that are not contained in given list."""
-  precisionPrice_not_in: [Int!]
-
-  """All values less than the given value."""
-  precisionPrice_lt: Int
-
-  """All values less than or equal the given value."""
-  precisionPrice_lte: Int
-
-  """All values greater than the given value."""
-  precisionPrice_gt: Int
-
-  """All values greater than or equal the given value."""
-  precisionPrice_gte: Int
-  precisionQuote: Int
-
-  """All values that are not equal to given value."""
-  precisionQuote_not: Int
-
-  """All values that are contained in given list."""
-  precisionQuote_in: [Int!]
-
-  """All values that are not contained in given list."""
-  precisionQuote_not_in: [Int!]
-
-  """All values less than the given value."""
-  precisionQuote_lt: Int
-
-  """All values less than or equal the given value."""
-  precisionQuote_lte: Int
-
-  """All values greater than the given value."""
-  precisionQuote_gt: Int
-
-  """All values greater than or equal the given value."""
-  precisionQuote_gte: Int
-  quote: String
-
-  """All values that are not equal to given value."""
-  quote_not: String
-
-  """All values that are contained in given list."""
-  quote_in: [String!]
-
-  """All values that are not contained in given list."""
-  quote_not_in: [String!]
-
-  """All values less than the given value."""
-  quote_lt: String
-
-  """All values less than or equal the given value."""
-  quote_lte: String
-
-  """All values greater than the given value."""
-  quote_gt: String
-
-  """All values greater than or equal the given value."""
-  quote_gte: String
-
-  """All values containing the given string."""
-  quote_contains: String
-
-  """All values not containing the given string."""
-  quote_not_contains: String
-
-  """All values starting with the given string."""
-  quote_starts_with: String
-
-  """All values not starting with the given string."""
-  quote_not_starts_with: String
-
-  """All values ending with the given string."""
-  quote_ends_with: String
-
-  """All values not ending with the given string."""
-  quote_not_ends_with: String
-  taker: String
-
-  """All values that are not equal to given value."""
-  taker_not: String
-
-  """All values that are contained in given list."""
-  taker_in: [String!]
-
-  """All values that are not contained in given list."""
-  taker_not_in: [String!]
-
-  """All values less than the given value."""
-  taker_lt: String
-
-  """All values less than or equal the given value."""
-  taker_lte: String
-
-  """All values greater than the given value."""
-  taker_gt: String
-
-  """All values greater than or equal the given value."""
-  taker_gte: String
-
-  """All values containing the given string."""
-  taker_contains: String
-
-  """All values not containing the given string."""
-  taker_not_contains: String
-
-  """All values starting with the given string."""
-  taker_starts_with: String
-
-  """All values not starting with the given string."""
-  taker_not_starts_with: String
-
-  """All values ending with the given string."""
-  taker_ends_with: String
-
-  """All values not ending with the given string."""
-  taker_not_ends_with: String
-  trader: String
-
-  """All values that are not equal to given value."""
-  trader_not: String
-
-  """All values that are contained in given list."""
-  trader_in: [String!]
-
-  """All values that are not contained in given list."""
-  trader_not_in: [String!]
-
-  """All values less than the given value."""
-  trader_lt: String
-
-  """All values less than or equal the given value."""
-  trader_lte: String
-
-  """All values greater than the given value."""
-  trader_gt: String
-
-  """All values greater than or equal the given value."""
-  trader_gte: String
-
-  """All values containing the given string."""
-  trader_contains: String
-
-  """All values not containing the given string."""
-  trader_not_contains: String
-
-  """All values starting with the given string."""
-  trader_starts_with: String
-
-  """All values not starting with the given string."""
-  trader_not_starts_with: String
-
-  """All values ending with the given string."""
-  trader_ends_with: String
-
-  """All values not ending with the given string."""
-  trader_not_ends_with: String
-}
-
-input MarketWhereUniqueInput {
-  id: ID
-}
-
 type Mutation {
   createUser(data: UserCreateInput!): User!
   createDashboard(data: DashboardCreateInput!): Dashboard!
   createChart(data: ChartCreateInput!): Chart!
-  createOHLCV(data: OHLCVCreateInput!): OHLCV!
-  createMarket(data: MarketCreateInput!): Market!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateDashboard(data: DashboardUpdateInput!, where: DashboardWhereUniqueInput!): Dashboard
   updateChart(data: ChartUpdateInput!, where: ChartWhereUniqueInput!): Chart
-  updateMarket(data: MarketUpdateInput!, where: MarketWhereUniqueInput!): Market
   deleteUser(where: UserWhereUniqueInput!): User
   deleteDashboard(where: DashboardWhereUniqueInput!): Dashboard
   deleteChart(where: ChartWhereUniqueInput!): Chart
-  deleteMarket(where: MarketWhereUniqueInput!): Market
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertDashboard(where: DashboardWhereUniqueInput!, create: DashboardCreateInput!, update: DashboardUpdateInput!): Dashboard!
   upsertChart(where: ChartWhereUniqueInput!, create: ChartCreateInput!, update: ChartUpdateInput!): Chart!
-  upsertMarket(where: MarketWhereUniqueInput!, create: MarketCreateInput!, update: MarketUpdateInput!): Market!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyCharts(data: ChartUpdateManyMutationInput!, where: ChartWhereInput): BatchPayload!
-  updateManyOHLCVs(data: OHLCVUpdateManyMutationInput!, where: OHLCVWhereInput): BatchPayload!
-  updateManyMarkets(data: MarketUpdateManyMutationInput!, where: MarketWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyDashboards(where: DashboardWhereInput): BatchPayload!
   deleteManyCharts(where: ChartWhereInput): BatchPayload!
-  deleteManyOHLCVs(where: OHLCVWhereInput): BatchPayload!
-  deleteManyMarkets(where: MarketWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -1293,372 +811,6 @@ enum MutationType {
 interface Node {
   """The id of the object."""
   id: ID!
-}
-
-type OHLCV {
-  datetime: DateTime!
-  base: String!
-  quote: String!
-  period: Period!
-  open: Float!
-  high: Float!
-  low: Float!
-  close: Float!
-  volume: Float!
-}
-
-"""A connection to a list of items."""
-type OHLCVConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [OHLCVEdge]!
-  aggregate: AggregateOHLCV!
-}
-
-input OHLCVCreateInput {
-  datetime: DateTime!
-  base: String!
-  quote: String!
-  period: Period!
-  open: Float!
-  high: Float!
-  low: Float!
-  close: Float!
-  volume: Float!
-}
-
-"""An edge in a connection."""
-type OHLCVEdge {
-  """The item at the end of the edge."""
-  node: OHLCV!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum OHLCVOrderByInput {
-  datetime_ASC
-  datetime_DESC
-  base_ASC
-  base_DESC
-  quote_ASC
-  quote_DESC
-  period_ASC
-  period_DESC
-  open_ASC
-  open_DESC
-  high_ASC
-  high_DESC
-  low_ASC
-  low_DESC
-  close_ASC
-  close_DESC
-  volume_ASC
-  volume_DESC
-  id_ASC
-  id_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type OHLCVPreviousValues {
-  datetime: DateTime!
-  base: String!
-  quote: String!
-  period: Period!
-  open: Float!
-  high: Float!
-  low: Float!
-  close: Float!
-  volume: Float!
-}
-
-type OHLCVSubscriptionPayload {
-  mutation: MutationType!
-  node: OHLCV
-  updatedFields: [String!]
-  previousValues: OHLCVPreviousValues
-}
-
-input OHLCVSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [OHLCVSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [OHLCVSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [OHLCVSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: OHLCVWhereInput
-}
-
-input OHLCVUpdateManyMutationInput {
-  datetime: DateTime
-  base: String
-  quote: String
-  period: Period
-  open: Float
-  high: Float
-  low: Float
-  close: Float
-  volume: Float
-}
-
-input OHLCVWhereInput {
-  """Logical AND on all given filters."""
-  AND: [OHLCVWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [OHLCVWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [OHLCVWhereInput!]
-  datetime: DateTime
-
-  """All values that are not equal to given value."""
-  datetime_not: DateTime
-
-  """All values that are contained in given list."""
-  datetime_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  datetime_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  datetime_lt: DateTime
-
-  """All values less than or equal the given value."""
-  datetime_lte: DateTime
-
-  """All values greater than the given value."""
-  datetime_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  datetime_gte: DateTime
-  base: String
-
-  """All values that are not equal to given value."""
-  base_not: String
-
-  """All values that are contained in given list."""
-  base_in: [String!]
-
-  """All values that are not contained in given list."""
-  base_not_in: [String!]
-
-  """All values less than the given value."""
-  base_lt: String
-
-  """All values less than or equal the given value."""
-  base_lte: String
-
-  """All values greater than the given value."""
-  base_gt: String
-
-  """All values greater than or equal the given value."""
-  base_gte: String
-
-  """All values containing the given string."""
-  base_contains: String
-
-  """All values not containing the given string."""
-  base_not_contains: String
-
-  """All values starting with the given string."""
-  base_starts_with: String
-
-  """All values not starting with the given string."""
-  base_not_starts_with: String
-
-  """All values ending with the given string."""
-  base_ends_with: String
-
-  """All values not ending with the given string."""
-  base_not_ends_with: String
-  quote: String
-
-  """All values that are not equal to given value."""
-  quote_not: String
-
-  """All values that are contained in given list."""
-  quote_in: [String!]
-
-  """All values that are not contained in given list."""
-  quote_not_in: [String!]
-
-  """All values less than the given value."""
-  quote_lt: String
-
-  """All values less than or equal the given value."""
-  quote_lte: String
-
-  """All values greater than the given value."""
-  quote_gt: String
-
-  """All values greater than or equal the given value."""
-  quote_gte: String
-
-  """All values containing the given string."""
-  quote_contains: String
-
-  """All values not containing the given string."""
-  quote_not_contains: String
-
-  """All values starting with the given string."""
-  quote_starts_with: String
-
-  """All values not starting with the given string."""
-  quote_not_starts_with: String
-
-  """All values ending with the given string."""
-  quote_ends_with: String
-
-  """All values not ending with the given string."""
-  quote_not_ends_with: String
-  period: Period
-
-  """All values that are not equal to given value."""
-  period_not: Period
-
-  """All values that are contained in given list."""
-  period_in: [Period!]
-
-  """All values that are not contained in given list."""
-  period_not_in: [Period!]
-  open: Float
-
-  """All values that are not equal to given value."""
-  open_not: Float
-
-  """All values that are contained in given list."""
-  open_in: [Float!]
-
-  """All values that are not contained in given list."""
-  open_not_in: [Float!]
-
-  """All values less than the given value."""
-  open_lt: Float
-
-  """All values less than or equal the given value."""
-  open_lte: Float
-
-  """All values greater than the given value."""
-  open_gt: Float
-
-  """All values greater than or equal the given value."""
-  open_gte: Float
-  high: Float
-
-  """All values that are not equal to given value."""
-  high_not: Float
-
-  """All values that are contained in given list."""
-  high_in: [Float!]
-
-  """All values that are not contained in given list."""
-  high_not_in: [Float!]
-
-  """All values less than the given value."""
-  high_lt: Float
-
-  """All values less than or equal the given value."""
-  high_lte: Float
-
-  """All values greater than the given value."""
-  high_gt: Float
-
-  """All values greater than or equal the given value."""
-  high_gte: Float
-  low: Float
-
-  """All values that are not equal to given value."""
-  low_not: Float
-
-  """All values that are contained in given list."""
-  low_in: [Float!]
-
-  """All values that are not contained in given list."""
-  low_not_in: [Float!]
-
-  """All values less than the given value."""
-  low_lt: Float
-
-  """All values less than or equal the given value."""
-  low_lte: Float
-
-  """All values greater than the given value."""
-  low_gt: Float
-
-  """All values greater than or equal the given value."""
-  low_gte: Float
-  close: Float
-
-  """All values that are not equal to given value."""
-  close_not: Float
-
-  """All values that are contained in given list."""
-  close_in: [Float!]
-
-  """All values that are not contained in given list."""
-  close_not_in: [Float!]
-
-  """All values less than the given value."""
-  close_lt: Float
-
-  """All values less than or equal the given value."""
-  close_lte: Float
-
-  """All values greater than the given value."""
-  close_gt: Float
-
-  """All values greater than or equal the given value."""
-  close_gte: Float
-  volume: Float
-
-  """All values that are not equal to given value."""
-  volume_not: Float
-
-  """All values that are contained in given list."""
-  volume_in: [Float!]
-
-  """All values that are not contained in given list."""
-  volume_not_in: [Float!]
-
-  """All values less than the given value."""
-  volume_lt: Float
-
-  """All values less than or equal the given value."""
-  volume_lte: Float
-
-  """All values greater than the given value."""
-  volume_gt: Float
-
-  """All values greater than or equal the given value."""
-  volume_gte: Float
 }
 
 """Information about pagination in a connection."""
@@ -1693,17 +845,12 @@ type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   dashboards(where: DashboardWhereInput, orderBy: DashboardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Dashboard]!
   charts(where: ChartWhereInput, orderBy: ChartOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Chart]!
-  oHLCVs(where: OHLCVWhereInput, orderBy: OHLCVOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OHLCV]!
-  markets(where: MarketWhereInput, orderBy: MarketOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Market]!
   user(where: UserWhereUniqueInput!): User
   dashboard(where: DashboardWhereUniqueInput!): Dashboard
   chart(where: ChartWhereUniqueInput!): Chart
-  market(where: MarketWhereUniqueInput!): Market
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   dashboardsConnection(where: DashboardWhereInput, orderBy: DashboardOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DashboardConnection!
   chartsConnection(where: ChartWhereInput, orderBy: ChartOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ChartConnection!
-  oHLCVsConnection(where: OHLCVWhereInput, orderBy: OHLCVOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OHLCVConnection!
-  marketsConnection(where: MarketWhereInput, orderBy: MarketOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MarketConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -1716,8 +863,6 @@ type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   dashboard(where: DashboardSubscriptionWhereInput): DashboardSubscriptionPayload
   chart(where: ChartSubscriptionWhereInput): ChartSubscriptionPayload
-  oHLCV(where: OHLCVSubscriptionWhereInput): OHLCVSubscriptionPayload
-  market(where: MarketSubscriptionWhereInput): MarketSubscriptionPayload
 }
 
 type User implements Node {

@@ -1,8 +1,15 @@
 import gql from 'graphql-tag'
 
 export const createChart = gql`
-  mutation createChart($dashboardId: ID!, $marketId: ID!, $from: DateTime!, $to: DateTime!, $period: Period!) {
-    createChart(dashboardId: $dashboardId, marketId: $marketId, from: $from, to: $to, period: $period) {
+  mutation createChart(
+    $dashboardId: ID!
+    $base: String!
+    $quote: String!
+    $from: DateTime!
+    $to: DateTime!
+    $period: Period!
+  ) {
+    createChart(dashboardId: $dashboardId, base: $base, quote: $quote, from: $from, to: $to, period: $period) {
       id
       from
       to
@@ -10,21 +17,8 @@ export const createChart = gql`
       dashboard {
         id
       }
-      market {
-        id
-        active
-        trader
-        category
-        type
-        base
-        quote
-        precisionAmount
-        precisionBase
-        precisionPrice
-        precisionQuote
-        taker
-        maker
-      }
+      base
+      quote
     }
   }
 `

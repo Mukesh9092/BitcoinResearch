@@ -8,9 +8,10 @@ RUN pip3 install --upgrade pip setuptools
 
 RUN pip3 install numpy
 RUN pip3 install git+git://github.com/channelcat/sanic.git@master
+RUN pip3 install sanic-admin
 RUN pip3 install pymarketstore
 
 RUN mkdir -p /service
 WORKDIR /service
 
-CMD npm run dev
+CMD sanic-admin server.py

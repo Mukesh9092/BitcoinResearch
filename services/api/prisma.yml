@@ -1,2 +1,2 @@
 endpoint: http://prisma:8020
-datamodel: src/common/domain/datamodel.graphql
+datamodel: src/datamodel.graphql

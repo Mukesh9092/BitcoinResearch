@@ -3,7 +3,6 @@ import { GraphQLServer } from 'graphql-yoga'
 import { Prisma } from 'prisma-binding'
 
 import { ensureInitialData } from './importer/ensure-initial-data'
-import { ensureMarkets } from './importer/ensure-markets'
 
 import { createChart } from './resolvers/Mutation/createChart'
 import { deleteChart } from './resolvers/Mutation/deleteChart'
@@ -40,7 +39,7 @@ const context = (req) => {
 
 const server = new GraphQLServer({
   port: APP_PORT_IN,
-  typeDefs: 'src/schema.graphql',
+  typeDefs: 'src/datamodel.graphql',
   resolvers,
   context,
 })
@@ -49,5 +48,4 @@ server.start(async () => {
   console.log(`GraphQL server is running on http://localhost:4000`)
 
   await ensureInitialData()
-  await ensureMarkets()
 })

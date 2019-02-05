@@ -6,7 +6,7 @@ import { MarketStore } from './market-store'
 import { createChart } from '../mutations/createChart'
 import { deleteChart } from '../mutations/deleteChart'
 import { getApolloClient } from '../common/apollo/client'
-import { getCurrentUserWithDashboardWithChartsWithMarket } from '../queries/getCurrentUserWithDashboardWithChartsWithMarket'
+import { getCurrentUserWithDashboardWithCharts } from '../queries/getCurrentUserWithDashboardWithCharts'
 import { getMarkets } from '../queries/getMarkets'
 
 export class DashboardStore {
@@ -42,7 +42,7 @@ export class DashboardStore {
 
   @task async fetch({ userId }) {
     const result = await this.apolloClient.query({
-      query: getCurrentUserWithDashboardWithChartsWithMarket,
+      query: getCurrentUserWithDashboardWithCharts,
       selector: (x) => {
         return x.user.dashboard
       },
@@ -64,12 +64,13 @@ export class DashboardStore {
     })
   }
 
-  @task async createChart({ userId, dashboardId, marketId, from, to, period }) {
+  @task async createChart({ userId, dashboardId, base, quote, from, to, period }) {
     const result = await this.apolloClient.mutate({
       mutation: createChart,
       variables: {
         dashboardId,
-        marketId,
+        base,
+        quote,
         from,
         to,
         period,
@@ -83,11 +84,9 @@ export class DashboardStore {
     const result = await this.apolloClient.mutate({
       mutation: deleteChart,
       variables: {
-        id: chartId,
+        chartId,
       },
     })
-
-    debugger
 
     this.charts = this.charts.filter((x) => {
       return x.id !== chartId
