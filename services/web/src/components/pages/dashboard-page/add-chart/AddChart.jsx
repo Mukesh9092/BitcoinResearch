@@ -1,15 +1,14 @@
 import * as React from 'react'
 import sortBy from 'lodash/sortBy'
 import { inject, observer } from 'mobx-react'
-import { startOfMonth, startOfYear, endOfYear, addMonths } from 'date-fns'
 
 import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 
 import Select from '../../../select'
 import { AsyncComponent } from '../../../async-component'
+import { ChartStore } from '../../../../stores/chart-store'
 
 import * as styles from './styles.scss'
 
@@ -43,15 +42,20 @@ class AddChartComponent extends AsyncComponent {
 
     const [base, quote] = market.value.split('/')
 
+    const now = new Date()
+    const period = ChartStore.getDefaultPeriod()
+    const barsAmount = ChartStore.getDefaultBarsAmount()
+
+    const from = ChartStore.getNewFromDate(now, period, barsAmount).toISOString()
+    const to = now.toISOString()
+
     const options = {
       userId: store.user.id,
       dashboardId: dashboardStore.id,
       base,
       quote,
-      // from: addMonths(startOfMonth(startOfYear(new Date())), 6).toISOString(),
-      // to: endOfYear(new Date()).toISOString(),
-      from: '2018-01-01T00:00:00Z',
-      to: '2018-01-02T00:00:00Z',
+      from,
+      to,
       period: 'MINUTE1',
     }
 
@@ -112,7 +116,7 @@ class AddChartComponent extends AsyncComponent {
     const sortedData = sortBy(markets, ['quote', 'base'])
     const options = sortedData.map((x) => {
       return {
-        label: x.quote,
+        label: x.base,
         value: `${x.base}/${x.quote}`,
       }
     })

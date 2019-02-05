@@ -4,7 +4,7 @@ import { debug } from '../../../common/log'
 const { MARKETSTORE_API_HOST, MARKETSTORE_API_PORT } = process.env
 
 // TODO: Get from somewhere.
-const base = 'BTC'
+const quote = 'BTC'
 
 export const getMarkets = async (_, args, context, info) => {
   const host = MARKETSTORE_API_HOST
@@ -20,7 +20,7 @@ export const getMarkets = async (_, args, context, info) => {
   const fetchResultJSON = JSON.parse(fetchResultText)
   // debug('getMarkets fetchResultJSON', fetchResultJSON)
 
-  const output = fetchResultJSON.map((quote) => {
+  const output = fetchResultJSON.map((base) => {
     return {
       base,
       quote,

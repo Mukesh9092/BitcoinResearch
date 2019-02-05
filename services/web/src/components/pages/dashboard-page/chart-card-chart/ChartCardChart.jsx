@@ -2,35 +2,50 @@ import * as React from 'react'
 import { CircularProgress } from '@material-ui/core'
 import { debounce } from 'lodash'
 import { inject, observer } from 'mobx-react'
-import { subMonths, subDays } from 'date-fns'
+import { subMonths, subDays, subHours, subMinutes } from 'date-fns'
 
 import OHLCVChart from '../../../ohlcv-chart'
+import { ChartStore } from '../../../../stores/chart-store'
 
 import * as styles from './styles.scss'
 
 @inject('store')
 @observer
 class ChartCardChartComponent extends React.Component {
-  handleDownloadMore = debounce((subtractionAmount) => {
-    const {
-      props: { chart },
-      state: { from, to },
-    } = this
+  /**
+   *
+   * @type {debounced}
+   */
+  handleDownloadMore = debounce(
+    (newStart, newEnd) => {
+      const roundedNewStart = Math.ceil(newStart)
+      const roundedNewEnd = Math.ceil(newEnd)
 
-    const newFrom = subDays(new Date(from), Math.abs(subtractionAmount)).toISOString()
+      if (roundedNewStart === roundedNewEnd) return
 
-    this.setState({
-      from: newFrom,
-    })
+      const {
+        props: { chart },
+        state: { from, to },
+      } = this
 
-    chart.ohlcvStore.fetch({
-      base: chart.marketStore.base,
-      quote: chart.marketStore.quote,
-      period: chart.period,
-      from: newFrom,
-      to,
-    })
-  }, 1000)
+      const rows = roundedNewEnd - roundedNewStart
+      const newFrom = ChartStore.getNewFromDate(from, chart.period, rows)
+
+      this.setState({
+        from: newFrom,
+      })
+
+      chart.ohlcvStore.fetch({
+        base: chart.marketStore.base,
+        quote: chart.marketStore.quote,
+        period: chart.period,
+        from: newFrom,
+        to,
+      })
+    },
+    1000,
+    { leading: false, trailing: true },
+  )
 
   constructor(props) {
     super(props)
@@ -51,7 +66,7 @@ class ChartCardChartComponent extends React.Component {
       props: { chart },
       state: { from, to },
     } = this
-    
+
     chart.ohlcvStore.fetch({
       base: chart.marketStore.base,
       quote: chart.marketStore.quote,
@@ -69,6 +84,18 @@ class ChartCardChartComponent extends React.Component {
     )
   }
 
+  hasNoBars() {
+    const {
+      props: {
+        chart: {
+          ohlcvStore: { ohlcvs },
+        },
+      },
+    } = this
+
+    return ohlcvs.length === 0
+  }
+
   render() {
     const {
       props: {
@@ -81,7 +108,7 @@ class ChartCardChartComponent extends React.Component {
       state: { height },
     } = this
 
-    if (fetch.pending) {
+    if (fetch.pending && this.hasNoBars()) {
       return ChartCardChartComponent.renderLoading()
     }
 
