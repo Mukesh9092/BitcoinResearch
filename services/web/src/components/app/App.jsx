@@ -4,7 +4,6 @@ import * as React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Helmet } from 'react-helmet'
-import { History } from 'history'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { observer, Provider } from 'mobx-react'
 
@@ -20,12 +19,6 @@ import { isDevelopment } from '../../common/environment'
 import { AsyncComponent } from '../async-component'
 
 import * as styles from './styles.scss'
-
-const r = (C) => {
-  return (...props) => {
-    return <C {...props} />
-  }
-}
 
 @observer
 class AppComponent extends AsyncComponent {
@@ -59,14 +52,14 @@ class AppComponent extends AsyncComponent {
             </Helmet>
             <Navigation />
             <Switch>
-              <Route path="/chart/:chartId" component={r(ChartPage)} />
-              <Route path="/dashboard" component={r(DashboardPage)} />
-              <Route path="/markets" component={r(MarketListPage)} />
-              <Route path="/about" component={r(AboutPage)} />
+              <Route path="/chart/:chartId" component={ChartPage} />
+              <Route path="/dashboard" component={DashboardPage} />
+              <Route path="/markets" component={MarketListPage} />
+              <Route path="/about" component={AboutPage} />
               <Route exact path="/">
                 <Redirect to="/dashboard" />
               </Route>
-              <Route path="/*" component={r(NotFoundPage)} />
+              <Route path="/*" component={NotFoundPage} />
             </Switch>
           </div>
         </ErrorBoundary>
