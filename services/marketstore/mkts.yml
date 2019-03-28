@@ -22,7 +22,7 @@ bgworkers:
         - XLM
       base_timeframe: "1Min"
       base_currency: "BTC"
-      query_start: "2018-01-01 00:00"
+      query_start: "2019-01-01 00:00"
   - module: ondiskagg.so
     on: "*/1Min/OHLCV"
     config:
