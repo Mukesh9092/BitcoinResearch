@@ -12,31 +12,27 @@ services:
       - './services/proxy/acme.json:/acme.json'
     env_file: .env
 
-  tensorflow:
-    build: services/tensorflow
+  postgresql:
+    image: 'postgres:latest'
     ports:
-      - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
+      - '${POSTGRESQL_PORT}:${POSTGRESQL_PORT_IN}'
     volumes:
-      - './common/tensorflow/tf:/tf'
+      - './services/postgresql/data:/var/lib/postgresql/data'
     env_file: .env
-    command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
-    labels:
-      traefik.frontend.rule: 'Host:${TENSORFLOW_HOST}.${HOSTNAME}'
-      traefik.backend: '${TENSORFLOW_HOST}'
-      traefik.port: '${TENSORFLOW_PORT_IN}'
 
-  tf-serve:
-    image: tobegit3hub/simple_tensorflow_serving
+  pgadmin:
+    depends_on:
+      - postgresql
+    image: dpage/pgadmin4:latest
     ports:
-      - '${TF_SERVE_PORT}:${TF_SERVE_PORT_IN}'
+      - '${PGADMIN_PORT}:${PGADMIN_PORT_IN}'
     volumes:
-      - './services/tf-serve:/service'
+      - './services/pgadmin/data:/root/.pgadmin'
     env_file: .env
-    command: 'simple_tensorflow_serving --model_base_path=/service/src/common/tensorflow/tf/models/test1'
     labels:
-      traefik.frontend.rule: 'Host:${TF_SERVE_HOST}.${HOSTNAME}'
-      traefik.backend: '${TF_SERVE_HOST}'
-      traefik.port: '${TF_SERVE_PORT_IN}'
+      traefik.frontend.rule: 'Host:${PGADMIN_HOST}.${HOSTNAME}'
+      traefik.backend: '${PGADMIN_HOST}'
+      traefik.port: '${PGADMIN_PORT_IN}'
 
   marketstore:
     image: alpacamarkets/marketstore:latest
@@ -63,36 +59,31 @@ services:
       traefik.backend: '${MARKETSTORE_API_HOST}'
       traefik.port: '${MARKETSTORE_API_PORT_IN}'
 
-  advisor:
-    image: tobegit3hub/advisor
+  tensorflow:
+    build: services/tensorflow
     ports:
-      - '${ADVISOR_PORT}:${ADVISOR_PORT_IN}'
-    env_file: .env
-    labels:
-      traefik.backend: '${ADVISOR_HOST}'
-      traefik.port: '${ADVISOR_PORT_IN}'
-
-  postgresql:
-    image: 'postgres:latest'
-    ports:
-      - '${POSTGRESQL_PORT}:${POSTGRESQL_PORT_IN}'
+      - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
     volumes:
-      - './services/postgresql/data:/var/lib/postgresql/data'
+      - './common/tensorflow/tf:/tf'
     env_file: .env
-
-  pgadmin:
-    depends_on:
-      - postgresql
-    image: dpage/pgadmin4:latest
-    ports:
-      - '${PGADMIN_PORT}:${PGADMIN_PORT_IN}'
-    volumes:
-      - './services/pgadmin/data:/root/.pgadmin'
-    env_file: .env
+    command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
     labels:
-      traefik.frontend.rule: 'Host:${PGADMIN_HOST}.${HOSTNAME}'
-      traefik.backend: '${PGADMIN_HOST}'
-      traefik.port: '${PGADMIN_PORT_IN}'
+      traefik.frontend.rule: 'Host:${TENSORFLOW_HOST}.${HOSTNAME}'
+      traefik.backend: '${TENSORFLOW_HOST}'
+      traefik.port: '${TENSORFLOW_PORT_IN}'
+
+  tf-serve:
+    image: tobegit3hub/simple_tensorflow_serving
+    ports:
+      - '${TF_SERVE_PORT}:${TF_SERVE_PORT_IN}'
+    volumes:
+      - './services/tf-serve:/service'
+    env_file: .env
+    command: 'simple_tensorflow_serving --model_base_path=/service/src/common/tensorflow/tf/models/test1'
+    labels:
+      traefik.frontend.rule: 'Host:${TF_SERVE_HOST}.${HOSTNAME}'
+      traefik.backend: '${TF_SERVE_HOST}'
+      traefik.port: '${TF_SERVE_PORT_IN}'
 
   prisma:
     depends_on:
@@ -102,6 +93,8 @@ services:
       - '${PRISMA_PORT}:${PRISMA_PORT_IN}'
     env_file: .env
     environment:
+      SLOW_QUERIES_LOGGING: 'true'
+      SLOW_QUERIES_LOGGING_THRESHOLD: '0'
       PRISMA_CONFIG: |
         port: ${PRISMA_PORT_IN}
         # uncomment the next line and provide the env var
@@ -149,3 +142,12 @@ services:
       traefik.frontend.rule: 'Host:${WEB_HOST}.${HOSTNAME}'
       traefik.backend: '${WEB_HOST}'
       traefik.port: '${WEB_PORT_IN}'
+
+#  advisor:
+#    image: tobegit3hub/advisor
+#    ports:
+#      - '${ADVISOR_PORT}:${ADVISOR_PORT_IN}'
+#    env_file: .env
+#    labels:
+#      traefik.backend: '${ADVISOR_HOST}'
+#      traefik.port: '${ADVISOR_PORT_IN}'
