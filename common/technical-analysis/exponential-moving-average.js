@@ -20,7 +20,9 @@ function ema(array, precision) {
 }
 
 export function exponentialMovingAverage(array, precision, input, length) {
-  const values = array.map((x) => x[input])
+  const values = array.map((x) => {
+    return x[input]
+  })
 
   return values.map((x, i) => {
     if (i < length) {

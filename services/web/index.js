@@ -1,11 +1,9 @@
 require('dotenv').config()
 
 const { resolve } = require('path')
-const { inspect } = require('util')
 
 const Bundler = require('parcel-bundler')
 const express = require('express')
-const connectr = require('connectr')
 
 const { WEB_HOST, WEB_PORT, WEB_HMR_PORT } = process.env
 
@@ -20,22 +18,21 @@ const options = {
 const bundler = new Bundler(file, options)
 const middleware = bundler.middleware()
 
-app.use(middleware)
+app.use('/rebundle', async (req, res) => {
+  console.log('Rebundle start')
 
-// app.use('/rebundle', async (req, res) => {
-//   console.log('Rebundle start')
-//
-//   app.remove('bundler')
-//
-//   bundler = new Bundler(file, options)
-//   middleware = bundler.middleware()
-//
-//   app.use(middleware)
-//
-//   console.log('Rebundle complete')
-//
-//   res.end()
-// }).as('rebundle')
+  bundler.bundle()
+
+  // bundler = new Bundler(file, options)
+  // middleware = bundler.middleware()
+  // app.use(middleware)
+
+  console.log('Rebundle complete')
+
+  res.end()
+})
+
+app.use(middleware)
 
 app.listen(WEB_PORT, WEB_HOST, () => {
   console.log(`HTTP Server Listening on http://${WEB_HOST}:${WEB_PORT}`)

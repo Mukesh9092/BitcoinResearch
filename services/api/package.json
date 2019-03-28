@@ -4,10 +4,41 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "./bin/dev"
+    "dev": "./bin/dev",
+    "schema": "./bin/schema"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@babel/plugin-transform-react-jsx-source": "^7.2.0",
+    "@babel/runtime": "^7.2.0",
+    "apollo-cache-inmemory": "^1.3.12",
+    "apollo-client": "^2.4.8",
+    "apollo-link-http": "^1.5.9",
+    "body-parser": "^1.18.3",
+    "ccxt": "^1.18.97",
+    "cors": "^2.8.5",
+    "cross-fetch": "^3.0.1",
+    "date-fns": "^1.30.1",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "graphql": "^14.0.2",
+    "graphql-cli": "^3.0.4",
+    "graphql-tag": "^2.10.0",
+    "graphql-yoga": "^1.16.9",
+    "http": "^0.0.0",
+    "i": "^0.3.6",
+    "mathjs": "^5.4.0",
+    "mobx": "^5.8.0",
+    "mobx-task": "^1.0.1",
+    "morgan": "^1.9.1",
+    "msgpack": "^1.0.2",
+    "npm": "^6.5.0",
+    "prisma-binding": "^2.2.12",
+    "unhandled-error": "^1.0.0",
+    "uuid": "^3.3.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/node": "^7.2.2",
@@ -16,26 +47,9 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/polyfill": "^7.2.5",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.0.0",
-    "nodemon": "^1.18.9"
-  },
-  "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-env": "^7.2.3",
-    "apollo-cache-inmemory": "^1.3.12",
-    "apollo-client": "^2.4.8",
-    "apollo-link-http": "^1.5.9",
-    "ccxt": "^1.18.87",
-    "cors": "^2.8.5",
-    "cross-fetch": "^3.0.0",
-    "date-fns": "^1.30.1",
-    "dotenv": "^6.2.0",
-    "express": "^4.16.4",
-    "graphql": "^14.0.2",
-    "graphql-tag": "^2.10.0",
-    "morgan": "^1.9.1",
-    "unhandled-error": "^1.0.0",
-    "uuid": "^3.3.2"
+    "@babel/preset-react": "^7.0.0",
+    "nodemon": "^1.18.9"
   }
 }

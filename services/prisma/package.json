@@ -1,0 +1,15 @@
+{
+  "name": "prismaservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "prisma deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prisma": "^1.23.4"
+  }
+}

@@ -1,0 +1,37 @@
+root_directory: /data
+listen_port: 5993
+log_level: debug
+queryable: true
+stop_grace_period: 0
+wal_rotate_interval: 5
+stale_threshold: 5
+enable_add: true
+enable_remove: false
+bgworkers:
+  - module: binancefeeder.so
+    name: BinanceFetcher
+    config:
+      symbols:
+        - BNB
+        - XRP
+        - ETH
+        - TRX
+        - HOT
+        - BTT
+        - LTC
+        - XLM
+      base_timeframe: "1Min"
+      base_currency: "BTC"
+      query_start: "2019-01-01 00:00"
+  - module: ondiskagg.so
+    on: "*/1Min/OHLCV"
+    config:
+      destinations:
+        - 5Min
+        - 15Min
+        - 1H
+        - 6H
+        - 12H
+        - 1D
+  - module: stream.so
+    on: "*/*/*"

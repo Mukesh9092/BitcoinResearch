@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-npm run generate-imported-component
+npm i
 
 # npx parcel serve \
 #   --no-cache \

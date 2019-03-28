@@ -1,7 +1,9 @@
 import * as math from 'mathjs'
 
 export function simpleMovingAverage(array, precision, input, length) {
-  const values = array.map((x) => x[input])
+  const values = array.map((x) => {
+    return x[input]
+  })
 
   const result = []
 
