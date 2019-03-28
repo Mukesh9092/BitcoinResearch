@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Grid from '@material-ui/core/Grid'
 import { inject, observer } from 'mobx-react'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
 import Page from '../../page'
 

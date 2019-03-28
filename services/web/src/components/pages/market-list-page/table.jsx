@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import MUIDataTable from 'mui-datatables'
+// import MUIDataTable from 'mui-datatables'
 
 import * as styles from './styles.scss'
 
@@ -15,6 +15,11 @@ export const TableComponent = (props) => {
     row.trader,
   ])
 
+  return (
+    <h1>Out of Order!</h1>
+  )
+
+  /*
   return (
     <MUIDataTable
       className={`${styles.paper} ${styles.tablePaper}`}
@@ -57,6 +62,7 @@ export const TableComponent = (props) => {
       }}
     />
   )
+  */
 
   // return (
   //   <Paper className={`${styles.paper} ${styles.tablePaper}`}>

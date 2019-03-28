@@ -1,6 +1,6 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
-import createBrowserHistory from 'history/createBrowserHistory'
+// import createBrowserHistory from 'history/createBrowserHistory'
 import { ApolloProvider } from 'react-apollo'
 import { BrowserRouter as Router } from 'react-router-dom'
 
@@ -14,7 +14,8 @@ const element = document.getElementById('app')
 const app = (
   <ApolloProvider client={apolloClient}>
     <Router>
-      <App history={createBrowserHistory()} />
+      {/* <App history={createBrowserHistory()} /> */}
+      <App />
     </Router>
   </ApolloProvider>
 )
