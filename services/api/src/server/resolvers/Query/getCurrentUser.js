@@ -1,4 +1,4 @@
-export const getCurrentUser = async (_, args, context, info) => {
+export const getCurrentUser = async (root, args, context, info) => {
   const result = await context.prisma.query.users(
     {
       data: {

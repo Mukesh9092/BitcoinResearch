@@ -3,7 +3,7 @@ import { periodToMarketStore } from '../../../common/ohlcv'
 
 const { MARKETSTORE_API_HOST, MARKETSTORE_API_PORT } = process.env
 
-export const getOHLCVs = async (_, args, context, info) => {
+export const getOHLCVs = async (root, args, context, info) => {
   const host = MARKETSTORE_API_HOST
   const port = MARKETSTORE_API_PORT
   const { base, from, to } = args
@@ -42,7 +42,7 @@ import fetch from 'cross-fetch'
 import msgpack from 'msgpack'
 import uuid from 'uuid'
 
-export const getOHLCVs = async (_, args, context, info) => {
+export const getOHLCVs = async (root, args, context, info) => {
   const host = MARKETSTORE_HOST
   const port = MARKETSTORE_PORT
   const { base, from, to } = args

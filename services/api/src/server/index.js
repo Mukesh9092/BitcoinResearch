@@ -33,6 +33,7 @@ const context = (req) => {
     prisma: new Prisma({
       typeDefs: 'src/datamodel.prisma.gen.graphql',
       endpoint: `http://${PRISMA_HOST}:${PRISMA_PORT}`,
+      debug: true,
     }),
   }
 }

@@ -12,10 +12,6 @@ import * as styles from './styles.scss'
 @inject('store')
 @observer
 class ChartCardChartComponent extends React.Component {
-  /**
-   *
-   * @type {debounced}
-   */
   handleDownloadMore = debounce(
     (newStart, newEnd) => {
       const roundedNewStart = Math.ceil(newStart)

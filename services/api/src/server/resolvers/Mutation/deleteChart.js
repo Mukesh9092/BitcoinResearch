@@ -1,18 +1,19 @@
-import { debug } from '../../../common/log'
-
-export const deleteChart = (_, args, context, info) => {
-  // debug('deleteChart args', args)
-  // debug('deleteChart context', context)
-  // debug('deleteChart info', info)
-
-  return context.prisma.mutation.deleteChart(
-    {
-      data: {
-        where: {
-          id: args.chartId,
-        },
+export async function deleteChart(root, args, context, info) {
+  const options = {
+    data: {
+      where: {
+        id: args.chartId,
       },
     },
-    info,
-  )
+  }
+
+  console.log('deleteChart options', options)
+
+  const result = await context.prisma.mutation.deleteManyCharts(options, info)
+
+  console.log('deleteChart result', result)
+
+  const result1 = await context.prisma.query.charts({})
+
+  return result
 }

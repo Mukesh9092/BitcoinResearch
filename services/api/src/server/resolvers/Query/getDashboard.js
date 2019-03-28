@@ -1,4 +1,4 @@
-export const getDashboard = async (_, args, context, info) => {
+export const getDashboard = async (root, args, context, info) => {
   const result = await context.prisma.query.user(
     {
       data: {
