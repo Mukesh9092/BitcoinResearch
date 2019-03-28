@@ -3,7 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import Grid from '@material-ui/core/Grid'
 import { Query } from 'react-apollo'
 import { inject, observer } from 'mobx-react'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
 import { getMarkets } from '../../../queries/getMarkets'
 

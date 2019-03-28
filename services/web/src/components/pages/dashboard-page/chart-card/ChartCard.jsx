@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ContainerDimensions from 'react-container-dimensions'
 import { inject, observer } from 'mobx-react'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
 import DeleteIcon from '@material-ui/icons/Delete'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'

@@ -4,7 +4,7 @@ import * as React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Helmet } from 'react-helmet'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { observer, Provider } from 'mobx-react'
 
 import AboutPage from '../pages/about-page'
@@ -20,6 +20,7 @@ import { AsyncComponent } from '../async-component'
 
 import * as styles from './styles.scss'
 
+@withRouter
 @observer
 class AppComponent extends AsyncComponent {
   constructor(props) {

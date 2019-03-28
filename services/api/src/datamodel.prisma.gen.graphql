@@ -1,5 +1,5 @@
 # source: http://prisma:8020
-# timestamp: Thu Mar 28 2019 13:25:17 GMT+0000 (Coordinated Universal Time)
+# timestamp: Thu Mar 28 2019 15:42:56 GMT+0000 (Coordinated Universal Time)
 
 type AggregateChart {
   count: Int!

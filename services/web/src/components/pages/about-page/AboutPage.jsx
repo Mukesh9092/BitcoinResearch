@@ -1,9 +1,8 @@
 import * as React from 'react'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
-import { withRouter } from 'react-router'
 
 import Page from '../../page/index'
 
