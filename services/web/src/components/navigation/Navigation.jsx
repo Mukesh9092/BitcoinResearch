@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { History } from 'history'
 import { withRouter } from 'react-router-dom'
 
 import AppBar from '@material-ui/core/AppBar'
