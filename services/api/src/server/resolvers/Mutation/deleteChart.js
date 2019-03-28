@@ -9,7 +9,7 @@ export async function deleteChart(root, args, context, info) {
 
   console.log('deleteChart options', options)
 
-  const result = await context.prisma.mutation.deleteManyCharts(options, info)
+  const result = await context.prisma.mutation.deleteChart(options, info)
 
   console.log('deleteChart result', result)
 

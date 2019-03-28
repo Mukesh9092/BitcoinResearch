@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import { GraphQLServer } from 'graphql-yoga'
+
 import { Prisma } from 'prisma-binding'
 
 import { ensureInitialData } from './importer/ensure-initial-data'
