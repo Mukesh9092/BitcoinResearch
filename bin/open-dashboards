@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Traefik Proxy
-chromium-browser http://localhost:8080/dashboard
+# Traefik Proxy (keep trailing slash)
+chromium-browser http://localhost:8080/dashboard/
 
 # PostgreSQL Admin
 chromium-browser http://pgadmin.localtest.me
@@ -14,9 +14,6 @@ chromium-browser http://api.localtest.me
 
 # Tensorflow
 chromium-browser http://tensorflow.localtest.me
-
-# Tensorflow API
-chromium-browser http://tensorflow-api.localtest.me/ETH/1Day/2018-01-01/2019-01-01
 
 # "The Dashboard"
 chromium-browser http://web.localtest.me
