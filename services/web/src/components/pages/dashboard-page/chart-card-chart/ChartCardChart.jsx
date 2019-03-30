@@ -95,7 +95,6 @@ class ChartCardChartComponent extends React.Component {
   render() {
     const {
       props: {
-        width,
         chart,
         chart: {
           ohlcvStore: { fetch, ohlcvs },
@@ -129,7 +128,6 @@ class ChartCardChartComponent extends React.Component {
 
     return (
       <OHLCVChart
-        width={width}
         height={height + margin.top + margin.bottom}
         margin={margin}
         data={ohlcvs}

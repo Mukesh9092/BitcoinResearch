@@ -38,6 +38,9 @@ class OHLCVChart extends React.Component {
     this.state = {
       margin: props.margin,
 
+      timeFormat: timeFormat('%Y-%m-%d %H:%M:%S'),
+      ohlcvNumberFormat: format('.8f'),
+      volumeNumberFormat: format('.4s'),
       xScaleProvider: discontinuousTimeScaleProvider.inputDateAccessor(this.timestampToDate),
     }
   }
@@ -59,6 +62,8 @@ class OHLCVChart extends React.Component {
   }
 
   renderOHLCVChart({ width, height }) {
+    const { timeFormat, ohlcvNumberFormat } = this.state
+
     const chartHeight = height * 0.8
 
     return (
@@ -76,7 +81,7 @@ class OHLCVChart extends React.Component {
           orient="bottom"
           showTicks={false}
           innerTickSize={-1 * chartHeight}
-          tickFormat={format('.2s')}
+          tickFormat={timeFormat}
           tickStrokeDasharray="ShortDot"
           tickStrokeOpacity={0.2}
           tickStrokeWidth={1}
@@ -86,19 +91,18 @@ class OHLCVChart extends React.Component {
           orient="right"
           ticks={5}
           innerTickSize={-1 * width}
-          tickFormat={format('.8s')}
+          tickFormat={ohlcvNumberFormat}
           tickStrokeDasharray="ShortDot"
           tickStrokeOpacity={0.2}
           tickStrokeWidth={1}
         />
-        <MouseCoordinateX rectWidth={60} at="bottom" orient="bottom" displayFormat={timeFormat('%y-%m-%d')} />
-        <MouseCoordinateY at="right" orient="right" displayFormat={format('.8f')} />
+        <MouseCoordinateY at="right" orient="right" displayFormat={ohlcvNumberFormat} />
         <CandlestickSeries />
         <EdgeIndicator
           itemType="last"
           orient="right"
           edgeAt="right"
-          displayFormat={format('.8f')}
+          displayFormat={ohlcvNumberFormat}
           yAccessor={(d) => {
             return d.close
           }}
@@ -106,12 +110,14 @@ class OHLCVChart extends React.Component {
             return d.close > d.open ? '#6BA583' : '#FF0000'
           }}
         />
-        <OHLCTooltip origin={[-40, 0]} xDisplayFormat={timeFormat('%Y-%m-%d %H:%M:%S')} />
+        <OHLCTooltip forChart={1} origin={[-40, 0]} xDisplayFormat={timeFormat} ohlcFormat={ohlcvNumberFormat} />
       </Chart>
     )
   }
 
   renderVolumeChart({ width, height }) {
+    const { timeFormat, volumeNumberFormat } = this.state
+
     const chartHeight = height * 0.2
 
     return (
@@ -131,7 +137,7 @@ class OHLCVChart extends React.Component {
           axisAt="bottom"
           orient="bottom"
           innerTickSize={-1 * chartHeight}
-          tickFormat={format('.2s')}
+          tickFormat={timeFormat}
           tickStrokeDasharray="ShortDot"
           tickStrokeOpacity={0.2}
           tickStrokeWidth={1}
@@ -141,12 +147,13 @@ class OHLCVChart extends React.Component {
           orient="left"
           ticks={5}
           innerTickSize={-1 * width}
-          tickFormat={format('.2s')}
+          tickFormat={volumeNumberFormat}
           tickStrokeDasharray="ShortDot"
           tickStrokeOpacity={0.2}
           tickStrokeWidth={1}
         />
-        <MouseCoordinateY at="left" orient="left" displayFormat={format('.4s')} />
+        <MouseCoordinateX rectWidth={60} at="bottom" orient="bottom" displayFormat={timeFormat} />
+        <MouseCoordinateY at="left" orient="left" displayFormat={volumeNumberFormat} />
         <BarSeries
           yAccessor={(d) => {
             return d.volume
@@ -168,7 +175,7 @@ class OHLCVChart extends React.Component {
           yAccessor={(d) => {
             return d.volume
           }}
-          displayFormat={format('.4s')}
+          displayFormat={volumeNumberFormat}
           fill="#0F0F0F"
         />
       </Chart>
@@ -180,7 +187,14 @@ class OHLCVChart extends React.Component {
     const { margin, xScaleProvider } = this.state
 
     // Prepare the data for the chart.
-    const sortedData = sortByTimestamp(data)
+
+    const sanitizedData = data.map((x) => {
+      x.date = new Date(x.datetime)
+
+      return x
+    })
+
+    const sortedData = sortByTimestamp(sanitizedData)
     const scaledData = xScaleProvider(sortedData)
 
     const start = scaledData.xAccessor(last(scaledData.data))
@@ -196,7 +210,9 @@ class OHLCVChart extends React.Component {
           return (
             <ChartCanvas
               data={scaledData.data}
-              displayXAccessor={scaledData.displayXAccessor}
+              displayXAccessor={(x) => {
+                return x.date
+              }}
               height={height}
               margin={margin}
               // onLoadMore={onDownloadMore}
