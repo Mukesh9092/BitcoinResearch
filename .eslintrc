@@ -25,6 +25,7 @@
     "no-shadow": "off",
     "no-unused-vars": "off",
     "no-useless-escape": ["warn"],
+    "no-param-reassign": "off",
     "react/no-array-index-key": "off",
     "react/prop-types": "off",
   }
