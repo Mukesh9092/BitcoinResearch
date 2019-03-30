@@ -8,7 +8,7 @@ import Page from '../../page/index'
 
 import * as styles from './styles.scss'
 
-function FittedChart({ componentRef, chart }) {
+function FittedChart({ chart }) {
   return (
     <ContainerDimensions>
       {({ width }) => {

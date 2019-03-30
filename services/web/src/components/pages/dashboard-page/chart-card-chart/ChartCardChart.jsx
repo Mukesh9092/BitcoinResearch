@@ -1,8 +1,8 @@
 import * as React from 'react'
+import ContainerDimensions from 'react-container-dimensions'
 import { CircularProgress } from '@material-ui/core'
 import { debounce } from 'lodash'
 import { inject, observer } from 'mobx-react'
-import { subMonths, subDays, subHours, subMinutes } from 'date-fns'
 
 import OHLCVChart from '../../../ohlcv-chart'
 import { ChartStore } from '../../../../stores/chart-store'
@@ -51,7 +51,7 @@ class ChartCardChartComponent extends React.Component {
     } = props
 
     this.state = {
-      height: 300,
+      height: 500,
       from,
       to,
     }
@@ -120,15 +120,20 @@ class ChartCardChartComponent extends React.Component {
       )
     }
 
+    const margin = {
+      left: 50,
+      right: 80,
+      top: 10,
+      bottom: 25,
+    }
+
     return (
       <OHLCVChart
-        name={`${chart.marketStore.quote}/${chart.marketStore.base}`}
-        type="hybrid"
-        ohlcv={ohlcvs}
         width={width}
-        height={height}
-        ratio={1}
-        drawVolume={false}
+        height={height + margin.top + margin.bottom}
+        margin={margin}
+        data={ohlcvs}
+        name={`${chart.marketStore.quote}/${chart.marketStore.base}`}
         onDownloadMore={this.handleDownloadMore}
       />
     )

@@ -2,17 +2,6 @@ import * as React from 'react'
 
 import { CircularProgress } from '@material-ui/core'
 
-function FittedChart({ componentRef, chart }) {
-  return (
-    <ContainerDimensions>
-      {({ width }) => {
-        return <ChartCardChart chart={chart} width={(width > 0 && width) || 800} />
-      }}
-    </ContainerDimensions>
-  )
-}
-
-
 @inject('store')
 @observer
 class ChartCardChartComponent extends React.Component {
