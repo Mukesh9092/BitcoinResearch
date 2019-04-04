@@ -1,6 +1,17 @@
+export function periodTimeframe(period) {
+  const [_, timeframe] = period.match(/([A-Z]+)/)
+  return timeframe
+}
+
+export function periodAmount(period) {
+  const [_, amount] = period.match(/(\d+)/)
+  return amount
+}
+
 // TODO: This is probably pretty bad
 export function periodToMilliSeconds(period) {
-  const [_, timeframe, amount] = period.match(/([A-Z]+)(\d+)/)
+  const timeframe = periodTimeframe(period)
+  const amount = periodAmount(period)
 
   const result = Number(amount) * 1000
 
@@ -23,6 +34,38 @@ export function periodToMilliSeconds(period) {
     default:
       return result
   }
+}
+
+export function periodToMarketStore(period) {
+  const amount = periodAmount(period)
+  let timeframe = periodTimeframe(period)
+
+  switch (timeframe) {
+    case 'MINUTE':
+      timeframe = 'Min'
+      break
+
+    case 'HOUR':
+      timeframe = 'Hour'
+      break
+
+    case 'DAY':
+      timeframe = 'Day'
+      break
+
+    case 'WEEK':
+      timeframe = 'Week'
+      break
+
+    case 'MONTH':
+      timeframe = 'Month'
+      break
+
+    default:
+      timeframe = 'Day'
+  }
+
+  return `${amount}${timeframe}`
 }
 
 export function getExpectedLengthForPeriod(period, from, to) {

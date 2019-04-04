@@ -1,0 +1,12 @@
+service: api-serverless
+
+provider:
+  name: kubeless
+  runtime: nodejs6
+
+plugins:
+  - serverless-kubeless
+
+functions:
+  capitalize:
+    handler: src/handler.capitalize

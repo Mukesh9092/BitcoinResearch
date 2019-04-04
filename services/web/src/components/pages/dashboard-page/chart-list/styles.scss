@@ -1,0 +1,19 @@
+@import '../../../../styles/measurements';
+
+.charts {
+  margin-top: $single-unit;
+  margin-bottom: $single-unit;
+}
+
+.chartsLoading {
+  margin-top: $single-unit * 4;
+  margin-bottom: $single-unit * 4;
+}
+
+.loading {
+  text-align: center;
+}
+
+.error {
+  background-color: #ff0000;
+}

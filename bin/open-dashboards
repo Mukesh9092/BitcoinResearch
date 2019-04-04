@@ -1,7 +1,25 @@
 #!/usr/bin/env bash
 
-chromium-browser http://localhost:8080/dashboard/     # Traefik Proxy
-chromium-browser http://postgresql-admin.localtest.me # PostgreSQL Admin
-chromium-browser http://prisma.localtest.me           # Prisma GraphQL
-chromium-browser http://tensorflow.localtest.me       # Tensorflow
-chromium-browser http://web.localtest.me              # "The Dashboard"
+# Traefik Proxy (keep trailing slash)
+# chromium-browser http://localhost:8080/dashboard/
+firefox -new-tab http://localhost:8080/dashboard/
+
+# PostgreSQL Admin
+#chromium-browser http://pgadmin.localtest.me
+firefox -new-tab http://pgadmin.localtest.me
+
+# Prisma GraphQL
+#chromium-browser http://prisma.localtest.me
+firefox -new-tab http://prisma.localtest.me
+
+# API GraphQL
+#chromium-browser http://api.localtest.me
+firefox -new-tab http://api.localtest.me
+
+# Tensorflow
+#chromium-browser http://tensorflow.localtest.me
+firefox -new-tab http://tensorflow.localtest.me
+
+# "The Dashboard"
+#chromium-browser http://web.localtest.me
+firefox -new-tab http://web.localtest.me

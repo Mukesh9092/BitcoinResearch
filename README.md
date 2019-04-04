@@ -1,16 +1,37 @@
-# Test
+# Crypto Dashboard
 
-This is my architecture, ever evolving ..
+This application is a dashboard for cryptocurrency markets. Add some markets to your dashboard and view them in full-screen.
 
-# Start it
+## Exchanges:
+- [Binance](https://binance.com)
 
+## Dependencies
+- [MiniKube](https://github.com/kubernetes/minikube)
+- [Kubeless](https://kubeless.io)
+- [Docker](https://docker.com)
+- [Docker Compose](https://docs.docker.com/compose)
+
+## Usage
+
+    In one terminal:
+    $ ./bin/start-kubernetes
+    
+    In a second terminal:
     $ docker-compose up
 
-http://yuml.me/diagram/scruffy/class/edit/[Internet] <-> [Proxy], [Proxy] <-> [API], [Proxy] <-> [Web], [Proxy] <-> [Prisma], [Web] <-> [API], [Web] <-> [Prisma], [API] <-> [Prisma], [Prisma] <-> [PostgreSQL]
-
 # Links
-- [http://localhost:8080/dashboard](Traefik Proxy)
-- [http://postgresql-admin.localtest.me](PostgreSQL Admin)
-- [http://prisma.localtest.me](Prisma GraphQL)
-- [http://tensorflow.localtest.me](Tensorflow)
-- [http://web.localtest.me]("The Dashboard")
+- Services
+  - [PostgreSQL Admin](http://pgadmin.localtest.me) (Database GUI)
+  - [Prisma GraphQL](http://prisma.localtest.me) (GraphQL API to PostgreSQL)
+  - [Tensorflow](http://tensorflow.localtest.me) (Machine Learning Bench)
+- Exposed API
+  - [Traefik](http://localhost:8080) (Proxy)
+  - [API GraphQL](http://api.localtest.me) (Public HTTP API)
+  - [Dashboard](http://web.localtest.me) (Public WebApp)
+
+## Future goals
+- Live charts through GraphQL Subscriptions.
+- Support many indicators on the charts.
+- Algorithms for buying and selling.
+- Backtests using the Algorithms.
+- Algorithms using Machine Learning.

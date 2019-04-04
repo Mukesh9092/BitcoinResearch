@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+npm run schema
+nodemon -V -d 2.5 -e .js,.graphql -w src  -x ./node_modules/.bin/babel-node src/server
