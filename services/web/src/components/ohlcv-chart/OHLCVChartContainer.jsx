@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Grid from '@material-ui/core/Grid'
 import { CircularProgress } from '@material-ui/core'
 import { debounce } from 'lodash'
 import { inject, observer } from 'mobx-react'
@@ -98,11 +99,11 @@ class OHLCVChartContainer extends React.Component {
     } = this
 
     if (fetch.pending) {
-      return <div className={containerClassName}>{this.renderLoading()}</div>
+      return this.renderLoading()
     }
 
     if (!ohlcvs || !ohlcvs.length) {
-      return <div className={containerClassName}>{this.renderEmpty()}</div>
+      return this.renderEmpty()
     }
 
     const margin = {
@@ -113,14 +114,12 @@ class OHLCVChartContainer extends React.Component {
     }
 
     return (
-      // <div className={containerClassName}>
       <OHLCVChart
         margin={margin}
         data={ohlcvs}
         name={`${chart.quote}/${chart.base}`}
         onDownloadMore={this.handleDownloadMore}
       />
-      // </div>
     )
   }
 }

@@ -120,13 +120,9 @@ class ChartCardComponent extends React.Component {
     return (
       <Card className={styles.chart}>
         <CardHeader title={title} />
-        <CardMedia
-          component={OHLCVChartContainer}
-          chart={chart}
-          containerClassName={styles.container}
-          title={title}
-          image="?"
-        />
+        <div className={styles.container}>
+          <OHLCVChartContainer chart={chart} title={title} />
+        </div>
         <CardActions className={styles.cardActions}>
           {this.renderFrom()}
           {this.renderTo()}

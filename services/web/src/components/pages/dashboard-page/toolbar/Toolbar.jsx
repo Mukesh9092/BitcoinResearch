@@ -5,14 +5,16 @@ import Button from '@material-ui/core/Button'
 import * as styles from './styles.scss'
 
 export const ToolbarComponent = (props) => {
+  const { onAddClick } = props
+
   return (
     <div className={styles.toolbar}>
       <Button
-        variant='contained'
-        color='primary'
-        aria-label='Add'
+        variant="contained"
+        color="primary"
+        aria-label="Add"
         className={styles.toolbarButton}
-        onClick={props.onAddClick}
+        onClick={onAddClick}
       >
         Add Chart
         <AddIcon className={styles.toolbarIcon} />

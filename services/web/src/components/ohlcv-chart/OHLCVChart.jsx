@@ -21,10 +21,13 @@ class OHLCVChart extends React.Component {
   constructor(props) {
     super(props)
 
+    const minimumWidth = Math.max(200, props.margin.left + props.margin.right)
+    const minimumHeight = Math.max(100, props.margin.top + props.margin.bottom)
+
     this.state = {
       margin: props.margin,
-      minimumWidth: 100,
-      minimumHeight: 100,
+      minimumWidth,
+      minimumHeight,
 
       timeFormat: timeFormat('%Y-%m-%d %H:%M:%S'),
       ohlcvNumberFormat: format('.8f'),
@@ -195,18 +198,16 @@ class OHLCVChart extends React.Component {
           const height = Math.max(minimumHeight, containerProps.height)
 
           // Size minus margins for the charts inside the canvas.
-          const scaledWidth = this.getGridWidth(width)
-          const scaledHeight = this.getGridHeight(height)
-
-          debugger
+          const scaledWidth = Math.max(minimumWidth, this.getGridWidth(width))
+          const scaledHeight = Math.max(minimumHeight, this.getGridHeight(height))
 
           return (
             <ChartCanvas
               type="hybrid"
               seriesName={name}
               ratio={1}
-              width="100%"
-              height="100%"
+              width={width}
+              height={height}
               margin={margin}
               data={scaledData.data}
               // onLoadMore={onDownloadMore}

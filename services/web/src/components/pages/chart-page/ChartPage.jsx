@@ -29,13 +29,7 @@ class ChartPageComponent extends React.Component {
   renderLoading() {
     return (
       <Page>
-        <Grid
-          item
-          xs={12}
-          style={{
-            position: 'relative',
-          }}
-        >
+        <Grid item xs={12}>
           <div className={styles.loading}>
             <CircularProgress />
           </div>
@@ -61,12 +55,9 @@ class ChartPageComponent extends React.Component {
     }
 
     return (
-      <Page>
-        <Grid item xs={12}>
-          <div className="CHILD" />
-          {/*<OHLCVChartContainer chart={chartStore} containerClassName={styles.container} />*/}
-        </Grid>
-      </Page>
+      <div className={styles.container}>
+        <OHLCVChartContainer chart={chartStore} />
+      </div>
     )
   }
 }

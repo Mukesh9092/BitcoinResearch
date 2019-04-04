@@ -1,19 +1,5 @@
-$text-color: #336699;
-$background-color: #FFFFFF;
+@import '../../styles/import';
 
-//.navigation {
-//  display: flex;
-//  justify-content: center;
-//
-//  a {
-//    display: inline-block;
-//    padding: 10px;
-//    margin-top: 10px;
-//    margin-right: 5px;
-//    margin-bottom: 10px;
-//
-//    &:last-child {
-//      margin-right: 0;
-//    }
-//  }
-//}
+.navigationBar {
+  height: $navigationBarHeight;
+}
