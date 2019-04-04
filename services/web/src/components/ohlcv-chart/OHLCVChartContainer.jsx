@@ -1,17 +1,17 @@
 import * as React from 'react'
+import Grid from '@material-ui/core/Grid'
 import { CircularProgress } from '@material-ui/core'
 import { debounce } from 'lodash'
 import { inject, observer } from 'mobx-react'
-import { subMonths, subDays, subHours, subMinutes } from 'date-fns'
 
-import OHLCVChart from '../../../ohlcv-chart'
-import { ChartStore } from '../../../../stores/chart-store'
+import OHLCVChart from './OHLCVChart'
+import { ChartStore } from '../../stores/chart-store'
 
 import * as styles from './styles.scss'
 
 @inject('store')
 @observer
-class ChartCardChartComponent extends React.Component {
+class OHLCVChartContainer extends React.Component {
   handleDownloadMore = debounce(
     (newStart, newEnd) => {
       const roundedNewStart = Math.ceil(newStart)
@@ -51,7 +51,6 @@ class ChartCardChartComponent extends React.Component {
     } = props
 
     this.state = {
-      height: 300,
       from,
       to,
     }
@@ -72,7 +71,7 @@ class ChartCardChartComponent extends React.Component {
     })
   }
 
-  static renderLoading() {
+  renderLoading() {
     return (
       <div className={styles.loading}>
         <CircularProgress />
@@ -80,59 +79,49 @@ class ChartCardChartComponent extends React.Component {
     )
   }
 
-  hasNoBars() {
-    const {
-      props: {
-        chart: {
-          ohlcvStore: { ohlcvs },
-        },
-      },
-    } = this
-
-    return ohlcvs.length === 0
+  renderEmpty() {
+    return (
+      <div className={styles.empty}>
+        <p>No chart data.</p>
+      </div>
+    )
   }
 
   render() {
     const {
       props: {
-        width,
+        containerClassName,
         chart,
         chart: {
           ohlcvStore: { fetch, ohlcvs },
         },
       },
-      state: { height },
     } = this
 
-    if (fetch.pending && this.hasNoBars()) {
-      return ChartCardChartComponent.renderLoading()
-    }
-
-    if (fetch.error) {
-      throw fetch.error
+    if (fetch.pending) {
+      return this.renderLoading()
     }
 
     if (!ohlcvs || !ohlcvs.length) {
-      return (
-        <div className={styles.empty}>
-          <p>No chart data.</p>
-        </div>
-      )
+      return this.renderEmpty()
+    }
+
+    const margin = {
+      left: 50,
+      right: 80,
+      top: 10,
+      bottom: 25,
     }
 
     return (
       <OHLCVChart
-        name={`${chart.marketStore.quote}/${chart.marketStore.base}`}
-        type="hybrid"
-        ohlcv={ohlcvs}
-        width={width}
-        height={height}
-        ratio={1}
-        drawVolume={false}
+        margin={margin}
+        data={ohlcvs}
+        name={`${chart.quote}/${chart.base}`}
         onDownloadMore={this.handleDownloadMore}
       />
     )
   }
 }
 
-export const ChartCardChart = ChartCardChartComponent
+export default OHLCVChartContainer

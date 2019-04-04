@@ -4,13 +4,12 @@ import * as React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Helmet } from 'react-helmet'
-import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import { observer, Provider } from 'mobx-react'
 
 import AboutPage from '../pages/about-page'
 import ChartPage from '../pages/chart-page'
 import DashboardPage from '../pages/dashboard-page'
-import ErrorBoundary from '../error-boundary'
 import MarketListPage from '../pages/market-list-page'
 import Navigation from '../navigation'
 import NotFoundPage from '../pages/not-found-page'
@@ -45,25 +44,20 @@ class AppComponent extends AsyncComponent {
   renderResolved() {
     return (
       <Provider store={this.store}>
-        <ErrorBoundary>
-          <div className={styles.application}>
-            <CssBaseline />
-            <Helmet defaultTitle="Hello World!">
-              <meta charSet="utf-8" />
-            </Helmet>
-            <Navigation />
-            <Switch>
-              <Route path="/chart/:chartId" component={ChartPage} />
-              <Route path="/dashboard" component={DashboardPage} />
-              <Route path="/markets" component={MarketListPage} />
-              <Route path="/about" component={AboutPage} />
-              <Route exact path="/">
-                <Redirect to="/dashboard" />
-              </Route>
-              <Route path="/*" component={NotFoundPage} />
-            </Switch>
-          </div>
-        </ErrorBoundary>
+        <div className={styles.application}>
+          <CssBaseline />
+          <Helmet defaultTitle="Hello World!">
+            <meta charSet="utf-8" />
+          </Helmet>
+          <Navigation />
+          <Switch>
+            <Route path="/chart/:chartId" component={ChartPage} />
+            <Route path="/markets" component={MarketListPage} />
+            <Route path="/about" component={AboutPage} />
+            <Route exact path="/" component={DashboardPage} />
+            <Route path="/*" component={NotFoundPage} />
+          </Switch>
+        </div>
       </Provider>
     )
   }

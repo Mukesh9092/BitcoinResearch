@@ -26,8 +26,11 @@ class ErrorBoundary extends React.Component {
     if (error) {
       return (
         <div>
-          <pre>{formatError(error)}</pre>
-          <pre>{stack}</pre>
+          <pre>
+            {JSON.stringify(error.keys())}
+            {error.message}
+            {stack}
+          </pre>
         </div>
       )
     }
