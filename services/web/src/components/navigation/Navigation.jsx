@@ -23,10 +23,11 @@ class NavigationComponent extends React.Component {
   }
 
   toggleDrawer = (event) => {
+    const { open } = this.state
     event.preventDefault()
 
     this.setState({
-      open: !this.state.open,
+      open: !open,
     })
   }
 
@@ -39,15 +40,27 @@ class NavigationComponent extends React.Component {
   }
 
   navigateToDashboard = () => {
-    this.props.history.push('/')
+    const {
+      history: { push },
+    } = this.props
+
+    push('/')
   }
 
   navigateToMarkets = () => {
-    this.props.history.push('/markets')
+    const {
+      history: { push },
+    } = this.props
+
+    push('/markets')
   }
 
   navigateToAbout = () => {
-    this.props.history.push('/about')
+    const {
+      history: { push },
+    } = this.props
+
+    push('/about')
   }
 
   render() {
@@ -78,7 +91,7 @@ class NavigationComponent extends React.Component {
     }
 
     return [
-      <AppBar position="static" className={styles.navigationBar}>
+      <AppBar position="static" className={styles.navigationBar} key={0}>
         <Toolbar>
           <IconButton color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
             <MenuIcon />
@@ -88,7 +101,7 @@ class NavigationComponent extends React.Component {
           </Typography>
         </Toolbar>
       </AppBar>,
-      <Drawer anchor="left" open={open} onClose={this.closeDrawer}>
+      <Drawer anchor="left" open={open} onClose={this.closeDrawer} key={1}>
         <div tabIndex={0} role="button" onClick={this.closeDrawer} onKeyDown={this.closeDrawer}>
           <ListItem button selected={selected === 'dashboard'} onClick={this.navigateToDashboard}>
             <ListItemIcon>
