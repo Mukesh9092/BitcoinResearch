@@ -17,26 +17,14 @@ import { XAxis, YAxis } from 'react-stockcharts/lib/axes'
 import { discontinuousTimeScaleProvider } from 'react-stockcharts/lib/scale'
 import { last } from 'react-stockcharts/lib/utils'
 
-function sortByTimestamp(array) {
-  return array.slice().sort((a, b) => {
-    if (a.timestamp === b.timestamp) {
-      return 0
-    }
-
-    if (a.timestamp < b.timestamp) {
-      return -1
-    }
-
-    return 1
-  })
-}
-
 class OHLCVChart extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
       margin: props.margin,
+      minimumWidth: 100,
+      minimumHeight: 100,
 
       timeFormat: timeFormat('%Y-%m-%d %H:%M:%S'),
       ohlcvNumberFormat: format('.8f'),
@@ -183,19 +171,17 @@ class OHLCVChart extends React.Component {
   }
 
   render() {
-    const { name, height, data, onDownloadMore } = this.props
-    const { margin, xScaleProvider } = this.state
+    const { name, data, onDownloadMore } = this.props
+    const { margin, minimumWidth, minimumHeight, xScaleProvider } = this.state
 
     // Prepare the data for the chart.
-
     const sanitizedData = data.map((x) => {
-      x.date = new Date(x.datetime)
-
-      return x
+      return {
+        timestamp: new Date(x.datetime),
+        ...x,
+      }
     })
-
-    const sortedData = sortByTimestamp(sanitizedData)
-    const scaledData = xScaleProvider(sortedData)
+    const scaledData = xScaleProvider(sanitizedData)
 
     const start = scaledData.xAccessor(last(scaledData.data))
     const end = scaledData.xAccessor(scaledData.data[Math.max(0, scaledData.data.length - 150)])
@@ -203,26 +189,33 @@ class OHLCVChart extends React.Component {
 
     return (
       <ContainerDimensions>
-        {({ width }) => {
+        {(containerProps) => {
+          // Prevent weird rendering bugs by setting a minimum width and height.
+          const width = Math.max(minimumWidth, containerProps.width)
+          const height = Math.max(minimumHeight, containerProps.height)
+
+          // Size minus margins for the charts inside the canvas.
           const scaledWidth = this.getGridWidth(width)
           const scaledHeight = this.getGridHeight(height)
 
+          debugger
+
           return (
             <ChartCanvas
-              data={scaledData.data}
-              displayXAccessor={(x) => {
-                return x.date
-              }}
-              height={height}
-              margin={margin}
-              // onLoadMore={onDownloadMore}
-              ratio={1}
-              seriesName={name}
               type="hybrid"
-              width={width}
+              seriesName={name}
+              ratio={1}
+              width="100%"
+              height="100%"
+              margin={margin}
+              data={scaledData.data}
+              // onLoadMore={onDownloadMore}
               xAccessor={scaledData.xAccessor}
               xExtents={xExtents}
               xScale={scaledData.xScale}
+              displayXAccessor={(x) => {
+                return x.date
+              }}
             >
               {this.renderOHLCVChart({
                 width: scaledWidth,

@@ -45,25 +45,20 @@ class AppComponent extends AsyncComponent {
   renderResolved() {
     return (
       <Provider store={this.store}>
-        <ErrorBoundary>
-          <div className={styles.application}>
-            <CssBaseline />
-            <Helmet defaultTitle="Hello World!">
-              <meta charSet="utf-8" />
-            </Helmet>
-            <Navigation />
-            <Switch>
-              <Route path="/chart/:chartId" component={ChartPage} />
-              <Route path="/dashboard" component={DashboardPage} />
-              <Route path="/markets" component={MarketListPage} />
-              <Route path="/about" component={AboutPage} />
-              <Route exact path="/">
-                <Redirect to="/dashboard" />
-              </Route>
-              <Route path="/*" component={NotFoundPage} />
-            </Switch>
-          </div>
-        </ErrorBoundary>
+        <div className={styles.application}>
+          <CssBaseline />
+          <Helmet defaultTitle="Hello World!">
+            <meta charSet="utf-8" />
+          </Helmet>
+          <Navigation />
+          <Switch>
+            <Route path="/chart/:chartId" component={ChartPage} />
+            <Route path="/markets" component={MarketListPage} />
+            <Route path="/about" component={AboutPage} />
+            <Route exact path="/" component={DashboardPage} />
+            <Route path="/*" component={NotFoundPage} />
+          </Switch>
+        </div>
       </Provider>
     )
   }

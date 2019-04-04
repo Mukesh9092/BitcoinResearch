@@ -53,7 +53,7 @@ export class NavigationComponent extends React.Component {
   }
 
   navigateToDashboard = () => {
-    this.props.history.push('/dashboard')
+    this.props.history.push('/')
   }
 
   navigateToMarkets = () => {

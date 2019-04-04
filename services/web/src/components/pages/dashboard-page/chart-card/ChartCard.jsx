@@ -6,7 +6,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
 import { Button, Card, CardActions, CardHeader, CardMedia, TextField } from '@material-ui/core'
 
-import ChartCardChart from '../chart-card-chart'
+import OHLCVChartContainer from '../../../ohlcv-chart/OHLCVChartContainer'
 
 import * as styles from './styles.scss'
 
@@ -120,7 +120,13 @@ class ChartCardComponent extends React.Component {
     return (
       <Card className={styles.chart}>
         <CardHeader title={title} />
-        <CardMedia component={ChartCardChart} chart={chart} title={title} image="?" />
+        <CardMedia
+          component={OHLCVChartContainer}
+          chart={chart}
+          containerClassName={styles.container}
+          title={title}
+          image="?"
+        />
         <CardActions className={styles.cardActions}>
           {this.renderFrom()}
           {this.renderTo()}

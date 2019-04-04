@@ -1,17 +1,16 @@
 import * as React from 'react'
-import ContainerDimensions from 'react-container-dimensions'
 import { CircularProgress } from '@material-ui/core'
 import { debounce } from 'lodash'
 import { inject, observer } from 'mobx-react'
 
-import OHLCVChart from '../../../ohlcv-chart'
-import { ChartStore } from '../../../../stores/chart-store'
+import OHLCVChart from './OHLCVChart'
+import { ChartStore } from '../../stores/chart-store'
 
 import * as styles from './styles.scss'
 
 @inject('store')
 @observer
-class ChartCardChartComponent extends React.Component {
+class OHLCVChartContainer extends React.Component {
   handleDownloadMore = debounce(
     (newStart, newEnd) => {
       const roundedNewStart = Math.ceil(newStart)
@@ -51,7 +50,6 @@ class ChartCardChartComponent extends React.Component {
     } = props
 
     this.state = {
-      height: 500,
       from,
       to,
     }
@@ -72,7 +70,7 @@ class ChartCardChartComponent extends React.Component {
     })
   }
 
-  static renderLoading() {
+  renderLoading() {
     return (
       <div className={styles.loading}>
         <CircularProgress />
@@ -80,43 +78,31 @@ class ChartCardChartComponent extends React.Component {
     )
   }
 
-  hasNoBars() {
-    const {
-      props: {
-        chart: {
-          ohlcvStore: { ohlcvs },
-        },
-      },
-    } = this
-
-    return ohlcvs.length === 0
+  renderEmpty() {
+    return (
+      <div className={styles.empty}>
+        <p>No chart data.</p>
+      </div>
+    )
   }
 
   render() {
     const {
       props: {
+        containerClassName,
         chart,
         chart: {
           ohlcvStore: { fetch, ohlcvs },
         },
       },
-      state: { height },
     } = this
 
-    if (fetch.pending && this.hasNoBars()) {
-      return ChartCardChartComponent.renderLoading()
-    }
-
-    if (fetch.error) {
-      throw fetch.error
+    if (fetch.pending) {
+      return <div className={containerClassName}>{this.renderLoading()}</div>
     }
 
     if (!ohlcvs || !ohlcvs.length) {
-      return (
-        <div className={styles.empty}>
-          <p>No chart data.</p>
-        </div>
-      )
+      return <div className={containerClassName}>{this.renderEmpty()}</div>
     }
 
     const margin = {
@@ -127,15 +113,16 @@ class ChartCardChartComponent extends React.Component {
     }
 
     return (
+      // <div className={containerClassName}>
       <OHLCVChart
-        height={height + margin.top + margin.bottom}
         margin={margin}
         data={ohlcvs}
-        name={`${chart.marketStore.quote}/${chart.marketStore.base}`}
+        name={`${chart.quote}/${chart.base}`}
         onDownloadMore={this.handleDownloadMore}
       />
+      // </div>
     )
   }
 }
 
-export const ChartCardChart = ChartCardChartComponent
+export default OHLCVChartContainer

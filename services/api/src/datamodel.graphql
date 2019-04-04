@@ -1,3 +1,4 @@
+# import Chart from './datamodel.prisma.gen.graphql'
 # import Dashboard from './datamodel.prisma.gen.graphql'
 # import Post from './datamodel.prisma.gen.graphql'
 # import User from './datamodel.prisma.gen.graphql'
@@ -20,6 +21,7 @@ type OHLCV {
 }
 
 type Query {
+  getChartById(id: ID!): Chart
   getCurrentUser: User,
   getDashboard(userId: ID!): Dashboard,
   getMarkets: [Market],

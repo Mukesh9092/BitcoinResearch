@@ -7,6 +7,7 @@ import { ensureInitialData } from './importer/ensure-initial-data'
 
 import { createChart } from './resolvers/Mutation/createChart'
 import { deleteChart } from './resolvers/Mutation/deleteChart'
+import { getChartById } from './resolvers/Query/getChartById'
 import { getCurrentUser } from './resolvers/Query/getCurrentUser'
 import { getMarkets } from './resolvers/Query/getMarkets'
 import { getOHLCVs } from './resolvers/Query/getOHLCVs'
@@ -17,6 +18,7 @@ const { APP_PORT_IN, PRISMA_HOST, PRISMA_PORT } = process.env
 
 const resolvers = {
   Query: {
+    getChartById,
     getCurrentUser,
     getMarkets,
     getOHLCVs,
