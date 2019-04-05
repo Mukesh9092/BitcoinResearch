@@ -13,7 +13,5 @@ export async function deleteChart(root, args, context, info) {
 
   console.log('deleteChart result', result)
 
-  const result1 = await context.prisma.query.charts({})
-
   return result
 }
