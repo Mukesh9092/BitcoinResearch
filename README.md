@@ -11,6 +11,29 @@ This application is a dashboard for cryptocurrency markets. Add some markets to 
 - [Docker](https://docker.com)
 - [Docker Compose](https://docs.docker.com/compose)
 
+## Install
+
+### PostgreSQL
+```bash
+helm del --purge \
+  postgresql \
+  prisma;
+  
+helm install \
+  --name postgresql \
+  --set postgresqlDatabase=prisma \
+  --set postgresqlPassword=kittensinmittens \
+  stable/postgresql;
+  
+helm install \
+  --name prisma \
+  --set database.host=postgresql-postgresql.default.svc.cluster.local \
+  --set database.port=5432 \
+  --set database.user=postgres \
+  --set database.password=kittensinmittens \
+  stable/prisma;
+```
+
 ## Usage
 
     In one terminal:

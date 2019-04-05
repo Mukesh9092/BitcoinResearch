@@ -9,4 +9,4 @@ plugins:
 
 functions:
   capitalize:
-    handler: src/handler.capitalize
+    handler: handler.capitalize
