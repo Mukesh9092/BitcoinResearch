@@ -20,8 +20,11 @@ helm del --purge \
   prisma;
   
 helm install \
+  --debug \
+  --dry-run \
   --name postgresql \
   --set postgresqlDatabase=prisma \
+  --set global.postgresql.postgresqlPassword=kittensinglobals \
   --set postgresqlPassword=kittensinmittens \
   stable/postgresql;
   
