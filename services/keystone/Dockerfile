@@ -3,8 +3,9 @@ FROM node:latest
 RUN mkdir -p /service
 WORKDIR /service
 
-ADD . /service
-RUN rm -rf node_modules
+ADD package.json /service
 RUN yarn
+
+ADD . /service
 
 CMD yarn dev
