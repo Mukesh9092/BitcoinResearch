@@ -45,6 +45,18 @@ services:
     labels:
       - 'traefik.http.routers.python-api.rule=Host(`${PYTHON_API_HOST}.${HOSTNAME}`)'
 
+  keystone:
+    depends_on:
+      - postgresql
+    build: ./services/keystone
+    ports:
+      - '${KEYSTONE_PORT}:${KEYSTONE_PORT_IN}'
+    volumes:
+      - './services/keystone:/service'
+    env_file: .env
+    labels:
+      - 'traefik.http.routers.keystone.rule=Host(`${KEYSTONE_HOST}.${HOSTNAME}`)'
+
   # marketstore:
   #   image: alpacamarkets/marketstore:latest
   #   ports:
