@@ -3,13 +3,18 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password')
 const { Text, Checkbox, Password } = require('@keystonejs/fields')
 const { GraphQLApp } = require('@keystonejs/app-graphql')
 const { AdminUIApp } = require('@keystonejs/app-admin-ui')
-const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex')
+const { KnexAdapter } = require('@keystonejs/adapter-knex')
 
 const PROJECT_NAME = 'SmallCrypto'
 
 const keystone = new Keystone({
   name: PROJECT_NAME,
-  adapter: new Adapter(),
+  adapter: new KnexAdapter({
+    knexOptions: {
+      client: 'postgres',
+      connection: 'postgres://postgres/keystone',
+    },
+  }),
 })
 
 // Access control functions

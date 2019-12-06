@@ -33,18 +33,6 @@ services:
     labels:
       - 'traefik.http.routers.pgadmin.rule=Host(`${PGADMIN_HOST}.${HOSTNAME}`)'
 
-  python-api:
-    depends_on:
-      - postgresql
-    build: ./services/python-api
-    ports:
-      - '${PYTHON_API_PORT}:${PYTHON_API_PORT_IN}'
-    volumes:
-      - './services/python-api:/service'
-    env_file: .env
-    labels:
-      - 'traefik.http.routers.python-api.rule=Host(`${PYTHON_API_HOST}.${HOSTNAME}`)'
-
   keystone:
     depends_on:
       - postgresql
@@ -56,6 +44,18 @@ services:
     env_file: .env
     labels:
       - 'traefik.http.routers.keystone.rule=Host(`${KEYSTONE_HOST}.${HOSTNAME}`)'
+
+  # python-api:
+  #   depends_on:
+  #     - postgresql
+  #   build: ./services/python-api
+  #   ports:
+  #     - '${PYTHON_API_PORT}:${PYTHON_API_PORT_IN}'
+  #   volumes:
+  #     - './services/python-api:/service'
+  #   env_file: .env
+  #   labels:
+  #     - 'traefik.http.routers.python-api.rule=Host(`${PYTHON_API_HOST}.${HOSTNAME}`)'
 
   # marketstore:
   #   image: alpacamarkets/marketstore:latest
@@ -81,17 +81,17 @@ services:
   #     traefik.http.routers.whoami.rule: 'Host(`${MARKETSTORE_API_HOST}.${HOSTNAME}`)'
   #     traefik.http.routers.whoami.entrypoints: 'web'
 
-  tensorflow:
-    build: services/tensorflow
-    ports:
-      - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
-    volumes:
-      - './common/tensorflow/tf:/tf'
-    env_file: .env
-    command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
-    labels:
-      - 'traefik.http.routers.tensorflow.rule=Host(`${TENSORFLOW_HOST}.${HOSTNAME}`)'
-      # - 'traefik.http.services.tensorflow.loadbalancer.server.port=${TENSORFLOW_PORT_IN}`)'
+  # tensorflow:
+  #   build: services/tensorflow
+  #   ports:
+  #     - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
+  #   volumes:
+  #     - './common/tensorflow/tf:/tf'
+  #   env_file: .env
+  #   command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
+  #   labels:
+  #     - 'traefik.http.routers.tensorflow.rule=Host(`${TENSORFLOW_HOST}.${HOSTNAME}`)'
+  #     # - 'traefik.http.services.tensorflow.loadbalancer.server.port=${TENSORFLOW_PORT_IN}`)'
 
   # tf-serve:
   #   image: tobegit3hub/simple_tensorflow_serving
