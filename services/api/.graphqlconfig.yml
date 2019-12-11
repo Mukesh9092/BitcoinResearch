@@ -4,7 +4,7 @@ projects:
     extensions:
       endpoints:
         # TODO: Don't cardcode port here. Take from .env file.
-        default: http://localhost:8020
+        default: api.docker.localhost
   prisma:
     schemaPath: src/datamodel.prisma.gen.graphql
     extensions:

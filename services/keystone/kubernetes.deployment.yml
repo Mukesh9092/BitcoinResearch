@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keystone-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keystone-app
+  template:
+    metadata:
+      labels:
+        app: keystone-app
+    spec:
+      containers:
+      - name: keystone-container
+        image: keystone:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000

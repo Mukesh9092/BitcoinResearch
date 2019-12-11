@@ -1,7 +1,9 @@
 # This must be localhost, because prisma deploy is ran from the host machine.
-endpoint: http://localhost:8020
+endpoint: http://prisma.docker.localhost
 datamodel: src/common/domain/datamodel.graphql
 
 generate:
+  - generator: graphql-schema
+    output: ../../common/graphql/generated/prisma/schema.graphql
   - generator: javascript-client
-    output: ../../common/prisma/client/
+    output: ../../common/graphql/generated/prisma/client/

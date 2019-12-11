@@ -15,35 +15,33 @@ This application is a dashboard for cryptocurrency markets. Add some markets to 
 
 ### PostgreSQL
 ```bash
-helm del --purge \
-  postgresql \
-  prisma;
-  
-helm install \
-  --debug \
-  --dry-run \
-  --name postgresql \
+helm del postgresql;
+helm del prisma;
+
+helm install postgresql \
   --set postgresqlDatabase=prisma \
-  --set global.postgresql.postgresqlPassword=kittensinglobals \
-  --set postgresqlPassword=kittensinmittens \
+  --set postgresqlPassword=keyboardcat \
   stable/postgresql;
-  
-helm install \
-  --name prisma \
+
+helm install prisma \
   --set database.host=postgresql-postgresql.default.svc.cluster.local \
   --set database.port=5432 \
   --set database.user=postgres \
-  --set database.password=kittensinmittens \
+  --set database.password=keyboardcat \
   stable/prisma;
 ```
 
 ## Usage
 
     In one terminal:
-    $ ./bin/start-kubernetes
-    
-    In a second terminal:
-    $ docker-compose up
+    fish> ./bin/start-kubernetes
+
+    In another terminal:
+    fish> eval (minikube docker-env)
+    fish> ./bin/create-kubernetes
+
+    In another terminal:
+    fish> docker-compose up
 
 # Links
 - Services

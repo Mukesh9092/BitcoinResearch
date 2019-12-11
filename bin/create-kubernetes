@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+pushd services/keystone
+./bin/docker-build
+./bin/kubernetes-create
+popd

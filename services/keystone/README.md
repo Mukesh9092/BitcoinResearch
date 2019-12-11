@@ -1,3 +1,16 @@
+# Keystone
+
+## TODO
+
+- Use Passport Authentication with Google Flow working https://www.keystonejs.com/keystonejs/auth-passport/
+- Model:
+  - User has one Dashboard.
+  - Dashboard has many Bots.
+  - Bot has one Trader.
+  - Bot has one Market.
+  - Bot has one Algorithm.
+  - Bot has one Period.
+
 # KeystoneJS Starter Template
 
 You've created a KeystoneJS project! This project contains a simple list of users and an admin application (`localhost:3000/admin`) with basic authentication.

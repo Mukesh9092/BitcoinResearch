@@ -11,7 +11,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true DEBUG=knex:query keystone dev",
     "build": "cross-env NODE_ENV=production keystone build",
-    "start": "cross-env NODE_ENV=production keystone start"
+    "start": "cross-env NODE_ENV=production keystone start",
+    "createdb": "cross-env NODE_ENV=development keystone createdb keystone"
+
   },
   "dependencies": {
     "@keystonejs/adapter-knex": "^5.1.0",

@@ -1,0 +1,17 @@
+overwrite: true
+schema: "./src/datamodel.graphql"
+#documents: "./src/documents/**/*.graphql"
+generates:
+  ../../common/graphql/generated/service-api/apollo-client.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-react-apollo"
+      - "typescript-operations"
+      - "fragment-matcher"
+    config:
+      withComponent: false
+      withHooks: true
+  ../../common/graphql/generated/service-api/resolvers.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"

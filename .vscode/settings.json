@@ -1,0 +1,6 @@
+{
+  "python.formatting.provider": "black",
+  "python.pythonPath": "/home/tom/.pyenv/versions/3.7.5/bin/python",
+  "python.linting.flake8Enabled": true,
+  "python.linting.enabled": true
+}
