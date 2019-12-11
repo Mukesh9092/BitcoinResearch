@@ -1,11 +1,7 @@
-// import Chart from './Chart'
-// import Mutation from './Mutation'
-// import Market from './Market'
+import Mutation from './Mutation'
 import Query from './Query'
 
 export default {
-  // Chart,
-  // Mutation,
-  // Market,
+  Mutation,
   Query
 }

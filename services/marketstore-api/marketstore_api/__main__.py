@@ -19,17 +19,19 @@ app = web.Application()
 
 
 async def handleQuery(request):
+    logging.debug('handleQuery')
+
     asset = request.match_info.get("asset")
     period = request.match_info.get("period")
     kind = request.match_info.get("kind")
     start = request.match_info.get("start")
     end = request.match_info.get("end")
 
-    print('handleQuery:asset', asset)
-    print('handleQuery:period', period)
-    print('handleQuery:kind', kind)
-    print('handleQuery:start', start)
-    print('handleQuery:end', end)
+    logging.debug('handleQuery:asset %s', asset)
+    logging.debug('handleQuery:period %s', period)
+    logging.debug('handleQuery:kind %s', kind)
+    logging.debug('handleQuery:start %s', start)
+    logging.debug('handleQuery:end %s', end)
 
     response = (
         mstore_client.query(
@@ -40,15 +42,20 @@ async def handleQuery(request):
         .to_dict()
     )
 
-    return web.Response(text=response)
+    logging.debug('handleQuery:response %s', response)
+
+    return web.json_response(response)
 
 
 async def handleMarkets(request):
-    print('handleMarkets')
+    logging.debug('handleMarkets')
+
     result = mstore_client.list_symbols()
     result.sort()
 
-    return web.Response(text=result)
+    logging.debug('handleMarkets:result %s', result)
+
+    return web.json_response(result)
 
 
 app.add_routes(
