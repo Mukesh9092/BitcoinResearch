@@ -12,7 +12,7 @@
     "build:tsc": "tsc -p .; rm -rf lib/*.js lib/*.jsx",
     "build:uml": "tplant --input src/**/*.ts src/**/*.tsx --output lib/plantuml.svg",
     "clean": "rm -rf lib/*; rm -rf .cache/*; mkdir -p .cache; mkdir -p lib",
-    "dev": "./bin/dev",
+    "dev": "nodemon -V -d 2.5 -e .js,.graphql -w lib lib/index",
     "lint": "yarn lint:typescript; yarn lint:eslint; yarn lint:prettier",
     "lint:eslint": "eslint 'src/**/*.ts'",
     "lint:fix": "yarn lint:fix:prettier; yarn lint:fix:eslint",

@@ -8,7 +8,7 @@ import resolversModule from './resolvers'
 
 dotenv.config()
 
-const APP_PORT_IN = Number(process.env.APP_PORT_IN)
+const API_PORT_IN = Number(process.env.API_PORT_IN)
 const PRISMA_HOST = String(process.env.PRISMA_HOST)
 const PRISMA_PORT = Number(process.env.PRISMA_PORT)
 
@@ -36,8 +36,13 @@ const apolloServer = new ApolloServer({
 
 const main = async () => {
   try {
+    console.log('main')
+    console.log('main:API_PORT_IN', API_PORT_IN)
+    console.log('main:PRISMA_HOST', PRISMA_HOST)
+    console.log('main:PRISMA_PORT', PRISMA_PORT)
+
     const { url } = await apolloServer.listen({
-      port: APP_PORT_IN,
+      port: API_PORT_IN,
     })
 
     console.log(`GraphQL server is running on ${url}`)

@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import { getApolloClient } from '../common/apollo/client'
 import { createUserWithDashboard } from './mutations/createUserWithDashboard'
-import { deleteManyCharts } from './mutations/deleteManyCharts'
 import { getUserIds } from './queries/getUserIds'
 
 dotenv.config()
@@ -19,11 +18,9 @@ export async function ensureInitialData() {
   const usersExist = usersResult?.data?.users?.length > 0
 
   if (usersExist) {
-    console.log('ensureInitialData users exist, removing charts')
-
-    await apolloClient.mutate({ mutation: deleteManyCharts })
-
-    console.log('ensureInitialData charts removed')
+    // console.log('ensureInitialData users exist, removing charts')
+    // await apolloClient.mutate({ mutation: deleteManyCharts })
+    // console.log('ensureInitialData charts removed')
   } else {
     console.log('ensureInitialData creating new users')
 

@@ -1,9 +1,213 @@
-parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcelRequire,u="function"==typeof require&&require;function f(t,n){if(!r[t]){if(!e[t]){var i="function"==typeof parcelRequire&&parcelRequire;if(!n&&i)return i(t,!0);if(o)return o(t,!0);if(u&&"string"==typeof t)return u(t);var c=new Error("Cannot find module '"+t+"'");throw c.code="MODULE_NOT_FOUND",c}p.resolve=function(r){return e[t][1][r]||r},p.cache={};var l=r[t]=new f.Module(t);e[t][0].call(l.exports,p,l,l.exports,this)}return r[t].exports;function p(e){return f(p.resolve(e))}}f.isParcelRequire=!0,f.Module=function(e){this.id=e,this.bundle=f,this.exports={}},f.modules=e,f.cache=r,f.parent=o,f.register=function(r,t){e[r]=[function(e,r){r.exports=t},{}]};for(var c=0;c<t.length;c++)try{f(t[c])}catch(e){i||(i=e)}if(t.length){var l=f(t[t.length-1]);"object"==typeof exports&&"undefined"!=typeof module?module.exports=l:"function"==typeof define&&define.amd?define(function(){return l}):n&&(this[n]=l)}if(parcelRequire=f,i)throw i;return f}({"hq0Q":[function(require,module,exports) {
-"use strict";function e(){return Boolean("undefined"!=typeof window)}function o(){return Boolean("undefined"==typeof window)}function n(){return Boolean("develop"===process.env.NODE_ENV)}function r(){return Boolean("production"===process.env.NODE_ENV)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isBrowser=e,exports.isServer=o,exports.isDevelopment=n,exports.isProduction=r;
-},{}],"liCR":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.getApolloClient=void 0;var e=s(require("dotenv")),r=s(require("cross-fetch")),t=require("lodash"),o=s(require("apollo-client")),i=require("apollo-link-http"),n=require("apollo-cache-inmemory"),l=require("../environment");function s(e){return e&&e.__esModule?e:{default:e}}e.default.config();const{API_HOST:c,API_PORT:u}=process.env,a=(0,t.memoize)((e={})=>{const t=(0,l.isServer)(),s=e.cache||new n.InMemoryCache,a=e.uri||t&&`http://${c}:${u}/`||"http://api.localtest.me";t||s.restore(window.__APOLLO_STATE__);const p=e.link||new i.HttpLink({uri:a,fetch:r.default});return new o.default({cache:s,link:p,ssrMode:(0,l.isServer)()})});exports.getApolloClient=a;
-},{"../environment":"hq0Q"}],"tfaT":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.createUserWithDashboard=void 0;var e=a(require("graphql-tag"));function a(e){return e&&e.__esModule?e:{default:e}}const r=e.default`
+// modules are defined as an array
+// [ module function, map of requires ]
+//
+// map of requires is short require name -> numeric require
+//
+// anything defined in a previous bundle is accessed via the
+// orig method which is the require for previous bundles
+parcelRequire = (function (modules, cache, entry, globalName) {
+  // Save the require from previous bundle to this closure if any
+  var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
+  var nodeRequire = typeof require === 'function' && require;
+
+  function newRequire(name, jumped) {
+    if (!cache[name]) {
+      if (!modules[name]) {
+        // if we cannot find the module within our internal map or
+        // cache jump to the current global require ie. the last bundle
+        // that was added to the page.
+        var currentRequire = typeof parcelRequire === 'function' && parcelRequire;
+        if (!jumped && currentRequire) {
+          return currentRequire(name, true);
+        }
+
+        // If there are other bundles on this page the require from the
+        // previous one is saved to 'previousRequire'. Repeat this as
+        // many times as there are bundles until the module is found or
+        // we exhaust the require chain.
+        if (previousRequire) {
+          return previousRequire(name, true);
+        }
+
+        // Try the node require function if it exists.
+        if (nodeRequire && typeof name === 'string') {
+          return nodeRequire(name);
+        }
+
+        var err = new Error('Cannot find module \'' + name + '\'');
+        err.code = 'MODULE_NOT_FOUND';
+        throw err;
+      }
+
+      localRequire.resolve = resolve;
+      localRequire.cache = {};
+
+      var module = cache[name] = new newRequire.Module(name);
+
+      modules[name][0].call(module.exports, localRequire, module, module.exports, this);
+    }
+
+    return cache[name].exports;
+
+    function localRequire(x){
+      return newRequire(localRequire.resolve(x));
+    }
+
+    function resolve(x){
+      return modules[name][1][x] || x;
+    }
+  }
+
+  function Module(moduleName) {
+    this.id = moduleName;
+    this.bundle = newRequire;
+    this.exports = {};
+  }
+
+  newRequire.isParcelRequire = true;
+  newRequire.Module = Module;
+  newRequire.modules = modules;
+  newRequire.cache = cache;
+  newRequire.parent = previousRequire;
+  newRequire.register = function (id, exports) {
+    modules[id] = [function (require, module) {
+      module.exports = exports;
+    }, {}];
+  };
+
+  var error;
+  for (var i = 0; i < entry.length; i++) {
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
+  }
+
+  if (entry.length) {
+    // Expose entry point to Node, AMD or browser globals
+    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
+    var mainExports = newRequire(entry[entry.length - 1]);
+
+    // CommonJS
+    if (typeof exports === "object" && typeof module !== "undefined") {
+      module.exports = mainExports;
+
+    // RequireJS
+    } else if (typeof define === "function" && define.amd) {
+     define(function () {
+       return mainExports;
+     });
+
+    // <script>
+    } else if (globalName) {
+      this[globalName] = mainExports;
+    }
+  }
+
+  // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
+  return newRequire;
+})({"common/environment.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isBrowser = isBrowser;
+exports.isServer = isServer;
+exports.isDevelopment = isDevelopment;
+exports.isProduction = isProduction;
+
+function isBrowser() {
+  return Boolean(typeof window !== 'undefined');
+}
+
+function isServer() {
+  return Boolean(typeof window === 'undefined');
+}
+
+function isDevelopment() {
+  return Boolean(process.env.NODE_ENV === 'develop');
+}
+
+function isProduction() {
+  return Boolean(process.env.NODE_ENV === 'production');
+}
+},{}],"common/apollo/client.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getApolloClient = void 0;
+
+var _dotenv = _interopRequireDefault(require("dotenv"));
+
+var _crossFetch = _interopRequireDefault(require("cross-fetch"));
+
+var _lodash = require("lodash");
+
+var _apolloClient = _interopRequireDefault(require("apollo-client"));
+
+var _apolloLinkHttp = require("apollo-link-http");
+
+var _apolloCacheInmemory = require("apollo-cache-inmemory");
+
+var _environment = require("../environment");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_dotenv.default.config();
+
+const {
+  API_HOST,
+  API_PORT
+} = process.env;
+const getApolloClient = (0, _lodash.memoize)((options = {}) => {
+  const server = (0, _environment.isServer)();
+  const cache = options.cache || new _apolloCacheInmemory.InMemoryCache();
+  const uri = options.uri || server && `http://${API_HOST}:${API_PORT}/` || `http://api.localtest.me`;
+
+  if (!server) {
+    // eslint-disable-next-line no-underscore-dangle
+    cache.restore(window.__APOLLO_STATE__);
+  }
+
+  const link = options.link || new _apolloLinkHttp.HttpLink({
+    uri,
+    fetch: _crossFetch.default
+  });
+  const client = new _apolloClient.default({
+    cache,
+    link,
+    ssrMode: (0, _environment.isServer)()
+  });
+  return client;
+});
+exports.getApolloClient = getApolloClient;
+},{"../environment":"common/environment.ts"}],"importer/mutations/createUserWithDashboard.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createUserWithDashboard = void 0;
+
+var _graphqlTag = _interopRequireDefault(require("graphql-tag"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const createUserWithDashboard = _graphqlTag.default`
   mutation createUserWithDashboard($name: String!) {
     createUser(data: { name: $name, dashboard: { create: {} } }) {
       id
@@ -13,32 +217,229 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
       }
     }
   }
-`;exports.createUserWithDashboard=r;
-},{}],"BWKC":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.deleteManyCharts=void 0;var e=t(require("graphql-tag"));function t(e){return e&&e.__esModule?e:{default:e}}const r=e.default`
-  mutation {
-    deleteManyCharts(where: {}) {
-      count
-    }
-  }
-`;exports.deleteManyCharts=r;
-},{}],"ld7y":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.getUserIds=void 0;var e=r(require("graphql-tag"));function r(e){return e&&e.__esModule?e:{default:e}}const t=e.default`
+`;
+exports.createUserWithDashboard = createUserWithDashboard;
+},{}],"importer/queries/getUserIds.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getUserIds = void 0;
+
+var _graphqlTag = _interopRequireDefault(require("graphql-tag"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const getUserIds = _graphqlTag.default`
   query {
     users {
       id
     }
   }
-`;exports.getUserIds=t;
-},{}],"oLo9":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ensureInitialData=l;var e=o(require("dotenv")),t=require("../common/apollo/client"),a=require("./mutations/createUserWithDashboard"),r=require("./mutations/deleteManyCharts"),n=require("./queries/getUserIds");function o(e){return e&&e.__esModule?e:{default:e}}e.default.config();const{PRISMA_HOST:s,PRISMA_PORT:i}=process.env;async function l(){var e,o;console.log("ensureInitialData");const l=(0,t.getApolloClient)({uri:`http://${s}:${i}`}),u=await l.query({query:n.getUserIds});if((null==u?void 0:null===(e=u.data)||void 0===e?void 0:null===(o=e.users)||void 0===o?void 0:o.length)>0)console.log("ensureInitialData users exist, removing charts"),await l.mutate({mutation:r.deleteManyCharts}),console.log("ensureInitialData charts removed");else{console.log("ensureInitialData creating new users");const e=await l.mutate({mutation:a.createUserWithDashboard,variables:{name:"admin"}});console.log("ensureInitialData createUserWithDashboardResult",e)}console.log("ensureInitialData done")}
-},{"../common/apollo/client":"liCR","./mutations/createUserWithDashboard":"tfaT","./mutations/deleteManyCharts":"BWKC","./queries/getUserIds":"ld7y"}],"zxsU":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;const{MARKETSTORE_API_HOST:e,MARKETSTORE_API_PORT:t}=process.env,s="BTC";var a=async(s,a,r,o)=>{const p=`http://${e}:${t}/markets`,T=await fetch(p),c=await T.text();return JSON.parse(c).map(e=>({base:e,quote:"BTC"}))};exports.default=a;
-},{}],"iMHQ":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=t(require("./getMarkets"));function t(e){return e&&e.__esModule?e:{default:e}}var r={getMarkets:e.default};exports.default=r;
-},{"./getMarkets":"zxsU"}],"Wa2H":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=r(require("./Query"));function r(e){return e&&e.__esModule?e:{default:e}}var t={Query:e.default};exports.default=t;
-},{"./Query":"iMHQ"}],"QCba":[function(require,module,exports) {
-"use strict";var e=a(require("@babel/runtime/helpers/defineProperty")),r=require("apollo-server"),t=a(require("dotenv")),n=require("graphql-import"),o=require("prisma-binding"),i=require("./importer/ensure-initial-data"),s=a(require("./resolvers"));function a(e){return e&&e.__esModule?e:{default:e}}function c(e,r){var t=Object.keys(e);if(Object.getOwnPropertySymbols){var n=Object.getOwnPropertySymbols(e);r&&(n=n.filter(function(r){return Object.getOwnPropertyDescriptor(e,r).enumerable})),t.push.apply(t,n)}return t}function p(r){for(var t=1;t<arguments.length;t++){var n=null!=arguments[t]?arguments[t]:{};t%2?c(Object(n),!0).forEach(function(t){(0,e.default)(r,t,n[t])}):Object.getOwnPropertyDescriptors?Object.defineProperties(r,Object.getOwnPropertyDescriptors(n)):c(Object(n)).forEach(function(e){Object.defineProperty(r,e,Object.getOwnPropertyDescriptor(n,e))})}return r}t.default.config();const l=Number(process.env.APP_PORT_IN),u=String(process.env.PRISMA_HOST),f=Number(process.env.PRISMA_PORT),b=s.default,d=(0,n.importSchema)("./src/datamodel.graphql"),O=e=>p({},e,{prisma:new o.Prisma({typeDefs:"src/datamodel.prisma.gen.graphql",endpoint:`http://${u}:${f}`,debug:!0})}),g=new r.ApolloServer({typeDefs:d,resolvers:b,context:O}),m=async()=>{try{const{url:r}=await g.listen({port:l});console.log(`GraphQL server is running on ${r}`),await(0,i.ensureInitialData)(),console.log("Seeded initial data")}catch(e){console.error(e)}};m();
-},{"./importer/ensure-initial-data":"oLo9","./resolvers":"Wa2H"}]},{},["QCba"], null)
+`;
+exports.getUserIds = getUserIds;
+},{}],"importer/ensure-initial-data.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ensureInitialData = ensureInitialData;
+
+var _dotenv = _interopRequireDefault(require("dotenv"));
+
+var _client = require("../common/apollo/client");
+
+var _createUserWithDashboard = require("./mutations/createUserWithDashboard");
+
+var _getUserIds = require("./queries/getUserIds");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_dotenv.default.config();
+
+const {
+  PRISMA_HOST,
+  PRISMA_PORT
+} = process.env;
+
+async function ensureInitialData() {
+  var _usersResult$data, _usersResult$data$use;
+
+  console.log('ensureInitialData');
+  const apolloClient = (0, _client.getApolloClient)({
+    uri: `http://${PRISMA_HOST}:${PRISMA_PORT}`
+  });
+  const usersResult = await apolloClient.query({
+    query: _getUserIds.getUserIds
+  });
+  const usersExist = (usersResult === null || usersResult === void 0 ? void 0 : (_usersResult$data = usersResult.data) === null || _usersResult$data === void 0 ? void 0 : (_usersResult$data$use = _usersResult$data.users) === null || _usersResult$data$use === void 0 ? void 0 : _usersResult$data$use.length) > 0;
+
+  if (usersExist) {// console.log('ensureInitialData users exist, removing charts')
+    // await apolloClient.mutate({ mutation: deleteManyCharts })
+    // console.log('ensureInitialData charts removed')
+  } else {
+    console.log('ensureInitialData creating new users');
+    const createUserWithDashboardResult = await apolloClient.mutate({
+      mutation: _createUserWithDashboard.createUserWithDashboard,
+      variables: {
+        name: 'admin'
+      }
+    });
+    console.log('ensureInitialData createUserWithDashboardResult', createUserWithDashboardResult);
+  }
+
+  console.log('ensureInitialData done');
+}
+},{"../common/apollo/client":"common/apollo/client.js","./mutations/createUserWithDashboard":"importer/mutations/createUserWithDashboard.ts","./queries/getUserIds":"importer/queries/getUserIds.ts"}],"resolvers/Query/getMarkets.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+const {
+  MARKETSTORE_API_HOST,
+  MARKETSTORE_API_PORT
+} = process.env; // TODO: Get from somewhere.
+
+const quote = 'BTC';
+
+var _default = async (_parent, _args, _context, _info) => {
+  const host = MARKETSTORE_API_HOST;
+  const port = MARKETSTORE_API_PORT;
+  const url = `http://${host}:${port}/markets`;
+  const fetchResult = await fetch(url); // console.log('getMarkets fetchResult', fetchResult)
+
+  const fetchResultText = await fetchResult.text(); // console.log(`getMarkets fetchResultText "${fetchResultText}"`, typeof fetchResultText)
+
+  const fetchResultJSON = JSON.parse(fetchResultText); // console.log('getMarkets fetchResultJSON', fetchResultJSON)
+
+  const output = fetchResultJSON.map(base => {
+    return {
+      base,
+      quote
+    };
+  }); // console.log('getMarkets output', output)
+
+  return output;
+};
+
+exports.default = _default;
+},{}],"resolvers/Query/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _getMarkets = _interopRequireDefault(require("./getMarkets"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import getChartById from './getChartById'
+// import getCurrentUser from './getCurrentUser'
+// import getDashboard from './getDashboard'
+// import getOHLCVs from './getOHLCVs'
+var _default = {
+  // getChartById,
+  // getCurrentUser,
+  // getDashboard,
+  getMarkets: _getMarkets.default // getOHLCVs,
+
+};
+exports.default = _default;
+},{"./getMarkets":"resolvers/Query/getMarkets.ts"}],"resolvers/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _Query = _interopRequireDefault(require("./Query"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import Chart from './Chart'
+// import Mutation from './Mutation'
+// import Market from './Market'
+var _default = {
+  // Chart,
+  // Mutation,
+  // Market,
+  Query: _Query.default
+};
+exports.default = _default;
+},{"./Query":"resolvers/Query/index.ts"}],"index.ts":[function(require,module,exports) {
+"use strict";
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _apolloServer = require("apollo-server");
+
+var _dotenv = _interopRequireDefault(require("dotenv"));
+
+var _graphqlImport = require("graphql-import");
+
+var _prismaBinding = require("prisma-binding");
+
+var _ensureInitialData = require("./importer/ensure-initial-data");
+
+var _resolvers = _interopRequireDefault(require("./resolvers"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+_dotenv.default.config();
+
+const API_PORT_IN = Number(process.env.API_PORT_IN);
+const PRISMA_HOST = String(process.env.PRISMA_HOST);
+const PRISMA_PORT = Number(process.env.PRISMA_PORT); // Type Checked Resolvers.
+
+const resolvers = _resolvers.default;
+const typeDefs = (0, _graphqlImport.importSchema)('./src/datamodel.graphql');
+
+const context = req => {
+  return _objectSpread({}, req, {
+    prisma: new _prismaBinding.Prisma({
+      typeDefs: 'src/datamodel.prisma.gen.graphql',
+      endpoint: `http://${PRISMA_HOST}:${PRISMA_PORT}`,
+      debug: true
+    })
+  });
+};
+
+const apolloServer = new _apolloServer.ApolloServer({
+  typeDefs,
+  resolvers,
+  context
+});
+
+const main = async () => {
+  try {
+    console.log('main');
+    console.log('main:API_PORT_IN', API_PORT_IN);
+    console.log('main:PRISMA_HOST', PRISMA_HOST);
+    console.log('main:PRISMA_PORT', PRISMA_PORT);
+    const {
+      url
+    } = await apolloServer.listen({
+      port: API_PORT_IN
+    });
+    console.log(`GraphQL server is running on ${url}`);
+    await (0, _ensureInitialData.ensureInitialData)();
+    console.log(`Seeded initial data`);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+main();
+},{"./importer/ensure-initial-data":"importer/ensure-initial-data.ts","./resolvers":"resolvers/index.ts"}]},{},["index.ts"], null)
 //# sourceMappingURL=/index.js.map
