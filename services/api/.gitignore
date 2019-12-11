@@ -1,3 +1,4 @@
+.cache
 node_modules
 src/common
 src/datamodel.prisma.gen.graphql
