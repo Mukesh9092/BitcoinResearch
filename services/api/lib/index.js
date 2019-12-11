@@ -117,7 +117,41 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"common/environment.ts":[function(require,module,exports) {
+})({"context.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _prismaBinding = require("prisma-binding");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+const PRISMA_HOST = String(process.env.PRISMA_HOST);
+const PRISMA_PORT = Number(process.env.PRISMA_PORT);
+const prismaClientOptions = {
+  typeDefs: 'src/datamodel.prisma.gen.graphql',
+  endpoint: `http://${PRISMA_HOST}:${PRISMA_PORT}`,
+  debug: true
+};
+
+const context = req => {
+  return _objectSpread({}, req, {
+    prisma: new _prismaBinding.Prisma(prismaClientOptions)
+  });
+};
+
+var _default = context;
+exports.default = _default;
+},{}],"common/environment.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -310,19 +344,20 @@ var _default = async (_parent, _args, _context, _info) => {
   const host = MARKETSTORE_API_HOST;
   const port = MARKETSTORE_API_PORT;
   const url = `http://${host}:${port}/markets`;
-  const fetchResult = await fetch(url); // console.log('getMarkets fetchResult', fetchResult)
-
-  const fetchResultText = await fetchResult.text(); // console.log(`getMarkets fetchResultText "${fetchResultText}"`, typeof fetchResultText)
-
-  const fetchResultJSON = JSON.parse(fetchResultText); // console.log('getMarkets fetchResultJSON', fetchResultJSON)
-
+  console.log('getMarkets:url', url);
+  const fetchResult = await fetch(url);
+  console.log('getMarkets:fetchResult', fetchResult);
+  const fetchResultText = await fetchResult.text();
+  console.log(`getMarkets:fetchResultText "${fetchResultText}"`, typeof fetchResultText);
+  const fetchResultJSON = JSON.parse(fetchResultText);
+  console.log('getMarkets:fetchResultJSON', fetchResultJSON);
   const output = fetchResultJSON.map(base => {
     return {
       base,
       quote
     };
-  }); // console.log('getMarkets output', output)
-
+  });
+  console.log('getMarkets:output', output);
   return output;
 };
 
@@ -376,15 +411,13 @@ exports.default = _default;
 },{"./Query":"resolvers/Query/index.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-
 var _apolloServer = require("apollo-server");
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
 var _graphqlImport = require("graphql-import");
 
-var _prismaBinding = require("prisma-binding");
+var _context = _interopRequireDefault(require("./context"));
 
 var _ensureInitialData = require("./importer/ensure-initial-data");
 
@@ -392,54 +425,32 @@ var _resolvers = _interopRequireDefault(require("./resolvers"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 _dotenv.default.config();
-
-const API_PORT_IN = Number(process.env.API_PORT_IN);
-const PRISMA_HOST = String(process.env.PRISMA_HOST);
-const PRISMA_PORT = Number(process.env.PRISMA_PORT); // Type Checked Resolvers.
-
-const resolvers = _resolvers.default;
-const typeDefs = (0, _graphqlImport.importSchema)('./src/datamodel.graphql');
-
-const context = req => {
-  return _objectSpread({}, req, {
-    prisma: new _prismaBinding.Prisma({
-      typeDefs: 'src/datamodel.prisma.gen.graphql',
-      endpoint: `http://${PRISMA_HOST}:${PRISMA_PORT}`,
-      debug: true
-    })
-  });
-};
-
-const apolloServer = new _apolloServer.ApolloServer({
-  typeDefs,
-  resolvers,
-  context
-});
 
 const main = async () => {
   try {
     console.log('main');
+    const API_PORT_IN = Number(process.env.API_PORT_IN);
     console.log('main:API_PORT_IN', API_PORT_IN);
-    console.log('main:PRISMA_HOST', PRISMA_HOST);
-    console.log('main:PRISMA_PORT', PRISMA_PORT);
+    console.log('main:initial-data');
+    await (0, _ensureInitialData.ensureInitialData)();
+    console.log('main:initial-data:complete');
+    const apolloServer = new _apolloServer.ApolloServer({
+      typeDefs: (0, _graphqlImport.importSchema)('./src/datamodel.graphql'),
+      resolvers: _resolvers.default,
+      context: _context.default
+    });
     const {
       url
     } = await apolloServer.listen({
       port: API_PORT_IN
     });
-    console.log(`GraphQL server is running on ${url}`);
-    await (0, _ensureInitialData.ensureInitialData)();
-    console.log(`Seeded initial data`);
+    console.log('main:url', url);
   } catch (error) {
     console.error(error);
   }
 };
 
 main();
-},{"./importer/ensure-initial-data":"importer/ensure-initial-data.ts","./resolvers":"resolvers/index.ts"}]},{},["index.ts"], null)
+},{"./context":"context.ts","./importer/ensure-initial-data":"importer/ensure-initial-data.ts","./resolvers":"resolvers/index.ts"}]},{},["index.ts"], null)
 //# sourceMappingURL=/index.js.map
