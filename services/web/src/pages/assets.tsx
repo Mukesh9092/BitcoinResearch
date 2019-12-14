@@ -2,13 +2,10 @@ import { NonIdealState, Tab, Tabs } from '@blueprintjs/core'
 import { groupBy } from 'lodash'
 import { NextPage } from 'next'
 import React from 'react'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
 import styled from 'styled-components'
 import App from '../components/App'
 import AssetPanel from '../components/AssetPanel'
 import SpinningLoader from '../components/SpinningLoader'
-import { Asset } from '../domain/Asset'
-import firebase from '../helpers/firebase'
 
 const Container = styled.main`
   margin-top: 50px;
@@ -20,12 +17,9 @@ const Container = styled.main`
 `
 
 const Page: NextPage = () => {
-  const [values, loading, error] = useCollectionData<Asset>(
-    firebase
-      .firestore()
-      .collection('Asset')
-      .where('active', '==', true),
-  )
+  const error = null
+  const loading = true
+  const values = []
 
   if (error) {
     return (

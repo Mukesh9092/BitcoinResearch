@@ -99,7 +99,6 @@ services:
     build: services/web
     ports:
       - '${WEB_PORT}:${WEB_PORT_IN}'
-      - '${WEB_HMR_PORT}:${WEB_HMR_PORT_IN}'
     volumes:
       - './services/web:/service'
     env_file: .env
