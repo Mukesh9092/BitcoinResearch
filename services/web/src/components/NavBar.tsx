@@ -1,7 +1,6 @@
 import { Alignment, Button, Navbar } from '@blueprintjs/core'
 import Link from 'next/link'
 import React from 'react'
-import { signIn, signOut } from '../helpers/authentication'
 
 export interface NavBarProps {
   heading: string
@@ -44,14 +43,18 @@ const NavBar = (props: NavBarProps) => {
             className='bp3-minimal'
             icon='log-out'
             text='Sign Out'
-            onClick={signOut}
+            onClick={() => {
+              console.log('onClick sign-out')
+            }}
           />
         ) : (
           <Button
             className='bp3-minimal'
             icon='log-in'
             text='Sign In'
-            onClick={signIn}
+              onClick={() => {
+                console.log('onClick sign-in')
+              }}
           />
           // <Link href='/signin'>
           //   <Button className='bp3-minimal' icon='log-in' text='Sign In' />
