@@ -33,30 +33,6 @@ services:
     labels:
       - 'traefik.http.routers.pgadmin.rule=Host(`${PGADMIN_HOST}.${HOSTNAME}`)'
 
-  # keystone:
-  #   depends_on:
-  #     - postgresql
-  #   build: ./services/keystone
-  #   ports:
-  #     - '${KEYSTONE_PORT}:${KEYSTONE_PORT_IN}'
-  #   volumes:
-  #     - './services/keystone:/service'
-  #   env_file: .env
-  #   labels:
-  #     - 'traefik.http.routers.keystone.rule=Host(`${KEYSTONE_HOST}.${HOSTNAME}`)'
-
-  # trader:
-  #   depends_on:
-  #     - postgresql
-  #   build: ./services/trader
-  #   ports:
-  #     - '${TRADER_PORT}:${TRADER_PORT_IN}'
-  #   volumes:
-  #     - './services/trader:/service'
-  #   env_file: .env
-  #   labels:
-  #     - 'traefik.http.routers.trader.rule=Host(`${TRADER_HOST}.${HOSTNAME}`)'
-
   marketstore:
     image: alpacamarkets/marketstore:latest
     ports:
