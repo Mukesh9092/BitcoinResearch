@@ -1,0 +1,12 @@
+fragment Chart on Chart {
+  id
+  period
+  dashboard {
+    id
+  }
+  market {
+    id
+  }
+  from
+  to
+}

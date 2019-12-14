@@ -1,0 +1,5 @@
+query getDashboard($userId: ID!) {
+  getDashboard(userId: $userId) {
+    id
+  }
+}

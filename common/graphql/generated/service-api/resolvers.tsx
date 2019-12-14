@@ -25,11 +25,13 @@ export type Dashboard = {
    __typename?: 'Dashboard',
   id: Scalars['ID'],
   user: User,
+  charts?: Maybe<Array<Chart>>,
 };
 
 
 export type Market = {
    __typename?: 'Market',
+  id: Scalars['ID'],
   base: Scalars['String'],
   quote: Scalars['String'],
 };
@@ -43,11 +45,10 @@ export type Mutation = {
 
 export type MutationCreateChartArgs = {
   dashboardId: Scalars['ID'],
-  base: Scalars['String'],
-  quote: Scalars['String'],
+  marketId: Scalars['ID'],
+  period: Period,
   from: Scalars['DateTime'],
-  to: Scalars['DateTime'],
-  period: Period
+  to: Scalars['DateTime']
 };
 
 
@@ -57,10 +58,9 @@ export type MutationDeleteChartArgs = {
 
 export type Ohlcv = {
    __typename?: 'OHLCV',
+  id: Scalars['ID'],
   market: Market,
   period: Period,
-  base: Scalars['String'],
-  quote: Scalars['String'],
   datetime: Scalars['DateTime'],
   open: Scalars['Float'],
   high: Scalars['Float'],
@@ -99,8 +99,7 @@ export type QueryGetDashboardArgs = {
 
 
 export type QueryGetOhlcVsArgs = {
-  base: Scalars['String'],
-  quote: Scalars['String'],
+  marketId: Scalars['ID'],
   period: Period,
   from: Scalars['DateTime'],
   to: Scalars['DateTime']
@@ -227,6 +226,7 @@ export type ChartResolvers<ContextType = any, ParentType extends ResolversParent
 export type DashboardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Dashboard'] = ResolversParentTypes['Dashboard']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  charts?: Resolver<Maybe<Array<ResolversTypes['Chart']>>, ParentType, ContextType>,
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
@@ -234,20 +234,20 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type MarketResolvers<ContextType = any, ParentType extends ResolversParentTypes['Market'] = ResolversParentTypes['Market']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   base?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   quote?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createChart?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, RequireFields<MutationCreateChartArgs, 'dashboardId' | 'base' | 'quote' | 'from' | 'to' | 'period'>>,
+  createChart?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, RequireFields<MutationCreateChartArgs, 'dashboardId' | 'marketId' | 'period' | 'from' | 'to'>>,
   deleteChart?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteChartArgs, 'chartId'>>,
 };
 
 export type OhlcvResolvers<ContextType = any, ParentType extends ResolversParentTypes['OHLCV'] = ResolversParentTypes['OHLCV']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   market?: Resolver<ResolversTypes['Market'], ParentType, ContextType>,
   period?: Resolver<ResolversTypes['Period'], ParentType, ContextType>,
-  base?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  quote?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   datetime?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
   open?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
   high?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
@@ -261,7 +261,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getCurrentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
   getDashboard?: Resolver<Maybe<ResolversTypes['Dashboard']>, ParentType, ContextType, RequireFields<QueryGetDashboardArgs, 'userId'>>,
   getMarkets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Market']>>>, ParentType, ContextType>,
-  getOHLCVs?: Resolver<Maybe<Array<Maybe<ResolversTypes['OHLCV']>>>, ParentType, ContextType, RequireFields<QueryGetOhlcVsArgs, 'base' | 'quote' | 'period' | 'from' | 'to'>>,
+  getOHLCVs?: Resolver<Maybe<Array<Maybe<ResolversTypes['OHLCV']>>>, ParentType, ContextType, RequireFields<QueryGetOhlcVsArgs, 'marketId' | 'period' | 'from' | 'to'>>,
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

@@ -1,0 +1,13 @@
+fragment OHLCV on OHLCV {
+  id
+  market {
+    id
+  }
+  period
+  datetime
+  open
+  high
+  low
+  close
+  volume
+}
