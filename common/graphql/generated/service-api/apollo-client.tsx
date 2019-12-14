@@ -111,6 +111,7 @@ export type User = {
    __typename: 'User',
   id: Scalars['ID'],
   name: Scalars['String'],
+  dashboard?: Maybe<Dashboard>,
 };
 
 export const ChartFragmentDoc = gql`

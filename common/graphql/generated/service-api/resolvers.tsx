@@ -109,6 +109,7 @@ export type User = {
    __typename?: 'User',
   id: Scalars['ID'],
   name: Scalars['String'],
+  dashboard?: Maybe<Dashboard>,
 };
 
 
@@ -267,6 +268,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  dashboard?: Resolver<Maybe<ResolversTypes['Dashboard']>, ParentType, ContextType>,
 };
 
 export type Resolvers<ContextType = any> = {

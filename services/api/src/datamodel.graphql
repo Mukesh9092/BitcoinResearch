@@ -12,6 +12,7 @@ enum Period {
 type User {
   id: ID!
   name: String!
+  dashboard: Dashboard
 }
 
 type Dashboard {
