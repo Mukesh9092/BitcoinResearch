@@ -1,4 +1,3 @@
-src/app/charting_library/**/*
 **/*.gen.tsx
 **/*.gen.ts
 **/*.gen.json

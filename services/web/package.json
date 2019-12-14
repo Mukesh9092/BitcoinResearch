@@ -5,19 +5,13 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf 'dist' && mkdir 'dist'",
-    "dev": "ts-node --project=src/app/tsconfig-dev.json src/app/server",
-    "dev:next": "next dev src/app",
-    "build": "yarn build:deps; yarn build:public; yarn build:keys; yarn build:functions; yarn build:app",
-    "build:app": "next build 'src/app'",
-    "build:deps": "cpx '*{package.json,package-lock.json,yarn.lock}' 'dist/functions' -C; cd 'dist/functions'; yarn",
-    "build:functions": "tsc --project src/functions",
-    "build:functions:watch": "tsc --watch --project src/functions",
-    "build:keys": "cpx 'src/functions/keys/**/*.*' 'dist/functions/keys' -C",
-    "build:public": "cpx 'src/public/**/*.*' 'dist/public' -C",
+    "dev": "next dev src",
+    "build": "next build src",
+    "start": "next start src",
     "lint": "yarn lint:eslint; yarn lint:typescript",
-    "lint:eslint": "eslint 'src/app/**/*.ts' 'src/app/**/*.tsx'",
-    "lint:eslint:fix": "eslint --fix 'src/app/**/*.ts' 'src/app/**/*.tsx'",
-    "lint:typescript": "tsc --project src/app"
+    "lint:eslint": "eslint 'src/**/*.ts' 'src/**/*.tsx'",
+    "lint:eslint:fix": "eslint --fix 'src/**/*.ts' 'src/**/*.tsx'",
+    "lint:typescript": "tsc --project src"
   },
   "dependencies": {
     "@blueprintjs/core": "^3.21.0",

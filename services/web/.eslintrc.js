@@ -12,7 +12,7 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   parserOptions: {
-    project: './src/app/tsconfig.json',
+    project: './src/tsconfig.json',
     sourceType: 'module',
     ecmaVersion: 2019,
     ecmaFeatures: {
