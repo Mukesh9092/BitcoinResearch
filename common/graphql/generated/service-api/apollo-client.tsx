@@ -165,6 +165,9 @@ export const UserFragmentDoc = gql`
     fragment User on User {
   id
   name
+  dashboard {
+    id
+  }
 }
     `;
 export const CreateChartDocument = gql`
@@ -551,7 +554,7 @@ export type MarketFragment = { __typename: 'Market', id: string, base: string, q
 
 export type OhlcvFragment = { __typename: 'OHLCV', id: string, period: Period, datetime: Date, open: number, high: number, low: number, close: number, volume: number, market: { __typename: 'Market', id: string } };
 
-export type UserFragment = { __typename: 'User', id: string, name: string };
+export type UserFragment = { __typename: 'User', id: string, name: string, dashboard: Maybe<{ __typename: 'Dashboard', id: string }> };
 
 
       export interface IntrospectionResultData {
