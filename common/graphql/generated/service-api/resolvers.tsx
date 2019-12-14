@@ -82,7 +82,7 @@ export type Query = {
    __typename?: 'Query',
   getChartById?: Maybe<Chart>,
   getCurrentUser?: Maybe<User>,
-  getDashboard?: Maybe<Dashboard>,
+  getDashboardById?: Maybe<Dashboard>,
   getMarkets?: Maybe<Array<Maybe<Market>>>,
   getOHLCVs?: Maybe<Array<Maybe<Ohlcv>>>,
 };
@@ -93,8 +93,8 @@ export type QueryGetChartByIdArgs = {
 };
 
 
-export type QueryGetDashboardArgs = {
-  userId: Scalars['ID']
+export type QueryGetDashboardByIdArgs = {
+  id: Scalars['ID']
 };
 
 
@@ -260,7 +260,7 @@ export type OhlcvResolvers<ContextType = any, ParentType extends ResolversParent
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getChartById?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, RequireFields<QueryGetChartByIdArgs, 'id'>>,
   getCurrentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
-  getDashboard?: Resolver<Maybe<ResolversTypes['Dashboard']>, ParentType, ContextType, RequireFields<QueryGetDashboardArgs, 'userId'>>,
+  getDashboardById?: Resolver<Maybe<ResolversTypes['Dashboard']>, ParentType, ContextType, RequireFields<QueryGetDashboardByIdArgs, 'id'>>,
   getMarkets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Market']>>>, ParentType, ContextType>,
   getOHLCVs?: Resolver<Maybe<Array<Maybe<ResolversTypes['OHLCV']>>>, ParentType, ContextType, RequireFields<QueryGetOhlcVsArgs, 'marketId' | 'period' | 'from' | 'to'>>,
 };

@@ -84,7 +84,7 @@ export type Query = {
    __typename: 'Query',
   getChartById?: Maybe<Chart>,
   getCurrentUser?: Maybe<User>,
-  getDashboard?: Maybe<Dashboard>,
+  getDashboardById?: Maybe<Dashboard>,
   getMarkets?: Maybe<Array<Maybe<Market>>>,
   getOHLCVs?: Maybe<Array<Maybe<Ohlcv>>>,
 };
@@ -95,8 +95,8 @@ export type QueryGetChartByIdArgs = {
 };
 
 
-export type QueryGetDashboardArgs = {
-  userId: Scalars['ID']
+export type QueryGetDashboardByIdArgs = {
+  id: Scalars['ID']
 };
 
 
@@ -345,50 +345,50 @@ export function useGetCurrentUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQu
 export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
 export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
 export type GetCurrentUserQueryResult = ApolloReactCommon.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
-export const GetDashboardDocument = gql`
-    query getDashboard($userId: ID!) {
-  getDashboard(userId: $userId) {
-    id
+export const GetDashboardByIdDocument = gql`
+    query getDashboardById($id: ID!) {
+  getDashboardById(id: $id) {
+    ...Dashboard
   }
 }
-    `;
-export type GetDashboardProps<TChildProps = {}> = ApolloReactHoc.DataProps<GetDashboardQuery, GetDashboardQueryVariables> | TChildProps;
-export function withGetDashboard<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+    ${DashboardFragmentDoc}`;
+export type GetDashboardByIdProps<TChildProps = {}> = ApolloReactHoc.DataProps<GetDashboardByIdQuery, GetDashboardByIdQueryVariables> | TChildProps;
+export function withGetDashboardById<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
   TProps,
-  GetDashboardQuery,
-  GetDashboardQueryVariables,
-  GetDashboardProps<TChildProps>>) {
-    return ApolloReactHoc.withQuery<TProps, GetDashboardQuery, GetDashboardQueryVariables, GetDashboardProps<TChildProps>>(GetDashboardDocument, {
-      alias: 'getDashboard',
+  GetDashboardByIdQuery,
+  GetDashboardByIdQueryVariables,
+  GetDashboardByIdProps<TChildProps>>) {
+    return ApolloReactHoc.withQuery<TProps, GetDashboardByIdQuery, GetDashboardByIdQueryVariables, GetDashboardByIdProps<TChildProps>>(GetDashboardByIdDocument, {
+      alias: 'getDashboardById',
       ...operationOptions
     });
 };
 
 /**
- * __useGetDashboardQuery__
+ * __useGetDashboardByIdQuery__
  *
- * To run a query within a React component, call `useGetDashboardQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDashboardQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * To run a query within a React component, call `useGetDashboardByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDashboardByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetDashboardQuery({
+ * const { data, loading, error } = useGetDashboardByIdQuery({
  *   variables: {
- *      userId: // value for 'userId'
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetDashboardQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetDashboardQuery, GetDashboardQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetDashboardQuery, GetDashboardQueryVariables>(GetDashboardDocument, baseOptions);
+export function useGetDashboardByIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetDashboardByIdQuery, GetDashboardByIdQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetDashboardByIdQuery, GetDashboardByIdQueryVariables>(GetDashboardByIdDocument, baseOptions);
       }
-export function useGetDashboardLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetDashboardQuery, GetDashboardQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetDashboardQuery, GetDashboardQueryVariables>(GetDashboardDocument, baseOptions);
+export function useGetDashboardByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetDashboardByIdQuery, GetDashboardByIdQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetDashboardByIdQuery, GetDashboardByIdQueryVariables>(GetDashboardByIdDocument, baseOptions);
         }
-export type GetDashboardQueryHookResult = ReturnType<typeof useGetDashboardQuery>;
-export type GetDashboardLazyQueryHookResult = ReturnType<typeof useGetDashboardLazyQuery>;
-export type GetDashboardQueryResult = ApolloReactCommon.QueryResult<GetDashboardQuery, GetDashboardQueryVariables>;
+export type GetDashboardByIdQueryHookResult = ReturnType<typeof useGetDashboardByIdQuery>;
+export type GetDashboardByIdLazyQueryHookResult = ReturnType<typeof useGetDashboardByIdLazyQuery>;
+export type GetDashboardByIdQueryResult = ApolloReactCommon.QueryResult<GetDashboardByIdQuery, GetDashboardByIdQueryVariables>;
 export const GetMarketsDocument = gql`
     query getMarkets {
   getMarkets {
@@ -518,12 +518,15 @@ export type GetCurrentUserQuery = { __typename: 'Query', getCurrentUser: Maybe<(
     & UserFragment
   )> };
 
-export type GetDashboardQueryVariables = {
-  userId: Scalars['ID']
+export type GetDashboardByIdQueryVariables = {
+  id: Scalars['ID']
 };
 
 
-export type GetDashboardQuery = { __typename: 'Query', getDashboard: Maybe<{ __typename: 'Dashboard', id: string }> };
+export type GetDashboardByIdQuery = { __typename: 'Query', getDashboardById: Maybe<(
+    { __typename: 'Dashboard' }
+    & DashboardFragment
+  )> };
 
 export type GetMarketsQueryVariables = {};
 

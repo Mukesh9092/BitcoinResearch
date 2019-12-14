@@ -51,7 +51,7 @@ type OHLCV {
 type Query {
   getChartById(id: ID!): Chart
   getCurrentUser: User
-  getDashboard(userId: ID!): Dashboard
+  getDashboardById(id: ID!): Dashboard
   getMarkets: [Market]
   getOHLCVs(marketId: ID!, period: Period!, from: DateTime!, to: DateTime!): [OHLCV]
   # getIndicator(name: String! base: String!, quote: String!, period: Period, from: DateTime!, to: DateTime!): [Indicator]
