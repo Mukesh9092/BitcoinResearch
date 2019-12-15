@@ -18,6 +18,9 @@ const main = async () => {
     await ensureInitialData()
     console.log('main:initial-data:complete')
 
+    // const expressServer = express()
+    // apolloServer.getMiddleware()
+
     const apolloServer = new ApolloServer({
       typeDefs: importSchema('./src/datamodel.graphql'),
       resolvers,
