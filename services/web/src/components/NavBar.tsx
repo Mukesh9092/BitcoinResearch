@@ -1,14 +1,17 @@
 import { Alignment, Button, Navbar } from '@blueprintjs/core'
 import Link from 'next/link'
 import React from 'react'
+import { useKeycloak } from 'react-keycloak'
 
 export interface NavBarProps {
   heading: string
 }
 
 const NavBar = (props: NavBarProps) => {
-  // const authentication = useAuthentication()
-  const authentication = { user: null }
+  const { keycloak } = useKeycloak()
+  const { authenticated } = keycloak
+
+  debugger
 
   return (
     <Navbar fixedToTop={true}>
@@ -24,7 +27,7 @@ const NavBar = (props: NavBarProps) => {
         <Link href='/about'>
           <Button className='bp3-minimal' icon='help' text='About' />
         </Link>
-        {authentication.user ? (
+        {authenticated ? (
           <>
             <Navbar.Divider />
             <Link href='/dashboard'>
@@ -38,13 +41,13 @@ const NavBar = (props: NavBarProps) => {
         ) : null}
       </Navbar.Group>
       <Navbar.Group align={Alignment.RIGHT}>
-        {authentication.user ? (
+        {authenticated ? (
           <Button
             className='bp3-minimal'
             icon='log-out'
             text='Sign Out'
             onClick={() => {
-              console.log('onClick sign-out')
+              keycloak.logout()
             }}
           />
         ) : (
@@ -52,9 +55,9 @@ const NavBar = (props: NavBarProps) => {
             className='bp3-minimal'
             icon='log-in'
             text='Sign In'
-              onClick={() => {
-                console.log('onClick sign-in')
-              }}
+            onClick={() => {
+              keycloak.login()
+            }}
           />
           // <Link href='/signin'>
           //   <Button className='bp3-minimal' icon='log-in' text='Sign In' />

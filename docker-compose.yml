@@ -1,4 +1,9 @@
 version: '3'
+
+volumes:
+  keycloak_postgresql_data:
+    driver: local
+
 services:
   proxy:
     image: "traefik"
@@ -104,6 +109,32 @@ services:
     env_file: .env
     labels:
       - 'traefik.http.routers.web.rule=Host(`${WEB_HOST}.${HOSTNAME}`)'
+
+  keycloak-postgresql:
+    image: postgres
+    volumes:
+      - keycloak_postgresql_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak-postgresql
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+    ports:
+      - '${KEYCLOAK_PORT}:${KEYCLOAK_PORT_IN}'
+    depends_on:
+      - keycloak-postgresql
 
   # tensorflow:
   #   build: services/tensorflow

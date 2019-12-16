@@ -1,7 +1,13 @@
 import App from 'next/app'
+import dynamic from 'next/dynamic'
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import theme from '../styled/theme'
+
+const KeycloakWrapper = dynamic(
+  () => import('./_app-keycloak-wrapper'),
+  { ssr: false }
+)
 
 export default class MyApp extends App {
   // Define getInitialProps on App to disable pre-rendering app-wide since it
@@ -26,9 +32,11 @@ export default class MyApp extends App {
     console.log('App:render:pageProps', pageProps)
 
     return (
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <KeycloakWrapper>
+        <ThemeProvider theme={theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </KeycloakWrapper>
     )
   }
 }
