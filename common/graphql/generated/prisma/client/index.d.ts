@@ -199,7 +199,13 @@ export type ChartOrderByInput =
 
 export type DashboardOrderByInput = "id_ASC" | "id_DESC";
 
-export type UserOrderByInput = "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC";
+export type UserOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "password_ASC"
+  | "password_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
@@ -329,6 +335,20 @@ export interface UserWhereInput {
   name_not_starts_with?: Maybe<String>;
   name_ends_with?: Maybe<String>;
   name_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
   dashboard?: Maybe<DashboardWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
@@ -371,6 +391,7 @@ export interface UserCreateOneWithoutDashboardInput {
 export interface UserCreateWithoutDashboardInput {
   id?: Maybe<ID_Input>;
   name: String;
+  password: String;
 }
 
 export interface ChartUpdateInput {
@@ -402,6 +423,7 @@ export interface UserUpdateOneRequiredWithoutDashboardInput {
 
 export interface UserUpdateWithoutDashboardDataInput {
   name?: Maybe<String>;
+  password?: Maybe<String>;
 }
 
 export interface UserUpsertWithoutDashboardInput {
@@ -574,6 +596,7 @@ export interface ChartUpdateManyDataInput {
 export interface UserCreateInput {
   id?: Maybe<ID_Input>;
   name: String;
+  password: String;
   dashboard?: Maybe<DashboardCreateOneWithoutUserInput>;
 }
 
@@ -589,6 +612,7 @@ export interface DashboardCreateWithoutUserInput {
 
 export interface UserUpdateInput {
   name?: Maybe<String>;
+  password?: Maybe<String>;
   dashboard?: Maybe<DashboardUpdateOneWithoutUserInput>;
 }
 
@@ -612,6 +636,7 @@ export interface DashboardUpsertWithoutUserInput {
 
 export interface UserUpdateManyMutationInput {
   name?: Maybe<String>;
+  password?: Maybe<String>;
 }
 
 export interface ChartSubscriptionWhereInput {
@@ -753,11 +778,13 @@ export interface DashboardNullablePromise
 export interface User {
   id: ID_Output;
   name: String;
+  password: String;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
+  password: () => Promise<String>;
   dashboard: <T = DashboardPromise>() => T;
 }
 
@@ -766,6 +793,7 @@ export interface UserSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
   dashboard: <T = DashboardSubscription>() => T;
 }
 
@@ -774,6 +802,7 @@ export interface UserNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
+  password: () => Promise<String>;
   dashboard: <T = DashboardPromise>() => T;
 }
 
@@ -1105,6 +1134,7 @@ export interface UserSubscriptionPayloadSubscription
 export interface UserPreviousValues {
   id: ID_Output;
   name: String;
+  password: String;
 }
 
 export interface UserPreviousValuesPromise
@@ -1112,6 +1142,7 @@ export interface UserPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
+  password: () => Promise<String>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -1119,6 +1150,7 @@ export interface UserPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
 }
 
 /*

@@ -21,6 +21,7 @@ enum Period {
 type User @model {
   id: ID! @unique @id
   name: String!
+  password: String!
   dashboard: Dashboard @relation(name: "UserDashboard" link: TABLE onDelete: CASCADE)
 }
 
