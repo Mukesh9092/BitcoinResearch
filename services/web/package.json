@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf 'dist' && mkdir 'dist'",
-    "dev": "ts-node src/server",
+    "dev": "nodemon -V -d 2.5 -e .ts,.tsx,.graphql,.json -w src -x 'ts-node src/server'",
     "build": "next build src",
     "start": "next start src",
     "lint": "yarn lint:eslint; yarn lint:typescript",
@@ -87,6 +87,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-simple-import-sort": "^5.0.0",
+    "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.5.4",

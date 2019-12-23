@@ -1,12 +1,17 @@
-const express = require('express')
-const next = require('next')
+// @ts-ignore
+// const express = require('express')
+// const next = require('next')
+// const { createExpressServer } = require('./express-server')
+
+import next from 'next'
+import { createExpressServer } from './express-server'
 
 const port = Number(process.env.WEB_PORT)
 const dev = process.env.NODE_ENV !== 'production'
 
 const main = async () => {
   try {
-    const expressServer = express()
+    const expressServer = await createExpressServer()
 
     const nextApplicationOptions = {
       dev,
