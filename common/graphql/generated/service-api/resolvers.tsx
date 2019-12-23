@@ -11,6 +11,12 @@ export type Scalars = {
   DateTime: any,
 };
 
+export type Authentication = {
+   __typename?: 'Authentication',
+  token: Scalars['String'],
+  user: User,
+};
+
 export type Chart = {
    __typename?: 'Chart',
   id: Scalars['ID'],
@@ -38,8 +44,16 @@ export type Market = {
 
 export type Mutation = {
    __typename?: 'Mutation',
+  signin?: Maybe<Authentication>,
+  signout?: Maybe<Scalars['Boolean']>,
   createChart?: Maybe<Chart>,
   deleteChart?: Maybe<Scalars['Boolean']>,
+};
+
+
+export type MutationSigninArgs = {
+  username: Scalars['String'],
+  password: Scalars['String']
 };
 
 
@@ -195,6 +209,7 @@ export type ResolversTypes = {
   OHLCV: ResolverTypeWrapper<Ohlcv>,
   Float: ResolverTypeWrapper<Scalars['Float']>,
   Mutation: ResolverTypeWrapper<{}>,
+  Authentication: ResolverTypeWrapper<Authentication>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
 };
 
@@ -212,7 +227,13 @@ export type ResolversParentTypes = {
   OHLCV: Ohlcv,
   Float: Scalars['Float'],
   Mutation: {},
+  Authentication: Authentication,
   Boolean: Scalars['Boolean'],
+};
+
+export type AuthenticationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Authentication'] = ResolversParentTypes['Authentication']> = {
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
 };
 
 export type ChartResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chart'] = ResolversParentTypes['Chart']> = {
@@ -241,6 +262,8 @@ export type MarketResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  signin?: Resolver<Maybe<ResolversTypes['Authentication']>, ParentType, ContextType, RequireFields<MutationSigninArgs, 'username' | 'password'>>,
+  signout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
   createChart?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, RequireFields<MutationCreateChartArgs, 'dashboardId' | 'marketId' | 'period' | 'from' | 'to'>>,
   deleteChart?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteChartArgs, 'chartId'>>,
 };
@@ -272,6 +295,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  Authentication?: AuthenticationResolvers<ContextType>,
   Chart?: ChartResolvers<ContextType>,
   Dashboard?: DashboardResolvers<ContextType>,
   DateTime?: GraphQLScalarType,

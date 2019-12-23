@@ -9,14 +9,14 @@ dotenv.config()
 
 const main = async () => {
   try {
-    console.log('main')
+    // console.log('main')
 
     const API_PORT_IN = Number(process.env.API_PORT_IN)
-    console.log('main:API_PORT_IN', API_PORT_IN)
+    // console.log('main:API_PORT_IN', API_PORT_IN)
 
-    console.log('main:initial-data')
+    // console.log('main:initial-data')
     await ensureInitialData()
-    console.log('main:initial-data:complete')
+    // console.log('main:initial-data:complete')
 
     // const expressServer = express()
     // apolloServer.getMiddleware()

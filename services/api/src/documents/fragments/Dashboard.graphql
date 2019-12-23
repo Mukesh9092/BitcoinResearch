@@ -1,9 +1,3 @@
 fragment Dashboard on Dashboard {
   id
-  user {
-    id
-  }
-  charts {
-    id
-  }
 }

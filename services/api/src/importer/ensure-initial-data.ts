@@ -8,7 +8,7 @@ dotenv.config()
 const { PRISMA_HOST, PRISMA_PORT } = process.env
 
 export async function ensureInitialData() {
-  console.log('ensureInitialData')
+  // console.log('ensureInitialData')
 
   const apolloClient = getApolloClient({
     uri: `http://${PRISMA_HOST}:${PRISMA_PORT}`,
@@ -22,7 +22,7 @@ export async function ensureInitialData() {
     // await apolloClient.mutate({ mutation: deleteManyCharts })
     // console.log('ensureInitialData charts removed')
   } else {
-    console.log('ensureInitialData creating new users')
+    // console.log('ensureInitialData creating new users')
 
     const createUserWithDashboardResult = await apolloClient.mutate({
       mutation: createUserWithDashboard,
@@ -31,8 +31,8 @@ export async function ensureInitialData() {
       },
     })
 
-    console.log('ensureInitialData createUserWithDashboardResult', createUserWithDashboardResult)
+    // console.log('ensureInitialData createUserWithDashboardResult', createUserWithDashboardResult)
   }
 
-  console.log('ensureInitialData done')
+  // console.log('ensureInitialData done')
 }

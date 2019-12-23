@@ -13,6 +13,12 @@ export type Scalars = {
   DateTime: Date,
 };
 
+export type Authentication = {
+   __typename: 'Authentication',
+  token: Scalars['String'],
+  user: User,
+};
+
 export type Chart = {
    __typename: 'Chart',
   id: Scalars['ID'],
@@ -40,8 +46,16 @@ export type Market = {
 
 export type Mutation = {
    __typename: 'Mutation',
+  signin?: Maybe<Authentication>,
+  signout?: Maybe<Scalars['Boolean']>,
   createChart?: Maybe<Chart>,
   deleteChart?: Maybe<Scalars['Boolean']>,
+};
+
+
+export type MutationSigninArgs = {
+  username: Scalars['String'],
+  password: Scalars['String']
 };
 
 
@@ -114,16 +128,15 @@ export type User = {
   dashboard?: Maybe<Dashboard>,
 };
 
+export const AuthenticationFragmentDoc = gql`
+    fragment Authentication on Authentication {
+  token
+}
+    `;
 export const ChartFragmentDoc = gql`
     fragment Chart on Chart {
   id
   period
-  dashboard {
-    id
-  }
-  market {
-    id
-  }
   from
   to
 }
@@ -131,12 +144,6 @@ export const ChartFragmentDoc = gql`
 export const DashboardFragmentDoc = gql`
     fragment Dashboard on Dashboard {
   id
-  user {
-    id
-  }
-  charts {
-    id
-  }
 }
     `;
 export const MarketFragmentDoc = gql`
@@ -149,9 +156,6 @@ export const MarketFragmentDoc = gql`
 export const OhlcvFragmentDoc = gql`
     fragment OHLCV on OHLCV {
   id
-  market {
-    id
-  }
   period
   datetime
   open
@@ -165,9 +169,6 @@ export const UserFragmentDoc = gql`
     fragment User on User {
   id
   name
-  dashboard {
-    id
-  }
 }
     `;
 export const CreateChartDocument = gql`
@@ -258,6 +259,90 @@ export function useDeleteChartMutation(baseOptions?: ApolloReactHooks.MutationHo
 export type DeleteChartMutationHookResult = ReturnType<typeof useDeleteChartMutation>;
 export type DeleteChartMutationResult = ApolloReactCommon.MutationResult<DeleteChartMutation>;
 export type DeleteChartMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteChartMutation, DeleteChartMutationVariables>;
+export const SigninDocument = gql`
+    mutation signin($username: String!, $password: String!) {
+  signin(username: $username, password: $password) {
+    ...Authentication
+  }
+}
+    ${AuthenticationFragmentDoc}`;
+export type SigninMutationFn = ApolloReactCommon.MutationFunction<SigninMutation, SigninMutationVariables>;
+export type SigninProps<TChildProps = {}> = ApolloReactHoc.MutateProps<SigninMutation, SigninMutationVariables> | TChildProps;
+export function withSignin<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  SigninMutation,
+  SigninMutationVariables,
+  SigninProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, SigninMutation, SigninMutationVariables, SigninProps<TChildProps>>(SigninDocument, {
+      alias: 'signin',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useSigninMutation__
+ *
+ * To run a mutation, you first call `useSigninMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSigninMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signinMutation, { data, loading, error }] = useSigninMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useSigninMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SigninMutation, SigninMutationVariables>) {
+        return ApolloReactHooks.useMutation<SigninMutation, SigninMutationVariables>(SigninDocument, baseOptions);
+      }
+export type SigninMutationHookResult = ReturnType<typeof useSigninMutation>;
+export type SigninMutationResult = ApolloReactCommon.MutationResult<SigninMutation>;
+export type SigninMutationOptions = ApolloReactCommon.BaseMutationOptions<SigninMutation, SigninMutationVariables>;
+export const SignoutDocument = gql`
+    mutation signout {
+  signout
+}
+    `;
+export type SignoutMutationFn = ApolloReactCommon.MutationFunction<SignoutMutation, SignoutMutationVariables>;
+export type SignoutProps<TChildProps = {}> = ApolloReactHoc.MutateProps<SignoutMutation, SignoutMutationVariables> | TChildProps;
+export function withSignout<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  SignoutMutation,
+  SignoutMutationVariables,
+  SignoutProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, SignoutMutation, SignoutMutationVariables, SignoutProps<TChildProps>>(SignoutDocument, {
+      alias: 'signout',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useSignoutMutation__
+ *
+ * To run a mutation, you first call `useSignoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signoutMutation, { data, loading, error }] = useSignoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSignoutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignoutMutation, SignoutMutationVariables>) {
+        return ApolloReactHooks.useMutation<SignoutMutation, SignoutMutationVariables>(SignoutDocument, baseOptions);
+      }
+export type SignoutMutationHookResult = ReturnType<typeof useSignoutMutation>;
+export type SignoutMutationResult = ApolloReactCommon.MutationResult<SignoutMutation>;
+export type SignoutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignoutMutation, SignoutMutationVariables>;
 export const GetChartByIdDocument = gql`
     query getChartById($id: ID!) {
   getChartById(id: $id) {
@@ -500,6 +585,22 @@ export type DeleteChartMutationVariables = {
 
 export type DeleteChartMutation = { __typename: 'Mutation', deleteChart: Maybe<boolean> };
 
+export type SigninMutationVariables = {
+  username: Scalars['String'],
+  password: Scalars['String']
+};
+
+
+export type SigninMutation = { __typename: 'Mutation', signin: Maybe<(
+    { __typename: 'Authentication' }
+    & AuthenticationFragment
+  )> };
+
+export type SignoutMutationVariables = {};
+
+
+export type SignoutMutation = { __typename: 'Mutation', signout: Maybe<boolean> };
+
 export type GetChartByIdQueryVariables = {
   id: Scalars['ID']
 };
@@ -549,15 +650,17 @@ export type GetOhlcVsQuery = { __typename: 'Query', getOHLCVs: Maybe<Array<Maybe
     & OhlcvFragment
   )>>> };
 
-export type ChartFragment = { __typename: 'Chart', id: string, period: Period, from: Date, to: Date, dashboard: { __typename: 'Dashboard', id: string }, market: { __typename: 'Market', id: string } };
+export type AuthenticationFragment = { __typename: 'Authentication', token: string };
 
-export type DashboardFragment = { __typename: 'Dashboard', id: string, user: { __typename: 'User', id: string }, charts: Maybe<Array<{ __typename: 'Chart', id: string }>> };
+export type ChartFragment = { __typename: 'Chart', id: string, period: Period, from: Date, to: Date };
+
+export type DashboardFragment = { __typename: 'Dashboard', id: string };
 
 export type MarketFragment = { __typename: 'Market', id: string, base: string, quote: string };
 
-export type OhlcvFragment = { __typename: 'OHLCV', id: string, period: Period, datetime: Date, open: number, high: number, low: number, close: number, volume: number, market: { __typename: 'Market', id: string } };
+export type OhlcvFragment = { __typename: 'OHLCV', id: string, period: Period, datetime: Date, open: number, high: number, low: number, close: number, volume: number };
 
-export type UserFragment = { __typename: 'User', id: string, name: string, dashboard: Maybe<{ __typename: 'Dashboard', id: string }> };
+export type UserFragment = { __typename: 'User', id: string, name: string };
 
 
       export interface IntrospectionResultData {

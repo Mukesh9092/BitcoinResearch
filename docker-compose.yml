@@ -16,7 +16,7 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
       # - './services/proxy/traefik.toml:/traefik.toml'
-    # env_file: .env
+    env_file: .env
 
   postgresql:
     image: 'postgres:latest'
@@ -136,17 +136,17 @@ services:
     depends_on:
       - keycloak-postgresql
 
-  # tensorflow:
-  #   build: services/tensorflow
-  #   ports:
-  #     - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
-  #   volumes:
-  #     - './common/tensorflow/tf:/tf'
-  #   env_file: .env
-  #   command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
-  #   labels:
-  #     - 'traefik.http.routers.tensorflow.rule=Host(`${TENSORFLOW_HOST}.${HOSTNAME}`)'
-  #     # - 'traefik.http.services.tensorflow.loadbalancer.server.port=${TENSORFLOW_PORT_IN}`)'
+  tensorflow:
+    build: services/tensorflow
+    ports:
+      - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
+    volumes:
+      - './common/tensorflow/tf:/tf'
+    env_file: .env
+    command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
+    labels:
+      - 'traefik.http.routers.tensorflow.rule=Host(`${TENSORFLOW_HOST}.${HOSTNAME}`)'
+      # - 'traefik.http.services.tensorflow.loadbalancer.server.port=${TENSORFLOW_PORT_IN}`)'
 
   # tf-serve:
   #   image: tobegit3hub/simple_tensorflow_serving

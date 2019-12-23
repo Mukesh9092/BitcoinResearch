@@ -1,7 +1,4 @@
 fragment User on User {
   id
   name
-  dashboard {
-    id
-  }
 }

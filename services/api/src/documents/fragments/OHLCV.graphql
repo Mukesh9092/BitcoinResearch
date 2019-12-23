@@ -1,8 +1,5 @@
 fragment OHLCV on OHLCV {
   id
-  market {
-    id
-  }
   period
   datetime
   open

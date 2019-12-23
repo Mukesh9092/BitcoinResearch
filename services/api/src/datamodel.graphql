@@ -9,6 +9,11 @@ enum Period {
   DAY1
 }
 
+type Authentication {
+  token: String!
+  user: User!
+}
+
 type User {
   id: ID!
   name: String!
@@ -58,6 +63,8 @@ type Query {
 }
 
 type Mutation {
+  signin(username: String!, password: String!): Authentication
+  signout: Boolean
   createChart(dashboardId: ID!, marketId: ID!, period: Period!, from: DateTime!, to: DateTime!): Chart
   deleteChart(chartId: ID!): Boolean
 }

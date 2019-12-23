@@ -1,0 +1,11 @@
+mutation signin(
+  $username: String!
+  $password: String!
+) {
+  signin(
+    username: $username
+    password: $password
+  ) {
+    ...Authentication
+  }
+}

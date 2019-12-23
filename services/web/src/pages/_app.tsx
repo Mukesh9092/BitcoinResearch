@@ -1,13 +1,19 @@
 import App from 'next/app'
-import dynamic from 'next/dynamic'
 import React from 'react'
+import { ApolloProvider } from 'react-apollo'
 import { ThemeProvider } from 'styled-components'
+import { getApolloClient } from '../common/apollo/client'
 import theme from '../styled/theme'
 
-const KeycloakWrapper = dynamic(
-  () => import('./_app-keycloak-wrapper'),
-  { ssr: false }
-)
+// const KeycloakWrapper = dynamic(
+//   () => import('./_app-keycloak-wrapper'),
+//   { ssr: false }
+// )
+
+const client = getApolloClient({
+  // TODO: properly.
+  uri: 'http://api.docker.localhost'
+})
 
 export default class MyApp extends App {
   // Define getInitialProps on App to disable pre-rendering app-wide since it
@@ -29,14 +35,15 @@ export default class MyApp extends App {
   public render() {
     const { Component, pageProps } = this.props
 
+
     console.log('App:render:pageProps', pageProps)
 
     return (
-      <KeycloakWrapper>
+      <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
           <Component {...pageProps} />
         </ThemeProvider>
-      </KeycloakWrapper>
+      </ApolloProvider>
     )
   }
 }

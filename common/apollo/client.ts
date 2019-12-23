@@ -1,26 +1,28 @@
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import { ApolloCache } from 'apollo-cache'
+import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory'
 import ApolloClient from 'apollo-client'
+import { ApolloLink } from 'apollo-link'
 import { HttpLink } from 'apollo-link-http'
 import fetch from 'cross-fetch'
-import dotenv from 'dotenv'
-import { memoize } from 'lodash'
 import { isServer } from '../environment'
 
-dotenv.config()
+interface Options {
+  cache?: ApolloCache<NormalizedCacheObject>
+  uri?: string
+  link?: ApolloLink
+}
 
-const { API_HOST, API_PORT } = process.env
-
-export const getApolloClient = memoize((options = {}) => {
+export const getApolloClient = (options: Options = {}) => {
   const server = isServer()
   const cache = options.cache || new InMemoryCache()
-  const { uri } = options
 
   if (!server) {
+    // @ts-ignore
     // eslint-disable-next-line no-underscore-dangle
     cache.restore(window.__APOLLO_STATE__)
   }
 
-  const link = options.link || new HttpLink({ uri, fetch })
+  const link = options.link || new HttpLink({ uri: options.uri, fetch })
 
   const client = new ApolloClient({
     cache,
@@ -29,4 +31,4 @@ export const getApolloClient = memoize((options = {}) => {
   })
 
   return client
-})
+}

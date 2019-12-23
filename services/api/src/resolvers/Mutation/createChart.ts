@@ -1,4 +1,4 @@
-export default async (_root: any, args: any, context: any, info: any) => {
+export default async (_parent: any, args: any, context: any, info: any) => {
   const options = {
     data: {
       dashboard: {

@@ -7,9 +7,9 @@ export function isServer() {
 }
 
 export function isDevelopment() {
-  return Boolean(process.env.NODE_ENV === 'develop')
+  return Boolean(process?.env?.NODE_ENV === 'development')
 }
 
 export function isProduction() {
-  return Boolean(process.env.NODE_ENV === 'production')
+  return Boolean(process?.env?.NODE_ENV === 'production')
 }
