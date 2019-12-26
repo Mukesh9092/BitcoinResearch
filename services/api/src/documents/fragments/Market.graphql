@@ -1,5 +1,0 @@
-fragment Market on Market {
-  id
-  base
-  quote
-}

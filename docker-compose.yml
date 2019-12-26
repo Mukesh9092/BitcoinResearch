@@ -58,26 +58,6 @@ services:
     labels:
       - 'traefik.http.routers.pgadmin.rule=Host(`${PGADMIN_HOST}.${HOSTNAME}`)'
 
-  marketstore:
-    image: alpacamarkets/marketstore:latest
-    ports:
-      - '${MARKETSTORE_PORT}:${MARKETSTORE_PORT_IN}'
-    volumes:
-      - './services/marketstore/data:/data'
-      - './services/marketstore/mkts.yml:/etc/mkts.yml'
-    env_file: .env
-
-  marketstore-api:
-    build: services/marketstore-api
-    ports:
-      - '${MARKETSTORE_API_PORT}:${MARKETSTORE_API_PORT_IN}'
-    volumes:
-      - './services/marketstore-api:/service'
-    env_file: .env
-    labels:
-      - 'traefik.http.routers.marketstore.rule=Host(`${MARKETSTORE_API_HOST}.${HOSTNAME}`)'
-      # - 'traefik.http.services.marketstore.loadbalancer.server.port=${MARKETSTORE_API_PORT_IN}`)'
-
   prisma:
     depends_on:
       - postgresql
@@ -106,19 +86,25 @@ services:
       - 'traefik.http.routers.prisma.rule=Host(`${PRISMA_HOST}.${HOSTNAME}`)'
       #- 'traefik.http.services.prisma.loadbalancer.server.port=${MARKETSTORE_API_PORT_IN}`)'
 
-  # api:
-  #   depends_on:
-  #     - marketstore
-  #     - prisma
-  #     - redis
-  #   build: services/api
-  #   ports:
-  #     - '${API_PORT}:${API_PORT_IN}'
-  #   volumes:
-  #     - './services/api:/service'
-  #   env_file: .env
-  #   labels:
-  #     - 'traefik.http.routers.api.rule=Host(`${API_HOST}.${HOSTNAME}`)'
+  marketstore:
+    image: alpacamarkets/marketstore:latest
+    ports:
+      - '${MARKETSTORE_PORT}:${MARKETSTORE_PORT_IN}'
+    volumes:
+      - './services/marketstore/data:/data'
+      - './services/marketstore/mkts.yml:/etc/mkts.yml'
+    env_file: .env
+
+  marketstore-api:
+    build: services/marketstore-api
+    ports:
+      - '${MARKETSTORE_API_PORT}:${MARKETSTORE_API_PORT_IN}'
+    volumes:
+      - './services/marketstore-api:/service'
+    env_file: .env
+    labels:
+      - 'traefik.http.routers.marketstore.rule=Host(`${MARKETSTORE_API_HOST}.${HOSTNAME}`)'
+      # - 'traefik.http.services.marketstore.loadbalancer.server.port=${MARKETSTORE_API_PORT_IN}`)'
 
   web:
     depends_on:
@@ -133,17 +119,17 @@ services:
     labels:
       - 'traefik.http.routers.web.rule=Host(`${WEB_HOST}.${HOSTNAME}`)'
 
-  tensorflow:
-    build: services/tensorflow
-    ports:
-      - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
-    volumes:
-      - './common/tensorflow/tf:/tf'
-    env_file: .env
-    command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
-    labels:
-      - 'traefik.http.routers.tensorflow.rule=Host(`${TENSORFLOW_HOST}.${HOSTNAME}`)'
-      # - 'traefik.http.services.tensorflow.loadbalancer.server.port=${TENSORFLOW_PORT_IN}`)'
+  # tensorflow:
+  #   build: services/tensorflow
+  #   ports:
+  #     - '${TENSORFLOW_PORT}:${TENSORFLOW_PORT_IN}'
+  #   volumes:
+  #     - './common/tensorflow/tf:/tf'
+  #   env_file: .env
+  #   command: 'bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip=${TENSORFLOW_HOST} --no-browser --allow-root"'
+  #   labels:
+  #     - 'traefik.http.routers.tensorflow.rule=Host(`${TENSORFLOW_HOST}.${HOSTNAME}`)'
+  #     # - 'traefik.http.services.tensorflow.loadbalancer.server.port=${TENSORFLOW_PORT_IN}`)'
 
   # tf-serve:
   #   image: tobegit3hub/simple_tensorflow_serving

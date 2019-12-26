@@ -1,5 +1,0 @@
-query getMarkets {
-  getMarkets {
-    ...Market
-  }
-}

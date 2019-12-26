@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ -f src/server/datamodel.prisma.gen.graphql ]]; then
-  rm -rf src/server/datamodel.prisma.gen.graphql;
-fi
-
-npx graphql get-schema --endpoint default --project prisma

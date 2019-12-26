@@ -1,3 +1,0 @@
-fragment Authentication on Authentication {
-  token
-}
