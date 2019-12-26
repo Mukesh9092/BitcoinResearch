@@ -5,11 +5,6 @@ import { ThemeProvider } from 'styled-components'
 import { getApolloClient } from '../common/apollo/client'
 import theme from '../styled/theme'
 
-// const KeycloakWrapper = dynamic(
-//   () => import('./_app-keycloak-wrapper'),
-//   { ssr: false }
-// )
-
 const client = getApolloClient({
   // TODO: properly.
   uri: 'http://api.docker.localhost'
@@ -34,7 +29,6 @@ export default class MyApp extends App {
 
   public render() {
     const { Component, pageProps } = this.props
-
 
     console.log('App:render:pageProps', pageProps)
 

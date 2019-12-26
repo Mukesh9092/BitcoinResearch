@@ -2,9 +2,10 @@ import gql from 'graphql-tag'
 import * as passport from 'passport'
 import * as LocalStrategy from 'passport-local'
 import { getApolloClient } from '../common/apollo/client'
+import { isValidPassword } from '../common/password'
 
 const PRISMA_HOST = String(process.env.PRISMA_HOST)
-const PRISMA_PORT = Number(process.env.PRISMA_HOST)
+const PRISMA_PORT = Number(process.env.PRISMA_PORT)
 
 const apolloClient = getApolloClient({
   uri: `http://${PRISMA_HOST}:${PRISMA_PORT}`,
@@ -25,6 +26,7 @@ passport.use(
               users(where: { name: $username }) {
                 id
                 name
+                password
               }
             }
           `,
@@ -33,25 +35,24 @@ passport.use(
           },
         })
 
-        console.log('LocalStrategy:result', result)
+        const user = result.data.users[0]
 
-        cb(null, false)
+        if (!user) {
+          cb(null, false, { message: 'Incorrect username.' })
+          return
+        }
+
+        const validPassword = await isValidPassword(password, user.password)
+
+        if (!validPassword) {
+          cb(null, false, { message: 'Incorrect password.' })
+          return
+        }
+
+        cb(null, user)
       } catch (error) {
         cb(error)
       }
-
-      // User.findOne({ username: username }, function(err, user) {
-      //   if (err) {
-      //     return cb(err)
-      //   }
-      //   if (!user) {
-      //     return cb(null, false, { message: 'Incorrect username.' })
-      //   }
-      //   if (!user.validPassword(password)) {
-      //     return cb(null, false, { message: 'Incorrect password.' })
-      //   }
-      //   return cb(null, user)
-      // })
     },
   ),
 )
@@ -69,7 +70,7 @@ passport.deserializeUser(async (id, cb) => {
   try {
     const result = await apolloClient.query({
       query: gql`
-        query findUserById($id: String!) {
+        query findUserById($id: ID!) {
           user(where: { id: $id }) {
             id
             name
@@ -81,16 +82,10 @@ passport.deserializeUser(async (id, cb) => {
       },
     })
 
-    console.log('deserializeUser:result', result)
-
-    cb(null)
+    cb(null, result?.data?.user)
   } catch (error) {
     cb(error)
   }
-
-  // User.findById(id, function(err, user) {
-  //   cb(err, user)
-  // })
 })
 
-export const createPassportApplication = async () => {}
+export default passport

@@ -1,4 +1,4 @@
-import { AuthenticationError, ContextFunction } from 'apollo-server-core'
+import { ContextFunction } from 'apollo-server-core'
 import { Prisma } from 'prisma-binding'
 
 const PRISMA_HOST = String(process.env.PRISMA_HOST)
@@ -14,16 +14,15 @@ const context: ContextFunction = (req) => {
   const token = req.headers.authorization || ''
 
   // Get user from
-  const user = getUserByToken(token)
-
-  if (!user) {
-    throw new AuthenticationError('you must be logged in')
-  }
+  // const user = getUserByToken(token)
+  // if (!user) {
+  //   throw new AuthenticationError('you must be logged in')
+  // }
 
   return {
-    authentication: {
-      user,
-    },
+    // authentication: {
+    //   user,
+    // },
     prisma: new Prisma(prismaClientOptions),
   }
 }

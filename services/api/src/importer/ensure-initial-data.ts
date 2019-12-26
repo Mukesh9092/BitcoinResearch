@@ -1,11 +1,10 @@
-import dotenv from 'dotenv'
 import { getApolloClient } from '../common/apollo/client'
+import { generateHash } from '../common/password'
 import { createUserWithDashboard } from './mutations/createUserWithDashboard'
 import { getUserIds } from './queries/getUserIds'
 
-dotenv.config()
-
-const { PRISMA_HOST, PRISMA_PORT } = process.env
+const PRISMA_HOST = String(process.env.PRISMA_HOST)
+const PRISMA_PORT = Number(process.env.PRISMA_PORT)
 
 export async function ensureInitialData() {
   // console.log('ensureInitialData')
@@ -24,10 +23,13 @@ export async function ensureInitialData() {
   } else {
     // console.log('ensureInitialData creating new users')
 
+    const passwordHash = await generateHash('test')
+
     const createUserWithDashboardResult = await apolloClient.mutate({
       mutation: createUserWithDashboard,
       variables: {
         name: 'admin',
+        password: passwordHash,
       },
     })
 

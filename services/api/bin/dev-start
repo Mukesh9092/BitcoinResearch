@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
-nodemon -V -d 2.5 -e .js,.graphql -w lib lib/index
+
+#nodemon -V -d 2.5 -e .js,.graphql -w lib lib/index
+
+./node_modules/.bin/nodemon -V -d 2.5 -e .ts,.tsx,.graphql,.json -w src -x 'ts-node -p src'

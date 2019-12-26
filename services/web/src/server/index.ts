@@ -1,19 +1,12 @@
-import { createExpressServer } from './express-server'
+import { expressServerWith } from '../common/express/middleware/expressServerWith'
+import { configureExpressServer } from './express-server'
 
+const host = String(process.env.WEB_HOST)
 const port = Number(process.env.WEB_PORT)
 
 const main = async () => {
   try {
-    const expressServer = await createExpressServer()
-
-    expressServer.listen(port, (error) => {
-      if (error) {
-        console.error(error)
-        return
-      }
-
-      console.log(`Listening on http://localhost:${port}`)
-    })
+    await expressServerWith(configureExpressServer, host, port)
   } catch (error) {
     console.error(error)
   }

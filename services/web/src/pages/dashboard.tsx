@@ -27,14 +27,17 @@ const Page: NextPage = () => {
 }
 
 Page.getInitialProps = async (context) => {
-  // if (context.res) {
-  //   if (!authentication.user) {
-  //     context.res.writeHead(302, {
-  //       Location: '/',
-  //     })
-  //     context.res.end()
-  //   }
-  // }
+  if (context.req) {
+    // @ts-ignore
+    const authenticated: boolean = context.req.isAuthenticated()
+
+    if (!authenticated) {
+      context.res.writeHead(302, {
+        Location: '/signin',
+      })
+      context.res.end()
+    }
+  }
 
   return {}
 }

@@ -1,21 +1,11 @@
-// @ts-ignore
 import { json, urlencoded } from 'body-parser'
 import * as cookieParser from 'cookie-parser'
-import * as express from 'express'
-import * as session from 'express-session'
-import * as passport from 'passport'
-import * as uuid from 'uuid/v4'
+import { ExpressServer } from '../common/express/middleware/expressServerWith'
+import expressSessionMiddleware from './express-session-middleware'
 import { createNextApplication } from './next-application'
-import { createPassportApplication } from './passport-application'
+import passport from './passport'
 
-const SECRET = 'keyboardcat'
-
-export const createExpressServer = async () => {
-  // @ts-ignore
-  // preserve typings
-  const expressServer: express.Express = express()
-
-  const passportApplication = await createPassportApplication()
+export const configureExpressServer = async (expressServer: ExpressServer) => {
   const nextApplication = await createNextApplication()
   const nextApplicationRequestHandler = nextApplication.getRequestHandler()
 
@@ -23,32 +13,41 @@ export const createExpressServer = async () => {
   expressServer.use(cookieParser())
   expressServer.use(json())
   expressServer.use(urlencoded({ extended: false }))
-  // @ts-ignore
-  expressServer.use(session({
-    genid: (req) => {
-      // @ts-ignore
-      return uuid()
-    },
-    secret: SECRET,
-    resave: false,
-    saveUninitialized: false,
-  }))
+  expressServer.use(expressSessionMiddleware)
   expressServer.use(passport.initialize())
   expressServer.use(passport.session())
 
-  expressServer.get('/logout', (req, res) => {
+  expressServer.get('/signout', (req, res) => {
     req.logout()
     res.redirect('/')
   })
 
-  expressServer.post(
-    '/signin',
-    passport.authenticate('local', {
-      successRedirect: '/dashboard',
-      failureRedirect: '/signin',
-      failureFlash: true,
-    }),
-  )
+  // expressServer.post('/signin', passport.authenticate('local', {
+  //   successRedirect: '/dashboard',
+  //   failureRedirect: '/signin'
+  // }))
+
+  // TODO: Find out how to set cookie from here, use it instead of the above
+  expressServer.post('/api/signin', (req, res, next) => {
+    passport.authenticate('local', (error, user, info) => {
+      if (error) {
+        next(error)
+        return
+      }
+      if (!user) {
+        res.json(info)
+        return
+      }
+      req.login(user, (error) => {
+        if (error) {
+          next(error)
+          return
+        }
+
+        res.json({ userId: user.id })
+      })
+    })(req, res, next)
+  })
 
   expressServer.all('*', (req, res) => {
     nextApplicationRequestHandler(req, res)

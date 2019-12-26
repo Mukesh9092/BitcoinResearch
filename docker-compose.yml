@@ -18,6 +18,26 @@ services:
       # - './services/proxy/traefik.toml:/traefik.toml'
     env_file: .env
 
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT_IN}'
+    volumes:
+      - './services/redis/data:/var/lib/redis'
+    env_file: .env
+    restart: always
+
+  redis-admin:
+    depends_on:
+      - redis
+    image: vieux/redmon
+    ports:
+      - "${REDIS_ADMIN_PORT}:${REDIS_ADMIN_PORT_IN}"
+    command: -r redis://${REDIS_HOST}:${REDIS_PORT}
+    env_file: .env
+    labels:
+      - 'traefik.http.routers.redis-admin.rule=Host(`${REDIS_ADMIN_HOST}.${HOSTNAME}`)'
+
   postgresql:
     image: 'postgres:latest'
     ports:
@@ -88,7 +108,9 @@ services:
 
   api:
     depends_on:
+      - marketstore
       - prisma
+      - redis
     build: services/api
     ports:
       - '${API_PORT}:${API_PORT_IN}'
@@ -101,6 +123,8 @@ services:
   web:
     depends_on:
       - api
+      - prisma
+      - redis
     build: services/web
     ports:
       - '${WEB_PORT}:${WEB_PORT_IN}'
@@ -109,32 +133,6 @@ services:
     env_file: .env
     labels:
       - 'traefik.http.routers.web.rule=Host(`${WEB_HOST}.${HOSTNAME}`)'
-
-  keycloak-postgresql:
-    image: postgres
-    volumes:
-      - keycloak_postgresql_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
-  keycloak:
-    image: jboss/keycloak
-    environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: keycloak-postgresql
-      DB_DATABASE: keycloak
-      DB_USER: keycloak
-      DB_SCHEMA: public
-      DB_PASSWORD: password
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
-      #JDBC_PARAMS: "ssl=true"
-    ports:
-      - '${KEYCLOAK_PORT}:${KEYCLOAK_PORT_IN}'
-    depends_on:
-      - keycloak-postgresql
 
   tensorflow:
     build: services/tensorflow
