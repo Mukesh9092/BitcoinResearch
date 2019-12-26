@@ -1,0 +1,6 @@
+fragment Chart on Chart {
+  id
+  period
+  from
+  to
+}

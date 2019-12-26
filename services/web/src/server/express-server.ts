@@ -1,13 +1,23 @@
+import { ApolloServer } from 'apollo-server-express'
 import { json, urlencoded } from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import { importSchema } from 'graphql-import'
 import { ExpressServer } from '../common/express/middleware/expressServerWith'
+import context from './context'
 import expressSessionMiddleware from './express-session-middleware'
 import { createNextApplication } from './next-application'
 import passport from './passport'
+import resolvers from './resolvers'
 
 export const configureExpressServer = async (expressServer: ExpressServer) => {
   const nextApplication = await createNextApplication()
   const nextApplicationRequestHandler = nextApplication.getRequestHandler()
+
+  const apolloServer = new ApolloServer({
+    typeDefs: importSchema('./src/server/datamodel.graphql'),
+    resolvers,
+    context,
+  })
 
   // @ts-ignore
   expressServer.use(cookieParser())
@@ -48,6 +58,8 @@ export const configureExpressServer = async (expressServer: ExpressServer) => {
       })
     })(req, res, next)
   })
+
+  apolloServer.applyMiddleware({ app: expressServer })
 
   expressServer.all('*', (req, res) => {
     nextApplicationRequestHandler(req, res)

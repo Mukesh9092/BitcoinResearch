@@ -1,0 +1,27 @@
+overwrite: true
+schema: "./src/server/datamodel.graphql"
+documents: "./src/server/documents/**/*.graphql"
+config:
+generates:
+  ../../common/graphql/generated/service-api/apollo-client.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-react-apollo"
+      - "typescript-operations"
+      - "fragment-matcher"
+    config:
+      scalars:
+        DateTime: Date
+        JSON: "{ [key: string]: any }"
+      namingConvention:
+        typeNames: change-case#pascalCase
+        enumValues: change-case#upperCase
+        transformUnderscore: true
+      nonOptionalTypename: true
+      preResolveTypes: true
+      withComponent: false
+      withHooks: true
+  ../../common/graphql/generated/service-api/resolvers.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"

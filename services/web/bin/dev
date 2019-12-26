@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+./src/common/wait-for-it.sh $PRISMA_HOST:$PRISMA_PORT -s -t 0 -- \
+  ./bin/dev-start

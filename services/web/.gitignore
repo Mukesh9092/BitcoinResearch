@@ -3,6 +3,7 @@ dist/
 node_modules/
 sessions/
 src/common/
+src/server/datamodel.prisma.gen.graphql
 
 *-debug.log
 yarn-error.log

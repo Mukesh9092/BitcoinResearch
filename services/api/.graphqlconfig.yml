@@ -3,7 +3,6 @@ projects:
     schemaPath: src/datamodel.graphql
     extensions:
       endpoints:
-        # TODO: Don't cardcode port here. Take from .env file.
         default: api.docker.localhost
   prisma:
     schemaPath: src/datamodel.prisma.gen.graphql

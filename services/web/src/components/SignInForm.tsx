@@ -1,7 +1,7 @@
 import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
 import Router from 'next/router'
 import React, { useState } from 'react'
-import useForm from 'react-hook-form'
+import * as useForm from 'react-hook-form'
 
 interface State {
   userId?: string
@@ -9,6 +9,7 @@ interface State {
 }
 
 const Component = () => {
+  // @ts-ignore
   const { handleSubmit, register, errors, getValues } = useForm()
 
   const [state, setState] = useState<State>({})

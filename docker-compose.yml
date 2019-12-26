@@ -106,23 +106,22 @@ services:
       - 'traefik.http.routers.prisma.rule=Host(`${PRISMA_HOST}.${HOSTNAME}`)'
       #- 'traefik.http.services.prisma.loadbalancer.server.port=${MARKETSTORE_API_PORT_IN}`)'
 
-  api:
-    depends_on:
-      - marketstore
-      - prisma
-      - redis
-    build: services/api
-    ports:
-      - '${API_PORT}:${API_PORT_IN}'
-    volumes:
-      - './services/api:/service'
-    env_file: .env
-    labels:
-      - 'traefik.http.routers.api.rule=Host(`${API_HOST}.${HOSTNAME}`)'
+  # api:
+  #   depends_on:
+  #     - marketstore
+  #     - prisma
+  #     - redis
+  #   build: services/api
+  #   ports:
+  #     - '${API_PORT}:${API_PORT_IN}'
+  #   volumes:
+  #     - './services/api:/service'
+  #   env_file: .env
+  #   labels:
+  #     - 'traefik.http.routers.api.rule=Host(`${API_HOST}.${HOSTNAME}`)'
 
   web:
     depends_on:
-      - api
       - prisma
       - redis
     build: services/web

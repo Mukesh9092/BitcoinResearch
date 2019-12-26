@@ -1,0 +1,2 @@
+endpoint: http://prisma.docker.localhost
+datamodel: src/server/datamodel.graphql

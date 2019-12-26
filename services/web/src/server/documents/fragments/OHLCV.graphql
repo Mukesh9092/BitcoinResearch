@@ -1,0 +1,10 @@
+fragment OHLCV on OHLCV {
+  id
+  period
+  datetime
+  open
+  high
+  low
+  close
+  volume
+}

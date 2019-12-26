@@ -1,0 +1,15 @@
+query getOHLCVs(
+  $marketId: ID!
+  $period: Period!
+  $from: DateTime!
+  $to: DateTime!
+) {
+  getOHLCVs(
+    marketId: $marketId
+    period: $period
+    from: $from
+    to: $to
+  ) {
+    ...OHLCV
+  }
+}

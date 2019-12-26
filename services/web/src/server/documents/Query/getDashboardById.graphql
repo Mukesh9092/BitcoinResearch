@@ -1,0 +1,6 @@
+
+query getDashboardById($id: ID!) {
+  getDashboardById(id: $id) {
+    ...Dashboard
+  }
+}

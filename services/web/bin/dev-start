@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+./node_modules/.bin/nodemon -V -d 2.5 -e .ts,.tsx,.graphql,.json -w src/server -x 'ts-node -p src/server'

@@ -1,0 +1,10 @@
+projects:
+  app:
+    schemaPath: src/server/datamodel.graphql
+    extensions:
+      endpoints:
+        default: web.docker.localhost/graphql
+  prisma:
+    schemaPath: src/server/datamodel.prisma.gen.graphql
+    extensions:
+      prisma: prisma.yml

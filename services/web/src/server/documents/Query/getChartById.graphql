@@ -1,0 +1,5 @@
+query getChartById($id: ID!) {
+  getChartById(id: $id) {
+    ...Chart
+  }
+}
