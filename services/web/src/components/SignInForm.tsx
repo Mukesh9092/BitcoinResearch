@@ -1,7 +1,7 @@
 import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
 import Router from 'next/router'
 import React, { useState } from 'react'
-import * as useForm from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 interface State {
   userId?: string
@@ -9,7 +9,6 @@ interface State {
 }
 
 const Component = () => {
-  // @ts-ignore
   const { handleSubmit, register, errors, getValues } = useForm()
 
   const [state, setState] = useState<State>({})
@@ -44,22 +43,17 @@ const Component = () => {
     } catch (error) {
       console.error(error)
     }
-
-    // signinMutation({
-    //   variables: {
-    //     username,
-    //     password,
-    //   }
-    // })
   }
 
   let usernameHelperText = ''
   let passwordHelperText = ''
 
+  // @ts-ignore
   if (errors.username?.type === 'required') {
     usernameHelperText = 'Field is required'
   }
 
+  // @ts-ignore
   if (errors.password?.type === 'required') {
     passwordHelperText = 'Field is required'
   }
