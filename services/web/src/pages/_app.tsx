@@ -30,7 +30,7 @@ export default class MyApp extends App {
   public render() {
     const { Component, pageProps } = this.props
 
-    console.log('App:render:pageProps', pageProps)
+    // console.log('App:render:pageProps', pageProps)
 
     return (
       <ApolloProvider client={client}>

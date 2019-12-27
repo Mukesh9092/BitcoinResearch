@@ -62,7 +62,7 @@ const NavBar = (props: NavBarProps) => {
             icon='log-out'
             text='Sign Out'
             onClick={() => {
-              console.log('Sign Out')
+              Router.push('/signout')
             }}
           />
         ) : (
