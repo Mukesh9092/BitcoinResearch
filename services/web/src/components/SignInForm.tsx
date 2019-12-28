@@ -1,14 +1,15 @@
 import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
-import Router from 'next/router'
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useAuthentication } from '../hooks/authentication'
 
 interface State {
   userId?: string
   message?: string
 }
 
-const Component = () => {
+const Component: FC = () => {
+  const authentication = useAuthentication()
   const { handleSubmit, register, errors, getValues } = useForm()
 
   const [state, setState] = useState<State>({})
@@ -18,28 +19,8 @@ const Component = () => {
   const onSubmit = async () => {
     try {
       const { username, password } = getValues()
-      const result = await fetch('/api/signin', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: username,
-          password,
-        }),
-      })
-      console.log('result', result)
-      const body = await result.json()
-      console.log('body', body)
 
-      if (body.userId) {
-        await Router.push('/dashboard')
-      } else {
-        setState({
-          message: body.message
-        })
-      }
+      await authentication.signIn(username, password)
     } catch (error) {
       console.error(error)
     }

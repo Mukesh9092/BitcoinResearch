@@ -2,6 +2,7 @@ import { Alignment, Button, Navbar } from '@blueprintjs/core'
 import Link from 'next/link'
 import Router from 'next/router'
 import React from 'react'
+import { useAuthentication } from '../hooks/authentication'
 
 // TODO: Extract from here
 export interface UserInfo {
@@ -23,8 +24,7 @@ export interface NavBarState {
 }
 
 const NavBar = (props: NavBarProps) => {
-  // const { keycloak } = useKeycloak()
-  // const { authenticated } = keycloak
+  const authentication = useAuthentication()
 
   const authenticated = false
 
@@ -42,7 +42,7 @@ const NavBar = (props: NavBarProps) => {
         <Link href='/about'>
           <Button className='bp3-minimal' icon='help' text='About' />
         </Link>
-        {authenticated ? (
+        {authentication.isAuthenticated ? (
           <>
             <Navbar.Divider />
             <Link href='/dashboard'>
@@ -56,7 +56,7 @@ const NavBar = (props: NavBarProps) => {
         ) : null}
       </Navbar.Group>
       <Navbar.Group align={Alignment.RIGHT}>
-        {authenticated ? (
+        {authentication.isAuthenticated ? (
           <Button
             className='bp3-minimal'
             icon='log-out'

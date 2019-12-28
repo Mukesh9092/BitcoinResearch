@@ -3,6 +3,8 @@ import { json, urlencoded } from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import { importSchema } from 'graphql-import'
 import { ExpressServer } from '../common/express/middleware/expressServerWith'
+import { redirectAuthenticatedRequests } from '../common/express/middleware/redirectAuthenticatedRequests'
+import { redirectUnauthenticatedRequests } from '../common/express/middleware/redirectUnauthenticatedRequests'
 import context from './context'
 import expressSessionMiddleware from './express-session-middleware'
 import { createNextApplication } from './next-application'
@@ -60,6 +62,9 @@ export const configureExpressServer = async (expressServer: ExpressServer) => {
   })
 
   apolloServer.applyMiddleware({ app: expressServer })
+
+  expressServer.get('/signin', redirectAuthenticatedRequests('/dashboard'))
+  expressServer.get('/dashboard', redirectUnauthenticatedRequests('/signin'))
 
   expressServer.all('*', (req, res) => {
     nextApplicationRequestHandler(req, res)

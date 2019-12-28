@@ -26,20 +26,8 @@ const Page: NextPage = () => {
   )
 }
 
-Page.getInitialProps = async (context) => {
-  if (context.req) {
-    // @ts-ignore
-    const authenticated: boolean = context.req.isAuthenticated()
-
-    if (!authenticated) {
-      context.res.writeHead(302, {
-        Location: '/signin',
-      })
-      context.res.end()
-    }
-  }
-
-  return {}
-}
+// Page.getInitialProps = async (context) => {
+//   return {}
+// }
 
 export default Page

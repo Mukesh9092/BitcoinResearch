@@ -5,6 +5,8 @@ import { ServerStyleSheet } from 'styled-components'
 // Needs to be a class and extend Document.
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
+    console.log('MyDocument#getInitialProps')
+
     const sheet = new ServerStyleSheet()
     const originalRenderPage = ctx.renderPage
     try {
