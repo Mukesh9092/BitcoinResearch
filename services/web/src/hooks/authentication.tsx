@@ -34,6 +34,8 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
 }) => {
   const authentication = useProvideAuthentication(value)
 
+  console.log('AuthenticationProvider:authentication', authentication)
+
   return (
     <authenticationContext.Provider value={authentication}>
       {children}
@@ -42,10 +44,14 @@ export const AuthenticationProvider: FC<AuthenticationProviderProps> = ({
 }
 
 export const useAuthentication = () => {
+  console.log('useAuthentication', authenticationContext)
+
   return useContext(authenticationContext)
 }
 
 export const useProvideAuthentication = (value: AuthenticationState) => {
+  console.log('useProvideAuthentication')
+
   const [state, setState] = useState<AuthenticationState>(value)
 
   const signIn = async (username: string, password: string) => {

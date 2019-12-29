@@ -3,6 +3,7 @@ import React from 'react'
 import { ApolloProvider } from 'react-apollo'
 import { ThemeProvider } from 'styled-components'
 import { getApolloClient } from '../common/apollo/client'
+import { Authentication } from '../domain/Authentication'
 import { AuthenticationProvider } from '../hooks/authentication'
 import theme from '../styled/theme'
 
@@ -14,31 +15,29 @@ export default class MyApp extends App {
   // Define getInitialProps on App to disable pre-rendering app-wide since it
   // was giving troubles when using hooks.
   static async getInitialProps({ Component, ctx }) {
-    // console.log('MyApp#getInitialProps')
-
-    let pageProps = {}
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx)
-    }
-
     const isAuthenticated = ctx?.req?.isAuthenticated() || false
-
     let userId: string
     if (ctx?.req?.session?.passport) {
       userId = ctx.req.session.passport.user
     }
 
-    return {
-      pageProps: {
-        ...pageProps,
-        authentication: {
-          isAuthenticated,
-          user: {
-            id: userId,
-          },
-        }
-      },
+    const authentication: Authentication = {
+      isAuthenticated,
+      userId,
+      user: null,
     }
+
+    // Add authentication to the Context for components to consume.
+    ctx.authentication = authentication
+
+    let pageProps = {
+      authentication,
+    }
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx)
+    }
+
+    return { pageProps }
   }
 
   public render() {
