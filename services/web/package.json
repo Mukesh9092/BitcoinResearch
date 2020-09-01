@@ -4,7 +4,7 @@
   "description": "Test",
   "main": "index.js",
   "keywords": [],
-  "author": "Tom Wieland <tom.wieland@gmail.com>",
+  "author": "Industrial",
   "license": "PUBLIC DOMAIN",
   "scripts": {
     "dev": "./bin/dev",
