@@ -13,7 +13,7 @@ defaultEntryPoints = ["https","http"]
 
 # Enable ACME (Let's Encrypt): automatic SSL
 [acme]
-email = "tom.wieland@gmail.com"
+email = "test@test.com"
 storage = "/acme.json"
 entryPoint = "https"
 onDemand = false
