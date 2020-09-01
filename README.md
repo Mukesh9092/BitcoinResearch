@@ -1,5 +1,8 @@
 # Crypto Dashboard
 
+## This is an old project, I might revive it some day.
+## Find my bitcoin trading algorithm research in https://github.com/Industrial/BitcoinResearch/tree/master/common/tensorflow/tf
+
 This application is a dashboard for cryptocurrency markets. Add some markets to your dashboard and view them in full-screen.
 
 ## Exchanges:
